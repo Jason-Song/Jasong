@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.app</groupId>
-    <artifactId>wb-enginemanage</artifactId>
+    <artifactId>jasong-enginemanage</artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging>
-    <name>wb-enginemanage</name>
+    <name>jasong-enginemanage</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>4.3.5.RELEASE</spring.version>
@@ -20,7 +20,7 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.1</version>
                 <configuration>
-                    <path>/wb-enginemanage</path>
+                    <path>/jasong-enginemanage</path>
                     <port>8084</port>
                     <uriEncoding>UTF-8</uriEncoding>
                     <url>http://localhost:8080/ /html</url>
