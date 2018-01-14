@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.good.em.mapper.ModelAnalysisDao">
+
+    <resultMap id="modelDataMap" type="com.good.em.bean.ModelAnalysisPo">
+        <result property="id" column="ID"/>
+        <result property="fileId" column="FILE_ID"/>
+        <result property="trainRes" column="TRAIN_RES"/>
+        <result property="accuracy" column="ACCURACY"/>
+        <result property="trainNo" column="TRAIN_NO"/>
+        <result property="testNo" column="TEST_NO"/>
+        <result property="performance" column="PERFORMANCE"/>
+        <result property="createApp" column="CREATE_APP"/>
+        <result property="createTime" column="CREATE_TIME"/>
+    </resultMap>
+        
+    <select id="listModelData" resultMap="modelDataMap">
+        select  T.ID			as id,
+        		T.FILE_ID   	as fileId,
+        		T.TRAIN_RES 	as trainRes,
+        		T.ACCURACY	 	as accuracy,
+        		T.TRAIN_NO	  	as trainNo,
+        		T.TEST_NO   	as testNo,
+        		T.PERFORMANCE   as performance,
+        		T.CREATE_APP    as createApp,
+        		T.CREATE_TIME   as uploadUser,
+        from T_PREDICT_INDEX T
+        <where>1=1
+        <!--C.REFMASTERCODE = 'SITE_UNIT'-->
+            <if test="condition.fileId != null and condition.fileId != ''"> and T.FILE_ID = #{condition.fileId} </if>
+            <if test="condition.trainRes != null and condition.trainRes != ''"> and T.TRAIN_RES like '%${condition.trainRes}%' </if>
+            <if test="condition.accurMin != null and condition.accurMin != ''"> and T.ACCURACY &gt;= #{condition.accurMin} </if>
+            <if test="condition.accurMax != null and condition.accurMax != ''"> and T.ACCURACY &lt;= #{condition.accurMax} </if>
+            <if test="condition.trainMin != null and condition.trainMin != ''"> and T.TRAIN_NO &gt;= #{condition.trainMin}  </if>
+            <if test="condition.trainMax != null and condition.trainMax != ''"> and T.TRAIN_NO &lt;= #{condition.trainMax} </if>
+            <if test="condition.testMin != null and condition.testMin != ''"> and T.TEST_NO &gt;= #{condition.testMin} </if>
+            <if test="condition.testMax != null and condition.testMax != ''"> and T.TEST_NO &lt;= #{condition.testMax} </if>
+            <if test="condition.crtStartTime != null and condition.crtStartTime != ''"> and T.CREATE_TIME &gt;= #{condition.crtStartTime} </if>
+            <if test="condition.crtEndTime != null and condition.crtEndTime != ''"> and T.CREATE_TIME &lt;= #{condition.crtEndTime} </if>
+            <if test="condition.createApp != null and condition.createApp != ''"> and T.CREATE_APP like '%${condition.createApp}%' </if>
+        </where>
+        <if test="condition.orders != null " > ORDER BY ${condition.orders}</if>
+    </select>
+    
+   <select id="getModelData" resultType="java.util.Map" parameterType="java.lang.Integer">
+		select TRAIN_NO as TRAIN,TEST_NO as TEST,CLASS_NO as CLASSNO,MATRIX as MATRIX,MODEL_TREE as TREE,TRAIN_MODEL as MODEL from T_PREDICT_INDEX where file_id=#{fileId}
+    </select>
+    
+    <select id="getLineData" resultType="java.lang.String" parameterType="java.lang.String">
+		select ACCURACY from T_PREDICT_INDEX where FILE_ID=#{fileId}
+    </select>
+    
+    <select id="getSelectData" resultType="java.util.Map">
+		select id,(id||'['||file_name||']') as idAndName from T_TRAIN_DATA
+    </select>
+    
+</mapper>
+

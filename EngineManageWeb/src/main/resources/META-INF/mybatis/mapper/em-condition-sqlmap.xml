@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.good.em.mapper.ConditionDao">
+
+    <resultMap id="conditionMap" type="com.good.em.bean.ConditionPo">
+        <result property="id" column="ID"/>
+        <result property="feature" column="FEATURE"/>
+        <result property="condVal" column="COND_VAL"/>
+        <result property="condType" column="COND_TYPE"/>
+        <result property="condDesc" column="COND_DESC"/>
+        <result property="createUser" column="CREATE_USER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="lastUpdUser" column="LAST_UPD_USER"/>
+        <result property="lastUpdTime" column="LAST_UPD_TIME"/>
+    </resultMap>
+        
+    <select id="listCondition" resultMap="conditionMap">
+        select  T.ID			as id,
+        		T.FEATURE   	as feature,
+        		T.COND_VAL 		as condVal,
+        		T.COND_TYPE 	as condType,
+        		T.COND_DESC	  	as condDesc,
+        		T.CREATE_USER  	as createUser,
+        		CU.NAME			as crtUserName,
+        		T.CREATE_TIME   as createTime,
+        		T.LAST_UPD_USER as lastUpdUser,
+        		UU.NAME			as updUserName,
+        		T.LAST_UPD_TIME as lastUpdTime
+        from T_CONDITION T
+        left join T_USER CU on T.CREATE_USER = CU.USERID
+        left join T_USER UU on T.LAST_UPD_USER = UU.USERID
+        <where>1=1
+            <if test="condition.feature != null and condition.feature != ''"> and T.FEATURE = #{condition.feature} </if>
+            <if test="condition.condVal != null and condition.condVal != ''"> and T.COND_VAL = #{condition.condVal} </if>
+            <if test="condition.condType != null and condition.condType != ''"> and T.COND_TYPE = #{condition.condType} </if>
+            <if test="condition.condDesc != null and condition.condDesc != ''"> and T.COND_DESC like '%${condition.condDesc}%' </if>
+            <if test="condition.createUser != null and condition.createUser != ''"> and T.CREATE_USER = #{condition.createUser} </if>
+            <if test="condition.crtStartTime != null and condition.crtStartTime != ''"> and T.CREATE_TIME &gt;= #{condition.crtStartTime} </if>
+            <if test="condition.crtEndTime != null and condition.crtEndTime != ''"> and T.CREATE_TIME &lt;= #{condition.crtEndTime} </if>
+            <if test="condition.lastUpdUser != null and condition.lastUpdUser != ''"> and T.LAST_UPD_USER = #{condition.lastUpdUser} </if>            
+            <if test="condition.updStartTime != null and condition.updStartTime != ''"> and T.LAST_UPD_TIME &gt;= #{condition.updStartTime} </if>
+            <if test="condition.updEndTime != null and condition.updEndTime != ''"> and T.LAST_UPD_TIME &lt;= #{condition.updEndTime} </if>
+        </where>
+        <if test="condition.orders != null " > ORDER BY ${condition.orders}</if>
+    </select>
+    
+	<insert id="insertCondition" useGeneratedKeys="false" keyProperty="id" parameterType="com.good.em.bean.ConditionPo" > 
+        insert into T_CONDITION (ID,FEATURE,COND_VAL,COND_TYPE,COND_DESC,CREATE_USER,CREATE_TIME,LAST_UPD_USER,LAST_UPD_TIME)
+        values(SEQ_T_CONDITION.nextval ,#{feature,jdbcType=VARCHAR},#{condVal,jdbcType=VARCHAR},#{condType,jdbcType=VARCHAR},#{condDesc,jdbcType=VARCHAR},#{createUser,jdbcType=INTEGER},#{createTime,jdbcType=CHAR},#{lastUpdUser,jdbcType=INTEGER},#{lastUpdTime,jdbcType=CHAR})
+    </insert>
+    
+    <update id="updateCondition" parameterType="com.good.em.bean.ConditionPo">
+        update T_CONDITION
+        <set>
+            <if test="feature != null"> FEATURE = #{feature}, </if>
+            <if test="condVal != null"> COND_VAL = #{condVal}, </if>
+            <if test="condType != null"> COND_TYPE = #{condType}, </if>
+            <if test="condDesc != null"> COND_DESC = #{condDesc}, </if>
+            <if test="lastUpdUser != null"> LAST_UPD_USER = #{lastUpdUser}, </if>
+            LAST_UPD_TIME = #{lastUpdTime}
+        </set>
+        where ID = #{id}
+    </update>
+
+    <delete id="delCondition" parameterType="com.good.em.bean.ConditionPo">
+        delete from T_CONDITION where ID = #{id}
+    </delete>
+</mapper>
+

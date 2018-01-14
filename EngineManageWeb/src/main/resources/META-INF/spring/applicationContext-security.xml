@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+    http://www.springframework.org/schema/security   
+    http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+
+
+	<!-- 静态资源，不用权限 -->
+	<http pattern="/css/**" security="none" />
+	<http pattern="/assets/**" security="none" />
+	<http pattern="/images/**" security="none" />
+	<http pattern="/js/**" security="none" />
+	<http pattern="/bljs/**" security="none" />
+	<http pattern="/ws.do" security="none" />
+
+	<http auto-config="false">
+		<intercept-url pattern="/sys/logon" access="permitAll" />
+		<intercept-url pattern="/sys/autologon" access="permitAll" />
+		<intercept-url pattern="/sys/logoncheck" access="permitAll" />
+        <intercept-url pattern="/**" access="authenticated" />
+        
+		<!-- 登录界面 -->
+		<form-login authentication-failure-forward-url="/sys/logoncheck" 
+			authentication-success-handler-ref="customSuccessHandler" login-page="/sys/logon" 
+			password-parameter="password" username-parameter="ssoId" />
+		<logout invalidate-session="true" logout-url="/sys/logout" success-handler-ref="customLogoutHandler"/>
+		<csrf disabled="true" />
+		<!-- 增加一个filter，这点与Acegi是不一样的，不能修改默认的filter了，这个filter位于FILTER_SECURITY_INTERCEPTOR之后 -->
+		<custom-filter after="FILTER_SECURITY_INTERCEPTOR" ref="myFilter" />
+		<session-management invalid-session-url="/sys/logon" />
+		<access-denied-handler error-page="/sys/denied"/>
+		<headers>
+			<!-- 框架中显示页面允许 -->
+	    	<frame-options policy="SAMEORIGIN"/>
+	    </headers>
+	</http>
+ 
+	<!-- 自定义user-service -->
+	<beans:bean id="userDetailService" class="com.good.sys.security.MyUserDetailsService"></beans:bean>
+	<beans:bean class="com.good.sys.security.CustomSuccessHandler" id="customSuccessHandler">
+		<beans:property name="defaultTargetUrl" value="/sys/logoncheck"></beans:property>
+	</beans:bean>
+	
+	<beans:bean class="com.good.sys.security.CustomLogoutHandler" id="customLogoutHandler">
+		<beans:property name="defaultTargetUrl" value="/sys/logon"></beans:property>
+	</beans:bean>
+
+
+	<!-- 认证管理器，实现用户认证的入口，主要实现UserDetailsService接口即可 -->
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="userDetailService">
+			<password-encoder ref="md5Encoder"/>
+		</authentication-provider>
+	</authentication-manager>
+
+
+	<!-- 一个自定义的filter，必须包含authenticationManager,accessDecisionManager,securityMetadataSource三个属性 
+		,我们的所有控制将在这三个类中实现，解释详见具体配置 -->
+	<beans:bean id="myFilter"
+		class="com.good.sys.security.MyFilterSecurityInterceptor">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="accessDecisionManager" ref="myAccessDecisionManagerBean" />
+		<beans:property name="securityMetadataSource" ref="securityMetadataSource" />
+	</beans:bean>
+
+	<!-- 访问决策器，决定某个用户具有的角色，是否有足够的权限去访问某个资源 -->
+	<beans:bean id="myAccessDecisionManagerBean"
+		class="com.good.sys.security.MyAccessDecisionManager">
+		<beans:property name="uncheckUrls" value="/sys/logon;/sys/autologon;/sys/logoncheck;/sys/denied;" />
+	</beans:bean>
+
+	<!-- 资源源数据定义，即定义某一资源可以被哪些角色访问 id 不允许改 -->
+	<beans:bean id="securityMetadataSource"
+		class="com.good.sys.security.SecurityMetadataServiceImpl" init-method="loadResourceDefine"/>
+
+
+	<!-- CSRF protection. Here we only include the CsrfFilter instead of all 
+		of Spring Security. See http://docs.spring.io/spring-security/site/docs/3.2.x/reference/htmlsingle/#csrf 
+		for more information on Spring Security's CSRF protection -->
+	<beans:bean id="csrfFilter"
+		class="org.springframework.security.web.csrf.CsrfFilter">
+		<beans:constructor-arg>
+			<beans:bean
+				class="org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository" />
+		</beans:constructor-arg>
+	</beans:bean>
+
+	<!-- Provides automatic CSRF token inclusion when using Spring MVC Form 
+		tags or Thymeleaf. -->
+	<beans:bean id="requestDataValueProcessor"
+		class="org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessor" />
+
+	<beans:bean id="md5Encoder"
+		class="com.good.sys.security.MyMd5PasswordEncoder" />
+	
+	<!-- session超时后处理 -->
+	<beans:bean class="org.springframework.session.web.http.SessionEventHttpSessionListenerAdapter">  
+	    <beans:constructor-arg name="listeners">
+	        <beans:list>
+	            <beans:bean class="com.good.sys.security.SessionEventListener" />
+	        </beans:list>
+	    </beans:constructor-arg>
+	</beans:bean>
+</beans:beans>  

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.good.em.mapper.UserBlDao">
+    <select id="list" resultType="java.lang.Integer">
+        SELECT USERID FROM T_USER WHERE STAFF_ID = #{staffId}
+    </select>
+    
+    <select id="minUser" resultType="java.lang.Integer">
+        SELECT MIN(USERID) FROM T_USER
+    </select>
+    
+    <select id="minClient" resultType="java.lang.Integer">
+        SELECT MIN(CID) FROM T_CLIENT
+    </select>
+    
+    <select id="getUsers" resultType="com.good.em.bean.SysUserPo">
+        SELECT 
+          DISTINCT T.USERID    AS userId,
+                   T.NAME      AS name
+        FROM T_USER T
+        LEFT JOIN t_user_role T1 ON T1.USERID = T.USERID
+        LEFT JOIN T_ROLE T2 ON T2.RID = T1.RID
+        <where>1=1
+            <if test="condition.roleId != null and condition.roleId != ''"> AND T2.NAME = #{condition.roleId} </if>
+        </where>
+    </select>
+    
+    <select id="getUsersInfo" resultType="com.good.em.bean.SysUserPo">
+        SELECT 
+        	USERID    AS userId,
+        	NAME      AS name,
+        	EMAIL     AS email,
+        	STAFF_ID  AS staffId
+        FROM T_USER
+        <where>1=1
+            <if test="condition.staffId != null and condition.staffId != ''"> AND STAFF_ID = #{condition.staffId} </if>
+            <if test="condition.userId != null and condition.userId != ''"> AND USERID = #{condition.userId} </if>
+        </where>
+    </select>
+</mapper>

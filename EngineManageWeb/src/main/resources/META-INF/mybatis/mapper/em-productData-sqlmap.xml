@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.good.em.mapper.ProductDataDao">
+
+    <resultMap id="productDataMap" type="com.good.em.bean.ProductDataPo">
+        <result property="id" column="ID"/>
+        <result property="fileName" column="FILE_NAME"/>
+        <result property="filePos" column="FILE_POS"/>
+        <result property="fileType" column="FILE_TYPE"/>
+        <result property="fileSize" column="FILE_SIZE"/>
+        <result property="fileDesc" column="FILE_DESC"/>
+        <result property="extra" column="EXTRA"/>
+        <result property="unit" column="UNIT"/>
+        <result property="uploadUser" column="UPLOAD_USER"/>
+        <result property="uploadTime" column="UPLOAD_TIME"/>
+    </resultMap>
+        
+    <select id="listProductData" resultMap="productDataMap">
+        select  T.ID			as id,
+        		T.FILE_NAME   	as fileName,
+        		T.FILE_POS 		as filePos,
+        		T.FILE_TYPE 	as fileType,
+        		T.FILE_SIZE	  	as fileSize,
+        		T.FILE_DESC   	as fileDesc,
+        		T.EXTRA   		as extra,
+        		T.UPLOAD_USER   as uploadUser,
+        		T.UPLOAD_TIME   as uploadTime
+        from T_PRODUCT_DATA T
+        <where>1=1
+        <!--C.REFMASTERCODE = 'SITE_UNIT'-->
+            <if test="condition.unit != null and condition.unit != ''"> and T.UNIT = #{condition.unit} </if>
+            <if test="condition.fileName != null and condition.fileName != ''"> and T.FILE_NAME like '%${condition.fileName}%' </if>
+            <if test="condition.filePos != null and condition.filePos != ''"> and T.FILE_POS like '%${condition.filePos}%' </if>
+            <if test="condition.fileType != null and condition.fileType != ''"> and T.FILE_TYPE = ${condition.fileType} </if>
+            <if test="condition.fileDesc != null and condition.fileDesc != ''"> and T.FILE_DESC = like '%${condition.fileDesc}%' </if>
+            <if test="condition.sizeMin != null and condition.sizeMin != ''"> and T.FILE_SIZE &gt;= #{condition.sizeMin} </if>
+            <if test="condition.sizeMax != null and condition.sizeMax != ''"> and T.FILE_SIZE &lt;= #{condition.sizeMax} </if>
+            <if test="condition.upStartTime != null and condition.upStartTime != ''"> and T.UPLOAD_TIME &gt;= #{condition.upStartTime} </if>
+            <if test="condition.upEndTime != null and condition.upEndTime != ''"> and T.UPLOAD_TIME &lt;= #{condition.upEndTime} </if>
+            <if test="condition.uploadUser != null and condition.uploadUser != ''"> and T.UPLOAD_USER = #{condition.uploadUser} </if>
+        </where>
+        <if test="condition.orders != null " > ORDER BY ${condition.orders}</if>
+    </select>
+    
+	<insert id="insertProductData" useGeneratedKeys="false" keyProperty="id" parameterType="com.good.em.bean.ProductDataPo" > 
+        insert into T_PRODUCT_DATA (ID,FILE_NAME,FILE_POS,FILE_TYPE,FILE_SIZE,FILE_DESC,EXTRA,UNIT,UPLOAD_USER,UPLOAD_TIME)
+        values(SEQ_T_UPLOAD_HDFS.nextval ,#{fileName,jdbcType=VARCHAR},#{filePos,jdbcType=VARCHAR},#{fileType,jdbcType=VARCHAR},#{fileSize,jdbcType=VARCHAR},#{fileDesc,jdbcType=VARCHAR},#{extra,jdbcType=VARCHAR},#{unit,jdbcType=VARCHAR},#{uploadUser,jdbcType=CHAR},#{uploadTime,jdbcType=CHAR})
+    </insert>
+
+</mapper>
+
