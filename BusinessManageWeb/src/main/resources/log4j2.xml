@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Appenders>
+        <Console name="stdout" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%t] (%c) - %m%n" />
+        </Console>
+
+        <RollingRandomAccessFile name="logfile"
+            fileName="/opt/log/app-aml-blacklist/app-aml-blacklist.log" filePattern="/opt/log/app-aml-blacklist/app-aml-blacklist-%d{yyyy-MM-dd}.log.%i">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%t] (%c) - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="50"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+    <Loggers>
+        <AsyncLogger name="com.bill99" level="info" additivity="false" includeLocation="false">
+            <AppenderRef ref="logfile"/>
+            <!--
+            <AppenderRef ref="stdout" />
+            -->
+        </AsyncLogger>
+        <AsyncRoot level="info" includeLocation="false">
+            <AppenderRef ref="logfile" />
+            <AppenderRef ref="stdout" />
+        </AsyncRoot>
+    </Loggers>
+</Configuration>

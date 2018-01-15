@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+ 
+     <!-- 引入配置文件 -->
+    <context:property-placeholder location="classpath*:META-INF/*.properites" ignore-unresolvable="true"/>
+
+    <context:annotation-config />
+
+    <import resource="classpath:META-INF/spring/module-sys.xml"/>
+    <import resource="classpath:META-INF/spring/module-market.xml"/>
+    <import resource="classpath:META-INF/spring/module-quartz-sys.xml"/>
+    
+    <!-- 指定本应用所属模块 BizType-->
+    <bean id="appInfoService" class="com.good.sys.service.AppInfoServiceImpl">
+        <property name="appModel" value="MARKET" />
+    </bean>
+
+    <bean id="SpringContextUtil" class="com.good.sys.SpringContextUtil" lazy-init="false"></bean>
+    
+    <!-- redis 序列化策略 ，通常情况下key值采用String序列化策略， -->
+	<!-- 如果不指定序列化策略，StringRedisTemplate的key和value都将采用String序列化策略； -->
+	<!-- 但是RedisTemplate的key和value都将采用JDK序列化 这样就会出现采用不同template保存的数据不能用同一个template删除的问题 -->
+	<bean id="stringRedisSerializer" 
+	    class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+	
+	<bean id='redisTemplate' class="org.springframework.data.redis.core.RedisTemplate">
+	    <property name="connectionFactory" ref="redisConnectionFactory" />
+	    <property name="keySerializer" ref="stringRedisSerializer" />
+	    <property name="hashKeySerializer" ref="stringRedisSerializer" />
+	</bean>
+	
+	<!-- session共享设置 -->
+<!-- 	<bean id="redisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"> -->
+<!-- 	    <property name="port" value="${spring.redis.port}" /> -->
+<!-- 	    <property name="hostName" value="${spring.redis.host}" /> -->
+<!-- 	</bean> -->
+	<bean id="redisConnectionFactory" class="org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory" p:host-name="${spring.redis.host}" p:port="${spring.redis.port}"/>
+	
+	<bean class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration"/>
+
+</beans>

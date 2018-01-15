@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.good.sys.mapper.SystemManageDao">
+    <resultMap id="userMap" type="com.good.market.bean.User">
+        <result property="id" column="STAFF_ID"/>
+        <result property="name" column="STAFF_NAME"/>
+        <result property="email" column="EXT"/>
+        <result property="status" column="STAFF_STATUS"/>
+    </resultMap>
+     
+    <select id="listUser" resultMap="userMap">
+        SELECT STAFF_ID,STAFF_NAME,STAFF_STATUS,EXT FROM SYS_STAFF WHERE STAFF_ID IN (SELECT STAFF_ID  FROM SYS_ROLE_ASSIGN WHERE ROLE_ID LIKE 'amlblacklist%')
+        <if test="condition.userId != null and condition.userId != ''"> and STAFF_ID like '%${condition.userId}%' </if>
+        <if test="condition.userName != null and condition.userName != ''"> and STAFF_NAME like '%${condition.userName}%' </if>
+        <if test="condition.userStatus != null and condition.userStatus != ''"> and STAFF_STATUS like '%${condition.userStatus}%' </if>
+    </select>
+    
+    <select id="listRole" resultType="com.good.market.bean.Role">
+    	select 
+    	r.ROLE_ID as roleId,
+    	r.ROLE_NAME as roleName,
+    	r.EXT as roleDescribe,
+    	(select s.staff_name from sys_staff s where s.staff_id = r.UPD_USER) as modifyUser,
+    	UPD_TIME as modifyData,
+    	r.UPD_USER as staffId
+    	from SYS_ROLE r
+    <where>1=1
+    	and ROLE_STATUS="1" AND ROLE_ID LIKE 'amlblacklist%'
+        <if test="condition.roleName != null and condition.roleName != ''"> and ROLE_NAME like '%${condition.roleName}%' </if>
+    </where>
+    </select>
+    
+    <select id="getRoleName" resultType="java.lang.String">
+    	SELECT 
+	    	R.ROLE_NAME  AS roleName
+    	FROM SYS_ROLE R
+	    WHERE R.ROLE_ID = #{0}
+    </select>
+    
+     <select id="syncRole" resultType="com.good.market.bean.UserAndRole">
+	    	SELECT T.STAFF_ID      AS staffId,
+	    		   S.STAFF_NAME    AS staffName,
+	    		   T.ROLE_ID       AS roleId
+	    	FROM SYS_ROLE_ASSIGN T
+	    	LEFT JOIN SYS_STAFF S ON S.STAFF_ID = T.STAFF_ID
+	    	WHERE T.ROLE_ID LIKE 'amlblacklist%'
+    </select>
+</mapper>
+

@@ -1,0 +1,431 @@
+.hiden-columns-title {
+	display: inline-block;
+	padding:5px;
+	border:1px solid #eeeeee;
+	position:relative;
+	background-color: #7ba9f8;
+
+}
+.hiden-columns-title span {
+	color:#FFFFFF;
+}
+.hiden-columns-title ul li label{
+	color:#FFFFFF;
+}
+.hiden-columns {
+	right:0;
+	left: auto;
+	display :none;
+	position:absolute;
+    border: 1px solid #dddddd;
+    left: auto;
+    margin-left: 0;
+    padding: 5px;
+    width: 150px;
+    background-color:#7ba9f8;
+    z-index:5;
+}
+
+.hiden-columns li {
+	list-style: outside none none;
+}
+.hiden-columns li label {
+	width:100%;
+}
+.showcol {
+	display :block;
+}
+.panel-body->div {
+	padding:0;
+}
+
+div.dataTables_wrapper  {
+    width: 100%;
+    margin: 0 auto;
+}
+
+
+.dataTables_wrapper div.dataTables_scrollBody .table thead > tr .sorting:before,
+.dataTables_wrapper div.dataTables_scrollBody .table thead > tr .sorting_asc:before,
+.dataTables_wrapper div.dataTables_scrollBody .table thead > tr .sorting_desc:before{
+	content:"";
+}
+
+.dataTables_wrapper ul.pagination {
+	margin :0;
+}
+.dataTables_wrapper .dataTables_paginate .paging_full_numbers ul.pagination li.paginate_button,
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+	margin-left:-2px;
+	padding:0;
+	border :none;
+}
+
+html .select2-container .select2-choice {
+	height:30px;
+}
+
+.dataTables_wrapper.no-footer .dataTables_scrollBody {
+	border-bottom: none;
+}
+table.dataTable.no-footer {
+	border-bottom: none;
+}
+
+.page-container .main-content .page-title .title-env .title {
+	font-size: 20px;
+}
+
+
+
+.page-container .main-content {
+/* 	padding : 15px; */
+}
+.page-body.skin-facebook .sidebar-menu {
+	background:#1c4987 none repeat scroll 0 0
+}
+.page-body.skin-facebook .sidebar-menu .main-menu a {
+	color : #e6e6e6;
+	padding:14px 0 14px 25px;
+	cursor:pointer;
+}
+.page-body.skin-facebook .sidebar-menu.collapsed .main-menu a {
+	padding:5px;
+}
+.sidebar-menu .main-menu {
+	padding-left:0px;
+	padding-right:0px;
+	margin-top:0;
+}
+
+.sidebar-menu ul li:hover {
+	background:#02a0e9 none repeat scroll 0 0
+}
+
+.page-container div.main-content ul#tabhead.nav {
+	border-bottom:3px solid #02a0e9;
+	margin:15px 15px 0 15px;
+}
+
+.nav.nav-tabs > li.active > a {
+	background-color:#02a0e9;
+}
+.nav.nav-tabs > li {
+	float:left;
+	border-right:1px solid #bac6e8;
+}
+.nav.nav-tabs > li > a {
+	background-color:#fff;
+	margin-right:0px;
+}
+
+.main-content ul li a span {
+	color:#02a0e9;
+}
+.main-content ul li.active a span {
+	color:#fff;
+}
+
+.page-container .main-content .page-title .title-env .title {
+	font-size: 24px;
+	color:#4d4d4d;
+}
+
+.page-container .main-content {
+}
+div.page-container div.main-content div#tabbody.tab-content {
+	padding:0;
+}
+
+html body.mainframe div.page-container div.main-content {
+/* 	padding:15px; */
+}
+
+html body.page-body.skin-facebook.mainframe div.page-container div.main-content ul#tabhead.nav.nav-tabs.ui-sortable {
+	box-shadow: 0px 0px 4px rgba(5, 5, 5, 0.3);
+	border-radius:5px 5px 5px 5px;
+}
+
+div.page-container div.main-content div.page-title {
+	box-shadow: 0px 0px 4px rgba(5, 5, 5, 0.3);
+	margin:10px 0 16px 0;
+	background-color:#fff;
+}
+
+.main-content > div.panel {
+	box-shadow: 0px 0px 4px rgba(5, 5, 5, 0.3);
+	border-radius:5px 5px 5px 5px;
+	margin:16px 0 16px 0;
+}
+
+.btn-group > .btn, .btn-group-vertical > .btn {
+	margin-right:16px;
+}
+
+.btn-group > .btn:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+	border-radius:5px 5px 5px 5px;
+}
+
+.main-content .panel .btn-group > .btn:first-child ,.main-content .panel .btn-group > .btn:last-child {
+	border-radius:5px 5px 5px 5px;
+}
+
+.btn.btn-blue {
+	background-color:#e6e6e6;
+	color:#444;
+}
+.btn.btn-blue:hover {
+	background-color:#02a0e9;
+	color:#fff;
+}
+.btn {
+	padding:4px 12px;
+	border:none;
+}
+
+.panel-heading .panel-title {
+	padding-bottom:5px;
+	border-bottom: 3px solid #02a0e9;
+}
+
+.panel .panel-heading {
+	padding:0;
+}
+.panel-body- {
+	padding-top:16px;
+}
+
+.mainframe div.page-container div.main-content ul#tabhead.nav.nav-tabs.ui-sortable {
+	background-color:#fff;
+}
+
+.hiden-columns-title {
+	padding:5px;
+	position:relative;
+	background-color: #fff;
+	border:none;
+}
+.hiden-columns-title span {
+	color:#666;
+}
+.hiden-columns-title ul li label{
+	color:#FFFFFF;
+}
+
+.table-striped tbody tr.even.selected , .table-striped tbody tr.odd.selected {
+	background-color:#e8f7fd;
+	color:#02a0e9;
+}
+
+.table-striped tbody tr {
+	color:#444;
+}
+.dataTables_wrapper .table.table thead tr th {
+	background-color:#f8f9fe;
+	color:#222;
+	border-left-width:0;
+}
+
+.hiden-columns {
+	right:0;
+	left: auto;
+    border: 2px solid #02a0e9;
+    border-radius:5px 5px 5px 5px;
+    left: auto;
+    margin-left: 0;
+    padding: 5px;
+    width: 150px;
+    background-color:#f8f8f8;
+    z-index:5;
+}
+.hiden-columns-title ul li label{
+	color:#666;
+}
+
+.modal .modal-dialog .modal-content .modal-header {
+	border-bottom: 1px solid #02a0e9;
+	padding-bottom: 10px;
+}
+
+.form-control::-moz-placeholder {
+	color: #cccccc;
+}
+.form-control:-ms-input-placeholder {
+	color: #cccccc;
+}
+.form-control::-webkit-input-placeholder {
+	color: #cccccc;
+}
+
+.modal-footer button.btn {
+	border-radius:5px 5px 5px 5px;
+}
+
+.dataTables_wrapper div.dataTables_length label ,.dataTables_wrapper .dataTables_info{
+	color:#666;
+	font-size:12px;
+}
+
+.dataTables_wrapper .paging_full_numbers ul.pagination li a {
+	color:#666;
+	font-size:12px;
+	padding:0px 3px;
+}
+.dataTables_wrapper .paging_full_numbers ul.pagination li.active a {
+	color:#fff;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+	border:none;
+	padding:0;
+}
+
+.pagination > .disabled > span, .pagination > .disabled > span:hover, .pagination > .disabled > span:focus, .pagination > .disabled > a, .pagination > .disabled > a:hover, .pagination > .disabled > a:focus {
+	border:none;
+	padding:3px 6px;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+	min-width:1em;
+	margin-left:0px;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+	border : none;
+	background-color:#fff;
+}
+.dataTables_wrapper .dataTables_length label select.form-control.input-sm {
+	border : 1px solid #cccccc;
+	height:20px;
+	padding:0px 5px;
+	border-radius:3px 3px 3px 3px;
+}
+
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+  z-index: 2;
+  color: #ffffff;
+  background-color: #02a0e9;
+  border-color: #02a0e9;
+  cursor: default;
+}
+.pagination > li > a, .pagination > li > span {
+	border:none;
+}
+
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+	border-color:#02a0e9;
+	background-color:#02a0e9;
+	color:#fff;
+}
+
+
+.login-page {
+	background-image: url("../images/background.jpg");
+	padding-top:0;
+	background-repeat:no-repeat;
+	background-size:100% 100%;
+	-moz-background-size:100% 100%;
+	-webkit-background-size:100% 100%;
+}
+.login-page .login-form .login-header .logo {
+}
+.login-page .login-form .login-header p {
+	text-align: center;
+	color:#fff;
+	font-size:26px;
+	margin-bottom: 55px;
+}
+
+.login-page .login-form .logo-body {
+	width:611px;
+	height:397px;
+	padding:55px 100px;
+	border:none;
+	background-color:#000;
+	opacity: 0.5;
+	border-radius:10px 10px 10px 10px;
+}
+
+.login-page .login-form .form-group .form-control {
+	height:57px;
+	font-size: 18px;
+	border-radius:5px;
+}
+.login-page .login-form .form-group {
+	margin-bottom:16px;
+}
+
+.login-page .login-form .form-group .form-control::-moz-placeholder {
+	color: #ffffff;
+	background-color:#000000;
+}
+
+.login-page .login-form .form-group .form-control:-ms-input-placeholder {
+	color: #ffffff;
+	background-color:#000000;
+}
+
+.login-page .login-form .form-group .form-control::-webkit-input-placeholder {
+	color: #ffffff;
+	background-color:#000000;
+}
+
+.login-container a.logo {
+	text-align: center;
+}
+.login-container {
+	padding: 90px 0 0 0;
+}
+
+.login-page .login-form .form-group.logon-btn {
+	padding :100px 100px 0 100px;
+}
+.login-page .login-form .form-group.logon-btn button {
+	color: #fff;
+	background-color: #02a0e9;
+	border-radius:5px;
+	font-size:18px;
+}
+.breadcrumb {
+	background-color: #eeeeee;
+	margin-bottom:0;
+	padding:10px 15px 0 15px;
+}
+.breadcrumb li a {
+	color:#666;
+}
+.breadcrumb > li + li::before {
+	
+}
+.fuelux.datactl .tree.tree-folder-select .tree-branch.tree-selected > .tree-branch-header .tree-branch-name {
+	background-color: #02a0e9;
+	color:#fff;
+}
+.fuelux.datactl .tree.tree-folder-select .tree-branch.tree-selected > .tree-branch-header .tree-branch-name:hover{
+	background-color: #02a0e9;
+	color:#fff;
+}
+.fuelux.datactl .tree .tree-item.tree-selected .tree-item-name {
+	background-color: #02a0e9;
+	color:#fff;
+}
+
+div.breadcrumb-env ol.breadcrumb li a:LAST-CHILD {
+	cursor:pointer;
+}
+
+table.table-bordered tbody th, table.table-bordered tbody td {
+	border-bottom-width :1;
+	border-left-width:0;
+}
+
+.dataTables_wrapper.no-footer div.dataTables_scrollHead table, .dataTables_wrapper.no-footer div.dataTables_scrollBody table {
+	border-left-width:0;
+	border-right-width:0;
+}
+body {
+	font-size:14px;
+	padding:0 15px 0 15px;
+}
