@@ -1,0 +1,17 @@
+
+database.type=mysql
+jdbc.driver=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://localhost:3306/wb?useUnicode=true&characterEncoding=UTF-8
+jdbc.username=wisdombrain
+jdbc.password=wisdombrain
+jdbc.initialPoolSize=5
+jdbc.maxPoolSize=10
+
+#database.type=oracle
+#jdbc.driver=org.h2.Driver
+#jdbc.url=jdbc:h2:~/gooddb;SCHEMA=PUBLIC;MODE=Oracle
+#jdbc.username=sa
+#jdbc.password=
+#jdbc.initialPoolSize=5
+#jdbc.maxPoolSize=10
+

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+	<import resource="classpath*:/context/if-acms-client.xml" />
+
+	<bean class="com.bill99.inf.acms.client.config.ConfigInitLoadingConfigurer"
+		parent="baseConfigurer" lazy-init="false">
+		<property name="appName" value="app-aml-oa" />
+		<property name="keyPatterns" value="inf.acms,inf.fss.client" />
+		<!-- 注意匹配项后的内容务必唯一，否则会被后面相同key覆盖;prefixStripKeys为List<String>类型 -->
+		<property name="prefixStripKeys">
+			<list>
+				<value>inf.acms</value>
+				<value>inf.fss.client</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+</beans> 
