@@ -13,14 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.good.comm.web.WebPageResult;
 import com.good.comm.web.WebRequest;
+import com.good.em.bean.ProductModelPo;
 import com.good.em.service.KMeansAnalysisService;
 import com.good.em.service.ModelAnalysisService;
 import com.good.sys.MsgConstants;
 import com.good.sys.WebUtils;
+import com.good.sys.bean.LogonInfo;
 
 
 @Controller
@@ -38,76 +41,53 @@ public class KMeansAnalysisController {
     public String toPage() throws Exception {
         return "/kMeans/modelAnalysis";
     }
-    
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/modelDataList", method = { RequestMethod.POST,
-			RequestMethod.GET })
-	@ResponseBody
-	public WebPageResult modelDataList(String fileId)
-			throws Exception {
-		WebPageResult ret = null;
-//		if(fileId!=null&&fileId!=""){
-//			List<Map<String,Object>>dataList=new ArrayList<>();
-//			 Map<String,Object>mapTrain=new HashMap<>();
-//			 Map<String,Object>mapTest=new HashMap<>();
-//			 Map<String, Object> numMap=modelAnalysisService.getModelData(Integer.parseInt(fileId));
-//			 ret = new WebPageResult(dataList);
-//			 if(numMap!=null){
-//				String[] modelstr = numMap.get("MODEL").toString().split("/");
-//				mapTrain.put("name", "训练样本数");
-//				mapTrain.put("num", numMap.get("TRAIN"));
-//				mapTrain.put("matrix", numMap.get("MATRIX"));
-//				mapTrain.put("tree", numMap.get("TREE"));
-//				mapTrain.put("classno", numMap.get("CLASSNO"));
-//				mapTrain.put("modelno", modelstr[modelstr.length-1]);
-//				mapTest.put("name", "测试样本数");
-//				mapTest.put("num", numMap.get("TEST"));
-//				dataList.add(mapTrain);
-//				dataList.add(mapTest);
-//			 }
-//		}
-		return ret;
-	}
 	
 	@RequestMapping(value = "/getLineData", method = { RequestMethod.POST,
 			RequestMethod.GET })
 	@ResponseBody
     public WebPageResult getLineData(WebRequest wr,HttpServletRequest request) {
-		//System.out.println("fileId"+fileId);
 		HashMap<String, Object> condition = WebUtils.fillOrderParam(wr, null);
 		// 设置查询条件
 		condition.put("fileId", request.getParameter("fileId"));
-		condition.put("modelNo", "/"+request.getParameter("modelNo"));
-
-		Map<String, List<Double>> dataMap=new HashMap<>();
-		List<Double> distances = new ArrayList<>();
-		WebPageResult ret =null;
-		if(fileId!=null&&fileId!=""){
+		condition.put("modelNo", request.getParameter("modelNo"));
+		WebPageResult ret = null;
 		try {
-			String accuracy=modelAnalysisService.getLineData(fileId);
-			System.out.println("accuracy="+accuracy);
-			String[] vectors= accuracy.split("Vector\\(");
-			String[] R=vectors[1].split("\\),");
-			for(int i=R.length-1;i>=0;i--){
-				String d1=R[i].replace("(","");
-				String d2=d1.replace(")","");
-				String[] D=d2.split(",");
-				dataOne.add(Double.parseDouble(D[0]));
-				dataTwo.add(Double.parseDouble(D[1]));
-				dataThree.add(Double.parseDouble(D[2]));
-			}
-			dataMap.put("准确率", dataOne);
-			dataMap.put("召回率", dataTwo);
-			dataMap.put("F1", dataThree);
-			ret = new WebPageResult(dataMap);
+			LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
+			Map<String,Object> distances = kMeansAnalysisService.getEuclidDistance(condition, linfo.getOperator());
+	
+			ret = new WebPageResult(distances);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(MsgConstants.E0000, e);
-            ret.setRetcode(MsgConstants.E0000);
-		}
 		}
 		return ret;
     }
+	
+	@RequestMapping(value = "/modelApply", method = { RequestMethod.POST, RequestMethod.GET })
+	@ResponseBody
+	public WebPageResult modelApply(WebRequest wr, HttpServletRequest request) throws Exception {   	
+		WebPageResult ret = null;
+
+		LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
+		try{
+			ProductModelPo productModel = new ProductModelPo();
+			productModel.setModelName(request.getParameter("modelName"));
+			productModel.setModelType(6);
+			productModel.setPredictId(Integer.parseInt(request.getParameter("predictId")));
+			productModel.setModelNo(request.getParameter("modelNo"));
+			
+			List<String> msglist = kMeansAnalysisService.runApplyModel(productModel, linfo.getOperator());
+			ret = new WebPageResult(msglist);
+			ret.setMsg("应用模型成功！");
+		}catch(Exception e){
+			ret.setMsg("应用模型失败！");
+			e.printStackTrace();
+			logger.error(MsgConstants.E0000, e);
+		}
+		
+		return ret;
+	}
+	
 	@RequestMapping(value = "/getSelectData", method = { RequestMethod.POST,
 			RequestMethod.GET })
 	@ResponseBody
@@ -124,4 +104,13 @@ public class KMeansAnalysisController {
 		}
 		return ret;
 	}
+	
+    @RequestMapping(value = "/modelNoList", method = { RequestMethod.POST, RequestMethod.GET })
+    @ResponseBody
+    public WebPageResult modelNoList(WebRequest wr, @RequestParam("fileId") String fileId) throws Exception {   	
+    	List<String> list = kMeansAnalysisService.modelNoList(fileId);
+    	WebPageResult ret = new WebPageResult(list);
+    	
+    	return ret;
+    }
 }

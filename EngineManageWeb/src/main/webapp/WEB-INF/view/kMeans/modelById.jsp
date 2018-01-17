@@ -77,21 +77,24 @@
 				</div>
 				<div class="panel-body-">
 					<div class="row">
-						<div class="col-md-12" id="cont" style="width: 1100px; height: 400px; margin: 0 auto"></div>
-					</div>
-					<div class="row">
-						<div class="col-md-12" id="treeModel" style="width: 1100px; height: 400px; margin: 0 auto"></div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<label class="control-label">混淆矩阵：</label>
-							<div id="matrix" style="width: 550px; height: 300px; margin: 0 auto">
-							</div>
-						</div>		
-						<div class="col-md-6">	
-							<label class="control-label">原始生成树信息：</label>
-							<div id="tree" style="width: 550px; height: 300px; margin: 0 auto"></div>
+						<div class="col-md-4">
+							<input name='predictId' id='predictId' class="hidden"></input>		
+							<label class="control-label">总体均方差(WSSSE)：</label>
+							<div id="wssse" ></div>
 						</div>
+						<div class="col-md-4">
+							<label class="control-label">训练耗时(ms)：</label>
+							<div class="" id="performance"></div>
+						</div>
+					</div>
+				</div>
+				<div class="panel-body-">
+					<div class="row">
+						<div class="col-md-12" id="cont" style="width: 1100px;height:700px; margin: 0 auto"></div>
+					</div>
+					<div class="row">
+						<h3 class="control-label">聚类单轴散点图</h3>
+						<div class="col-md-12" id="points" style="width: 1100px;height:1000px; margin: 0 auto"></div>
 					</div>
 				</div>
 			</div>
@@ -139,259 +142,199 @@
 <script src="../../assets/js/echarts/macarons.js"></script>
 
 	<script type="text/javascript">
-	
-	$(function () {
-	            var arr = [];
-	        	$.ajax({
-	        		type:"post",
-	        		data:"fileId="+$("#s_condIds").val(),
-	        		url:"modelDataList",
-	        		dataType:"json",
-	        		success:function(dt){
-	       				if(dt.data!=null){
-	       					$(dt.data).each(function(index,item){
-	                            arr.push({
-	                            	name:item.name,
-	                            	value:item.num
-	                            });
-	                        });
-	           				//chart.series[0].setData(arr);
-	       				}
-	       				getModelIndex(arr);
-
-	       				var classno = dt.data[0].classno;
-	       				var matab = "<table><tr><td></td><td></td><td colspan='2'>预测</td><td></td></tr><tr><td></td><td></td><td>1</td><td>2</td></tr>";
-	       				for(var i=0;i<classno;i++){
-	       					if(i==0)matab += "<table><tr><td></td><td></td><td colspan='"+classno+"'>预测</td><td></td></tr><tr><td></td><td></td><td>1</td><td>2</td></tr>";
-	       				}
-	       				
-	       				var treestr = dt.data[0].tree;
-	       				//$("#matrix").html(dt.data[0].matrix);
-	       				$("#tree").html(treestr);
-	       				
-	       			    var myChart = echarts.init(document.getElementById('treeModel'), 'macarons');  
-	       				myChart.showLoading();
-	       				var trees = parseTree(treestr," Tree ");
-						var treedepths = treestr.split(" Tree ");
-	       			    var optseries = [];
-	       			    var legendata = [];
-	       			 	var treeno = trees.length;
-	       			 	var step = 100/treeno;
-	       			    for(var k=0;k<treeno;k++){
-	       			    	var ifs = treedepths[k+1].split(" Else ");
-	       			    	var ifno = ifs[0].split(" If ");
-	       			    	var trdepth = ifno.length+1;
-	       			    	var treename = "Tree"+k;
-	       			    	legendata.push({
-       				            name: treename,
-       				            icon: 'rectangle'
-       				        });
-	       			    	optseries.push({
-       				            type: 'tree',
-       				            name: treename,
-       				            data: [trees[k]],
-
-       				            top: '11%',
-       				            left: (k*step+12)+'%',
-       				            bottom: '20%',
-       				            right: ((treeno-1-k)*step+7)+'%',
-       				            
-       			                initialTreeDepth: trdepth,
-
-       				            symbolSize: 7,
-       			                orient: 'vertical',
-
-       				            label: {
-       				                normal: {
-       				                    position: 'top',
-       				                    verticalAlign: 'middle',
-       				                    rotate:-90,
-       				                    align: 'right'
-       				                }
-       				            },
-
-       				            leaves: {
-       				                label: {
-       				                    normal: {
-       				                        position: 'bottom',
-      				                        verticalAlign: 'middle',
-      				                        rotate:-90,
-       				                        align: 'left'
-       				                    }
-       				                }
-       				            },
-
-       				            expandAndCollapse: true,
-
-       				            animationDuration: 550,
-       				            animationDurationUpdate: 750
-
-       				        });
-	       			    }
-	       				myChart.hideLoading();
-
-	       				myChart.setOption(option = {
-       						title : {
-       	   				        text: '生成树',
-       	   				    },
-	       				    tooltip: {
-	       				        trigger: 'item',
-	       				        triggerOn: 'mousemove'
-	       				    },
-	       				    legend: {
-	       				        top: '8%',
-	       				        left: '0%',
-	       				        orient: 'vertical',
-	       				        data:legendata,
-	       				        borderColor: '#c23531'
-	       				    },
-	       				    toolbox: {
-	       				        show : true,
-	       				        feature : {
-	       				            mark : {show: true},
-	       				            dataView : {show: true, readOnly: false},
-	       				            restore : {show: true},
-	       				            saveAsImage : {show: true}
-	       				        }
-	       				    },
-	       				    series:optseries
-	       				});
-	        		}
-        }); 
-	});
-	
-	//解析随机森林文本
-	function parseTree(treestr,str){
-		var treearr=[];
-		if(treestr.indexOf(str)>=0){
-			var trees = treestr.split(str);
-
-			if(str==" Tree "){	   				
-				for(var j=0;j<trees.length-1;j++){
-					treearr[j] = new Object();
-					var splitstr = trees[j+1];
-					var nodes = splitstr.split(":");
-					treearr[j].name = "Tree"+nodes[0];
-					if(splitstr.indexOf(" If (feature ")>=0)treearr[j].children=parseTree(splitstr," If (feature ");
+ 		
+	$(function(){
+		$("#applybutton").click(function(){  
+			$.ajax({    
+				"type":'post',    
+				"url": "modelApply", 
+				"data":	{
+					"predictId":$("#predictId").val(),
+					"modelName":"KMeans",
+					"modelNo":$("#s_modelNo").val()
+				},	
+				"success" : function(data) { 
+					alert(data.msg);
+				}    
+			});
+		}); 
+		$.ajax({    
+			"type":'get',    
+			"url": "modelNoList", 
+			"data":	"fileId="+$("#s_fileId").val(),	
+			"success" : function(data) { 
+				var model_list = data.data;  
+				var opts = "";
+				for(var model_index = 0;model_index < model_list.length;model_index++){
+					var model = model_list[model_index]; 
+					opts += "<option value='"+model+"'>"+model+"</option>";  
 				}
-			}else if(str==" If (feature "){
-				var ifeas = trees[1].split(" ");
-				var ifstr = " If (feature "+ifeas[0];
-				var ifarr = treestr.split(ifstr);
-				var splitstr = ifarr[1];
-				
-				var elsestr = " Else (feature "+ifeas[0];
-				var elseno = splitstr.indexOf(elsestr);
-				if(elseno>=0){
-					var ifsplitstrs = splitstr.split(elsestr);
-					var ifsplitstr = ifsplitstrs[0];
-				}else var ifsplitstr = splitstr;
+				$("#s_modelNo").append(opts);
+				$("#s_modelNo").val(model_list[0]).trigger('change');
+			 }    
+		});
+		$('#s_modelNo').select2({  
+			placeholder: "选择模型",  
+			//allowClear: true  
+		});	
+		$("#s_modelNo").on("change",function(e){
+			var myChart = echarts.init(document.getElementById('cont'), 'macarons');  
+			var pChart = echarts.init(document.getElementById('points'));  
+   			myChart.showLoading();			
+   			pChart.showLoading();			
 
-				treearr[0] = ifelseobj(elseno,ifsplitstr,ifstr,ifeas[0],0);
-				treearr[1] = ifelseobj(elseno,splitstr,elsestr,ifeas[0],1);
-			}
-		}else{
-			treearr[0] = new Object();
-			var predicts = treestr.split(" Predict: ");
-			treearr[0].name = "Predict:"+predicts[1];
-			treearr[0].value = "Predict:"+predicts[1];
-		}
-		return treearr;
-	}
-	
-	function ifelseobj(elseno,splitstr,elsestr,code,pos){
-		var treearr=new Object();
-		if(elseno>=0){
-			var subifs=splitstr.split(elsestr);
-			if(subifs.length>1||pos==0){
-				var subifarr = subifs[pos].split(")");
-				treearr.name = code+" "+subifarr[0];
-				treearr.children=parseTree(subifs[pos]," If (feature ");
-			}
-		}
-		return treearr;
-	}
-	
-	function getModelIndex(arr){
-		$.ajax({
-    		type:"post",
-    		url:"getLineData",
-    		data:function(d){
-    			d.fileId=$("#s_fileId").val();
-    			d.modelNo=$("#s_modelNo").val();
-    		},
-    		dataType:"json",
-    		success:function(dt){    			
-   			    var myChart = echarts.init(document.getElementById('cont'), 'macarons');  
-   				myChart.showLoading();
-    			if(dt.data!=null){
-    				var ys = [];
-    				var xs = [];
-    				var j = 0;
-    				for(var i in dt.data){
-    					if(j==0){
-    						var yno = dt.data[i].length
-    						for(var k=yno-1;k>=0;k--){
-    							ys.push(k);
-    						}
-    					}
-           				xs.push({
-           					name:i,
-           					type:'bar',
-           					data:dt.data[i]
-           				});
-           				j++;
-           			}
-    			}
-    	        
-   				myChart.hideLoading();
-    			myChart.setOption(option = {
-   				    title : [{
-   				        text: '相似度统计',
-   				    }],
-   				    tooltip : {
-   				        trigger: 'axis'
-   				    },
-   				    legend: {
-   				    	left:'20%',
-   				        data:['欧式距离']
-   				    },
-   				    toolbox: {
-   				        show : true,
-   				        feature : {
-   				            mark : {show: true},
-   				            dataView : {show: true, readOnly: false},
-   				            magicType: {show: true, type: ['line', 'bar']},
-   				            restore : {show: true},
-   				            saveAsImage : {show: true}
-   				        }
-   				    },
-	   				grid: [{
-	   			        top: 50,
-	   			        width: '50%',
-	   			        bottom: '45%',
-	   			        left: 10,
-	   			        containLabel: true
-	   			    }],
-   				    calculable : true,
-   				    xAxis : [
-   				        {
-   				            type : 'value',
-   				            position:'top',
-   				            boundaryGap : [0, 0.01]
-   				        }
-   				    ],
-   				    yAxis : [
-   				        {
-   				            type : 'category',
-   				            data : ys
-   				        }
-   				    ],
-   				    series :xs
-   				});	                    
-    		}
-    	});
-	}; 
+			$.ajax({
+				type:"post",
+				url:"getLineData",
+				data:{
+					"fileId":$("#s_fileId").val(),
+					"modelNo":$("#s_modelNo").val()
+				},
+				dataType:"json",
+				success:function(dt){    			
+
+					if(dt.data!=null){
+						var datas = [];
+						var xs = [];
+						var ys = [];
+						var distance=dt.data.distances;
+						var center=dt.data.centers;
+						$("#wssse").html(dt.data.trainRes.WSSSE);
+						$("#performance").html(dt.data.trainRes.PERFORMANCE);
+						$("#predictId").val(dt.data.trainRes.ID);
+						var dlength = distance.length;
+						var categorys=[];
+						var pdatas = [];
+						var centermap=[];
+						for(var i=0;i<center.length;i++)centermap[center[i].CLUSTER_ID]=center[i].CENTER;
+						
+						var inarray="";
+						var j=1;
+						for(var i = dlength;i>0;i--){
+							var index = i-1;
+							var clusters = distance[index].split("|");
+							datas.push(clusters[0]);
+							var cluno = parseInt(clusters[1])+1;
+							ys.push("第"+i+"行记录（"+"属于第"+cluno+"类）");
+							var token = ","+clusters[1]+",";
+							if(inarray.indexOf(token)<0){
+								categorys.push("第"+j+"类\n聚类中心：\n"+centermap[clusters[1]]);
+								j++;
+							}
+							inarray+=token;
+
+							pdatas.push([clusters[1],clusters[0],2]);
+						}
+						xs.push({
+							name:'差异程度【欧式距离】',
+							type:'bar',
+							data:datas
+						});
+						//$("#points").css("height","'"+j*100+"px'");
+					}
+					myChart.hideLoading();
+					myChart.setOption(option = {
+						title : {
+							text: '训练文件逐行相似度评估'
+						},
+						tooltip : {
+							trigger: 'axis'
+						},
+						legend: {
+							left:'20%',
+							data:['差异程度【欧式距离】']
+						},
+						toolbox: {
+							show : true,
+							feature : {
+								mark : {show: true},
+								dataView : {show: true, readOnly: false},
+								magicType: {show: true, type: ['line', 'bar']},
+								restore : {show: true},
+								saveAsImage : {show: true}
+							}
+						},
+						grid: {
+							top: 50,
+							width: '90%',
+							bottom: '45%',
+							left: 10,
+							containLabel: true
+						},
+						calculable : true,
+						xAxis : [
+							{
+								type : 'value',
+								position:'top'
+							}
+						],
+						yAxis : [
+							{
+								type : 'category',
+								data:ys
+							}
+						],
+						series :xs
+					},true);	
+					myChart.resize();
+					poption = {
+						tooltip: {
+							position: 'top'
+						},
+						title: [],
+						toolbox: {
+							show : true,
+							feature : {
+								saveAsImage : {show: true}
+							}
+						},
+						singleAxis: [],
+						series: []
+					};
+					var clucount = j-1;
+					echarts.util.each(categorys,function(day, idx) {
+						poption.title.push({
+							textBaseline: 'middle',
+							top: (idx + 0.4) * 100 / clucount + '%',
+							text: day,
+							textStyle: {
+								color: '#333333',
+								fontWeight: '',
+								fontSize: 12
+							}
+						});
+						poption.singleAxis.push({
+							left: 150,
+							type: 'value',
+							boundaryGap: false,
+							top: (idx * 100 / clucount + 5) + '%',
+							height: (100 / clucount - 5) + '%',
+							axisLabel: {
+								interval: 2
+							}
+						});
+						poption.series.push({
+							singleAxisIndex: idx,
+							name:"第"+(parseInt(idx)+1)+"类【欧式距离，行号】",
+							coordinateSystem: 'singleAxis',
+							type: 'scatter',
+							data: [],
+							symbolSize: function (dataItem) {
+								return dataItem[1] * 4;
+							}
+						});
+					});
+					echarts.util.each(pdatas, function (dataItem) {
+						poption.series[dataItem[0]].data.push([dataItem[1], dataItem[2]]);
+					});
+					pChart.hideLoading();
+
+					pChart.setOption(poption,true);	
+					pChart.resize();
+				}
+			});
+		});
+	}); 
 	</script>
 </body>
 </html>

@@ -109,8 +109,7 @@ public class TrainDataServiceImpl implements TrainDataService {
         List<String> msglist = new ArrayList<String>();
         ExecuteResult result = ExecuteResult.UNKNOWN;
 
-        LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
-        String userId = linfo.getOperator().getUserID();
+        String userId = oper.getUserID();
         try {
     		String username = paramDao.getParams("SPARK_CLIENT_USER", "EM").getParaValue();
     		String host = paramDao.getParams("SPARK_CLIENT_HOST", "EM").getParaValue();
@@ -176,8 +175,7 @@ public class TrainDataServiceImpl implements TrainDataService {
     	List<String> msglist = new ArrayList<String>();
     	ExecuteResult result = ExecuteResult.UNKNOWN;
     	
-    	LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
-    	String userId = linfo.getOperator().getUserID();
+    	String userId = oper.getUserID();
     	try {
     		String modelName = RandomUtil.getRandomFileName();
     		String pubKeyPath = paramDao.getParams("SPARK_SSH_PUBKEY", "EM").getParaValue();

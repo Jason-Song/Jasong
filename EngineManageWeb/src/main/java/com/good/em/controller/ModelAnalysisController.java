@@ -100,6 +100,7 @@ public class ModelAnalysisController {
 		}
 		return ret;
     }
+	
 	@RequestMapping(value = "/getSelectData", method = { RequestMethod.POST,
 			RequestMethod.GET })
 	@ResponseBody
