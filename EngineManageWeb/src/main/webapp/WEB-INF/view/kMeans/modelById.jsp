@@ -150,7 +150,7 @@
 				"url": "modelApply", 
 				"data":	{
 					"predictId":$("#predictId").val(),
-					"modelName":"KMeans",
+					"modelName":"K均值聚类模型",
 					"modelNo":$("#s_modelNo").val()
 				},	
 				"success" : function(data) { 
@@ -178,7 +178,7 @@
 			//allowClear: true  
 		});	
 		$("#s_modelNo").on("change",function(e){
-			var myChart = echarts.init(document.getElementById('cont'), 'macarons');  
+			var myChart = echarts.init(document.getElementById('cont'));  
 			var pChart = echarts.init(document.getElementById('points'));  
    			myChart.showLoading();			
    			pChart.showLoading();			
@@ -228,7 +228,8 @@
 						xs.push({
 							name:'差异程度【欧式距离】',
 							type:'bar',
-							data:datas
+							data:datas,
+							barGrap:'1%'
 						});
 						//$("#points").css("height","'"+j*100+"px'");
 					}
@@ -257,7 +258,7 @@
 						grid: {
 							top: 50,
 							width: '90%',
-							bottom: '45%',
+							bottom: '2%',
 							left: 10,
 							containLabel: true
 						},
@@ -291,11 +292,11 @@
 						singleAxis: [],
 						series: []
 					};
-					var clucount = j-1;
+					
 					echarts.util.each(categorys,function(day, idx) {
 						poption.title.push({
 							textBaseline: 'middle',
-							top: (idx + 0.4) * 100 / clucount + '%',
+							top: (idx + 0.4) * 100 / j + '%',
 							text: day,
 							textStyle: {
 								color: '#333333',
@@ -307,8 +308,8 @@
 							left: 150,
 							type: 'value',
 							boundaryGap: false,
-							top: (idx * 100 / clucount + 5) + '%',
-							height: (100 / clucount - 5) + '%',
+							top: (idx * 100 / j + 5) + '%',
+							height: (100 / j - 5) + '%',
 							axisLabel: {
 								interval: 2
 							}

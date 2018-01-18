@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.hadoop.conf.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +66,7 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
         	String line = "";
         	while((line = buf.readLine()) != null){
         		msglist.add(line);
-            	logger.info(line);
+            	//logger.info(line);
         	}
         	res.put("distances", msglist);
         	res.put("centers", centers);

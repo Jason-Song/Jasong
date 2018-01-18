@@ -21,4 +21,6 @@ public interface ProductDataService {
     
     public String uploadToHdfs(InputStream is) throws ServiceException;
     
+	public List<Map<String,String>> sceneList() throws ServiceException;
+
 }

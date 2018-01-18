@@ -1,9 +1,8 @@
 package com.good.market.controller;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -19,6 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -26,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.good.comm.FileUtils;
 import com.good.comm.web.WebPageResult;
 import com.good.comm.web.WebRequest;
 import com.good.db.IPage;
@@ -34,9 +39,7 @@ import com.good.market.service.ProductDataService;
 import com.good.sys.MsgConstants;
 import com.good.sys.WebUtils;
 import com.good.sys.bean.LogonInfo;
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
+
 
 @Controller
 @RequestMapping("/market/rule")
@@ -46,9 +49,9 @@ public class ProductDataController {
     @Autowired
     private ProductDataService productDataService;
     
-    @RequestMapping(value = "/ruleCalcu", method = { RequestMethod.GET})
+    @RequestMapping(value = "/productData", method = { RequestMethod.GET})
     public String toPage() throws Exception {
-        return "/rule/ruleCalcu";
+        return "/rule/productData";
     }
     
 	@SuppressWarnings("unchecked")
@@ -84,62 +87,9 @@ public class ProductDataController {
 		return ret;
 	}
     
-    @RequestMapping(value = "/predict", method = { RequestMethod.POST, RequestMethod.GET })
+    @RequestMapping(value = "/productDataAdd", method = { RequestMethod.POST, RequestMethod.GET })
     @ResponseBody
-    public WebPageResult check(WebRequest wr, HttpServletRequest request) throws Exception {
-        WebPageResult ret = new WebPageResult();
-        LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
-        try {
-//        	Map<String,String> outmap = manualScreenService.getApiForHttp(linfo.getOperator(),request);
-//    		if(outmap==null || outmap.isEmpty())ret.setMsg(WebServicePo.WEB_ERROR);
-//    		else{
-//    			if(Integer.parseInt(outmap.get("retcode"))>0 && "0".equals(outmap.get("ErrorCode"))){
-//    				manualScreenService.updAssignTo(linfo.getOperator(),outmap.get("systemId"));
-//    			}
-//    			ret.setData(outmap);
-//    		}
-            JSch jsch = new JSch();
-            String pubKeyPath = "C:/Users/ASUS/.ssh/id_rsa";
-            jsch.addIdentity(pubKeyPath);
-
-            String username = "hadoop";
-            String host = "CDH1";
-            Session session=jsch.getSession(username, host, 22);//为了连接做准备
-            session.setConfig("StrictHostKeyChecking", "no");
-            session.connect();
-            String command = "ls";
-//          Channel channel=session.openChannel("shell");
-            ChannelExec channel=(ChannelExec)session.openChannel("exec");
-            channel.setCommand(command);
-
-
-//          channel.setInputStream(System.in);
-//          channel.setOutputStream(System.out);
-//          InputStream in=channel.getInputStream();
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(channel.getInputStream()));
-
-            channel.connect();
-
-            String msg;
-
-            while((msg = in.readLine()) != null){
-                System.out.println(msg);
-            }
-            channel.disconnect();
-            session.disconnect();
-        
-       	} catch (Exception e) {
-            logger.error(MsgConstants.E0000, e);
-            ret.setRetcode(MsgConstants.E0000);
-        }
-        return ret;
-    }
-    
-    
-    @RequestMapping(value = "/batchScreenAdd", method = { RequestMethod.POST, RequestMethod.GET })
-    @ResponseBody
-    public WebPageResult batchScreenAdd(WebRequest wr, HttpServletRequest request) throws Exception {
+    public WebPageResult productDataAdd(WebRequest wr, HttpServletRequest request) throws Exception {
 		WebPageResult ret = new WebPageResult();
 		InputStream is = null;
 		DiskFileItemFactory disk = new DiskFileItemFactory();
@@ -161,12 +111,14 @@ public class ProductDataController {
 			productData.setFileSize(String.valueOf(fileSize));
 			productData.setUnit(fieldlist.get("unit"));
 			productData.setFileType(fieldlist.get("fileType"));
+			productData.setScene(Integer.parseInt(fieldlist.get("scene")));
 			//预留扩展字段
 			productData.setExtra("");
 			productData.setFileDesc(fieldlist.get("fileDesc"));
 			is = fileinfo.getInputStream();
-			String filePos = productDataService.uploadToHdfs(is);
-			productData.setFilePos(filePos);
+			String hdfsName = productDataService.uploadToHdfs(is);
+			productData.setHdfsName(hdfsName);
+			productData.setModel(0);
 			productDataService.addProductData(linfo.getOperator(), productData);
 			ret.setMsg("训练数据文件上传成功！");
 		} catch(IOException e){
@@ -186,11 +138,25 @@ public class ProductDataController {
 		return ret;
     }
     
-    @RequestMapping(value = "/productDataUpload", method = { RequestMethod.POST, RequestMethod.GET })
+    @RequestMapping(value = "/downTrainFile", method = {RequestMethod.POST, RequestMethod.GET})
+    public ResponseEntity<byte[]> downTrainFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String fileName = request.getServletContext().getRealPath("/template/sample_train_data.txt");
+        File file = new File(fileName);
+        HttpHeaders headers = new HttpHeaders();
+        String fileNameN = new String("sample_train_data.txt".getBytes("UTF-8"), "iso-8859-1");// 为了解决中文名称乱码问题
+        headers.setContentDispositionFormData("attachment", fileNameN);
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return new ResponseEntity<byte[]>(FileUtils.getFileContent(file), headers, HttpStatus.CREATED);
+    }
+    
+    @RequestMapping(value = "/sceneList", method = { RequestMethod.POST, RequestMethod.GET })
     @ResponseBody
-    public WebPageResult upload(WebRequest wr, HttpServletRequest request) throws Exception {
-
-    	return null;
+    public WebPageResult sceneList(WebRequest wr, HttpServletRequest request) throws Exception {
+    	List<Map<String,String>> list = productDataService.sceneList();
+    	WebPageResult ret = new WebPageResult(list);
+    	ret.setData(list);
+    	
+    	return ret;
     }
     
     @InitBinder

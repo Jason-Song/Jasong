@@ -64,7 +64,7 @@ public class ProductDataServiceImpl implements ProductDataService {
         String now = TimeTool.paserString(nowDate, "yyyy-MM-dd HH:mm:ss");
         
         try {
-            Integer userId = userDao.list(oper.getUserID());
+            String userId = oper.getUserID();
             if(userId != null){
             	productData.setUploadUser(userId);
             	productData.setUploadTime(now);
@@ -81,15 +81,22 @@ public class ProductDataServiceImpl implements ProductDataService {
             logService.addAuditLog(oper, BizType.EM, "addProductData", "新增业务数据", productData.getFileName(), FunctionType.INSERT, result);
         }
     }
-
+    
+    @Override	
 	public String uploadToHdfs(InputStream is) throws ServiceException {
 		Configuration conf = new Configuration();
     	conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
-		String root = paramDao.getParams("TRAIN_PREDICT_PATH", "EM").getParaValue();
+		String root = paramDao.getParams("PRODUCE_UPLOAD_PATH", "EM").getParaValue();
 		String hdfsName = RandomUtil.getRandomFileName();
 		//上传文件到HDFS
 		HdfsUtil.putToHDFS((FileInputStream)is, root + hdfsName, conf);
     	return hdfsName;
 	}
-   
+     
+    @Override	
+    public List<Map<String,String>> sceneList() throws ServiceException{
+    	List<Map<String,String>> scenes = productDataDao.sceneList();
+    	return scenes;
+    }
+    
 }

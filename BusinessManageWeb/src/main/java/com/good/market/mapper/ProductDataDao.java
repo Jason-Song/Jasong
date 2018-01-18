@@ -15,4 +15,6 @@ public interface ProductDataDao {
         
     public void insertProductData(ProductDataPo productData);
     
+    public List<Map<String,String>> sceneList();
+    
 }

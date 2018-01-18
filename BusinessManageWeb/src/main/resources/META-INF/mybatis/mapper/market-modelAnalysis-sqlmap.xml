@@ -44,6 +44,18 @@
         </where>
         <if test="condition.orders != null " > ORDER BY ${condition.orders}</if>
     </select>
-
+    
+   <select id="getModelData" resultType="java.util.Map" parameterType="java.lang.Integer">
+		select TRAIN_NO as TRAIN,TEST_NO as TEST,CLASS_NO as CLASSNO,MATRIX as MATRIX,MODEL_TREE as TREE,TRAIN_MODEL as MODEL from T_PREDICT_INDEX where file_id=#{fileId}
+    </select>
+    
+    <select id="getLineData" resultType="java.lang.String" parameterType="java.lang.String">
+		select ACCURACY from T_PREDICT_INDEX where FILE_ID=#{fileId}
+    </select>
+    
+    <select id="getSelectData" resultType="java.util.Map">
+		select id,(id||'['||file_name||']') as idAndName from T_PRODUCT_DATA
+    </select>
+    
 </mapper>
 

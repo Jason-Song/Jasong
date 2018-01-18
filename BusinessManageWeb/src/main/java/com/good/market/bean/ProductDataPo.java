@@ -15,9 +15,9 @@ public class ProductDataPo implements Serializable {
 	 */
 	private String fileName;
 	/**
-	 * 文件位置
+	 * HDFS文件名
 	 */
-	private String filePos;
+	private String hdfsName;
 	/**
 	 * 文件类型
 	 */
@@ -33,6 +33,18 @@ public class ProductDataPo implements Serializable {
 	/**
 	 * 扩展字段
 	 */
+	private Integer scene;
+	/**
+	 * 扩展字段
+	 */
+	private Integer status;
+	/**
+	 * 模型类型
+	 */
+	private Integer model;
+	/**
+	 * 扩展字段
+	 */
 	private String extra;
 	/**
 	 * 部门
@@ -41,11 +53,7 @@ public class ProductDataPo implements Serializable {
     /**
      * 上传用户
      */
-	private Integer uploadUser;
-    /**
-     * 上传用户名
-     */
-    private String upUserName;
+	private String uploadUser;
 	/**
 	 * 上传时间
 	 */
@@ -62,6 +70,12 @@ public class ProductDataPo implements Serializable {
 	}
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+	public String getHdfsName() {
+		return hdfsName;
+	}
+	public void setHdfsName(String hdfsName) {
+		this.hdfsName = hdfsName;
 	}
 	public String getFileType() {
 		return fileType;
@@ -87,10 +101,10 @@ public class ProductDataPo implements Serializable {
 	public void setExtra(String extra) {
 		this.extra = extra;
 	}
-	public Integer getUploadUser() {
+	public String getUploadUser() {
 		return uploadUser;
 	}
-	public void setUploadUser(Integer uploadUser) {
+	public void setUploadUser(String uploadUser) {
 		this.uploadUser = uploadUser;
 	}
 	public String getUploadTime() {
@@ -105,17 +119,23 @@ public class ProductDataPo implements Serializable {
 	public void setUnit(String unit) {
 		this.unit = unit;
 	}
-	public String getUpUserName() {
-		return upUserName;
+	public Integer getScene() {
+		return scene;
 	}
-	public void setUpUserName(String upUserName) {
-		this.upUserName = upUserName;
+	public void setScene(Integer scene) {
+		this.scene = scene;
 	}
-	public String getFilePos() {
-		return filePos;
+	public Integer getModel() {
+		return model;
 	}
-	public void setFilePos(String filePos) {
-		this.filePos = filePos;
+	public void setModel(Integer model) {
+		this.model = model;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 }

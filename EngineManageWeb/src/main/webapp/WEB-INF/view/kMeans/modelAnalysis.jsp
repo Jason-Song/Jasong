@@ -150,7 +150,7 @@
 				"url": "modelApply", 
 				"data":	{
 					"predictId":$("#predictId").val(),
-					"modelName":"KMeans",
+					"modelName":"K均值聚类模型",
 					"modelNo":$("#s_modelNo").val()
 				},	
 				"success" : function(data) { 
@@ -281,7 +281,7 @@
 						grid: {
 							top: 50,
 							width: '90%',
-							bottom: '45%',
+							bottom: '2%',
 							left: 10,
 							containLabel: true
 						},
@@ -314,11 +314,10 @@
 						singleAxis: [],
 						series: []
 					};
-					clucount=j-1;
 					echarts.util.each(categorys,function(day, idx) {
 						poption.title.push({
 							textBaseline: 'middle',
-							top: (idx + 0.4) * 100 / clucount + '%',
+							top: (idx + 0.4) * 100 / j + '%',
 							text: day,
 							textStyle: {
 								color: '#333333',
@@ -330,8 +329,8 @@
 							left: 150,
 							type: 'value',
 							boundaryGap: false,
-							top: (idx * 100 / clucount + 5) + '%',
-							height: (100 / clucount - 5) + '%',
+							top: (idx * 100 / j + 5) + '%',
+							height: (100 / j - 5) + '%',
 							axisLabel: {
 								interval: 2
 							}

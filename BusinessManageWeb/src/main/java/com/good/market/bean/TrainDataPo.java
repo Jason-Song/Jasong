@@ -33,6 +33,18 @@ public class TrainDataPo implements Serializable {
 	/**
 	 * 扩展字段
 	 */
+	private Integer scene;
+	/**
+	 * 扩展字段
+	 */
+	private Integer status;
+	/**
+	 * 模型类型
+	 */
+	private Integer model;
+	/**
+	 * 扩展字段
+	 */
 	private String extra;
 	/**
 	 * 部门
@@ -41,11 +53,7 @@ public class TrainDataPo implements Serializable {
     /**
      * 上传用户
      */
-	private Integer uploadUser;
-    /**
-     * 上传用户名
-     */
-    private String upUserName;
+	private String uploadUser;
 	/**
 	 * 上传时间
 	 */
@@ -93,10 +101,10 @@ public class TrainDataPo implements Serializable {
 	public void setExtra(String extra) {
 		this.extra = extra;
 	}
-	public Integer getUploadUser() {
+	public String getUploadUser() {
 		return uploadUser;
 	}
-	public void setUploadUser(Integer uploadUser) {
+	public void setUploadUser(String uploadUser) {
 		this.uploadUser = uploadUser;
 	}
 	public String getUploadTime() {
@@ -111,11 +119,23 @@ public class TrainDataPo implements Serializable {
 	public void setUnit(String unit) {
 		this.unit = unit;
 	}
-	public String getUpUserName() {
-		return upUserName;
+	public Integer getScene() {
+		return scene;
 	}
-	public void setUpUserName(String upUserName) {
-		this.upUserName = upUserName;
+	public void setScene(Integer scene) {
+		this.scene = scene;
+	}
+	public Integer getModel() {
+		return model;
+	}
+	public void setModel(Integer model) {
+		this.model = model;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 }

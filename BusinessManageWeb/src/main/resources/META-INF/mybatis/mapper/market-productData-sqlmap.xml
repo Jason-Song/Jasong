@@ -8,10 +8,12 @@
     <resultMap id="productDataMap" type="com.good.market.bean.ProductDataPo">
         <result property="id" column="ID"/>
         <result property="fileName" column="FILE_NAME"/>
-        <result property="filePos" column="FILE_POS"/>
+        <result property="hdfsName" column="HDFS_NAME"/>
         <result property="fileType" column="FILE_TYPE"/>
         <result property="fileSize" column="FILE_SIZE"/>
         <result property="fileDesc" column="FILE_DESC"/>
+        <result property="scene" column="SCENE"/>
+        <result property="status" column="STATUS"/>
         <result property="extra" column="EXTRA"/>
         <result property="unit" column="UNIT"/>
         <result property="uploadUser" column="UPLOAD_USER"/>
@@ -21,23 +23,24 @@
     <select id="listProductData" resultMap="productDataMap">
         select  T.ID			as id,
         		T.FILE_NAME   	as fileName,
-        		T.FILE_POS 		as filePos,
+        		T.HDFS_NAME 	as hdfsName,
         		T.FILE_TYPE 	as fileType,
         		T.FILE_SIZE	  	as fileSize,
         		T.FILE_DESC   	as fileDesc,
         		T.EXTRA   		as extra,
-        		C.REFDESC 		as unit,
+        		T.STATUS   		as status,
+        		T.SCENE			as scene,
         		T.UPLOAD_USER   as uploadUser,
-        		U.NAME		   	as upUserName,
         		T.UPLOAD_TIME   as uploadTime
         from T_PRODUCT_DATA T
-        left join T_CODE_DTL C on T.UNIT = C.REFCODE
-        left join T_USER U on T.UPLOAD_USER = U.USERID
         <where>1=1
         <!--C.REFMASTERCODE = 'SITE_UNIT'-->
+            <if test="condition.scene != null and condition.scene != ''"> and T.SCENE = #{condition.scene} </if>
+            <if test="condition.status != null and condition.status != ''"> and T.STATUS = #{condition.status} </if>
+            <if test="condition.model != null and condition.model != ''"> and T.MODEL = #{condition.model} </if>
             <if test="condition.unit != null and condition.unit != ''"> and T.UNIT = #{condition.unit} </if>
             <if test="condition.fileName != null and condition.fileName != ''"> and T.FILE_NAME like '%${condition.fileName}%' </if>
-            <if test="condition.filePos != null and condition.filePos != ''"> and T.FILE_POS like '%${condition.filePos}%' </if>
+            <if test="condition.hdfsName != null and condition.hdfsName != ''"> and T.HDFS_NAME like '%${condition.hdfsName}%' </if>
             <if test="condition.fileType != null and condition.fileType != ''"> and T.FILE_TYPE = ${condition.fileType} </if>
             <if test="condition.fileDesc != null and condition.fileDesc != ''"> and T.FILE_DESC = like '%${condition.fileDesc}%' </if>
             <if test="condition.sizeMin != null and condition.sizeMin != ''"> and T.FILE_SIZE &gt;= #{condition.sizeMin} </if>
@@ -49,9 +52,19 @@
         <if test="condition.orders != null " > ORDER BY ${condition.orders}</if>
     </select>
     
+    <select id="unitList" resultType="java.util.HashMap">
+    	select REFCODE,REFDESC 
+    	from T_CODE_DTL where REFMASTERCODE = 'SITE_UNIT'
+    </select>
+    
+    <select id="sceneList" resultType="java.util.HashMap">
+    	select ID,NAME 
+    	from T_SCENE 
+    </select>
+    
 	<insert id="insertProductData" useGeneratedKeys="false" keyProperty="id" parameterType="com.good.market.bean.ProductDataPo" > 
-        insert into T_PRODUCT_DATA (ID,FILE_NAME,FILE_POS,FILE_TYPE,FILE_SIZE,FILE_DESC,EXTRA,UNIT,UPLOAD_USER,UPLOAD_TIME)
-        values(SEQ_T_UPLOAD_HDFS.nextval ,#{fileName,jdbcType=VARCHAR},#{filePos,jdbcType=VARCHAR},#{fileType,jdbcType=VARCHAR},#{fileSize,jdbcType=VARCHAR},#{fileDesc,jdbcType=VARCHAR},#{extra,jdbcType=VARCHAR},#{unit,jdbcType=VARCHAR},#{uploadUser,jdbcType=INTEGER},#{uploadTime,jdbcType=CHAR})
+        insert into T_PRODUCT_DATA (ID,FILE_NAME,HDFS_NAME,FILE_TYPE,FILE_SIZE,FILE_DESC,MODEL,SCENE,EXTRA,UNIT,UPLOAD_USER,UPLOAD_TIME)
+        values(SEQ_T_PRODUCT_DATA.nextval ,#{fileName,jdbcType=VARCHAR},#{hdfsName,jdbcType=VARCHAR},#{fileType,jdbcType=VARCHAR},#{fileSize,jdbcType=VARCHAR},#{fileDesc,jdbcType=VARCHAR},#{model,jdbcType=INTEGER},#{scene,jdbcType=INTEGER},#{extra,jdbcType=VARCHAR},#{unit,jdbcType=VARCHAR},#{uploadUser,jdbcType=CHAR},#{uploadTime,jdbcType=CHAR})
     </insert>
 
 </mapper>

@@ -1,10 +1,10 @@
 package com.good.utils;
 
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -43,7 +43,7 @@ public class HdfsUtil {
 	 * @param conf
 	 * @return
 	*/
-	public static boolean putToHDFS(FileInputStream src , String dst , Configuration conf){
+	public static boolean putToHDFS(InputStream src , String dst , Configuration conf){
 		Path dstPath = new Path(dst) ;
 
 		try {
@@ -72,16 +72,16 @@ public class HdfsUtil {
 	 * @param conf
 	 * @return
 	*/
-	public static boolean getFromHDFS(String src , String dst , Configuration conf){
-		Path dstPath = new Path(dst) ;
+	public static InputStream getFromHDFS(String dst , Configuration conf){
+		String filePath = dst+"/part-00000";
+		InputStream in = null;
 		try{
-			FileSystem dhfs = dstPath.getFileSystem(conf) ;
-			dhfs.copyToLocalFile(false, new Path(src), dstPath) ;
+			FileSystem dhfs = FileSystem.get(URI.create(filePath),conf);
+			in = dhfs.open(new Path(filePath));
 		}catch(IOException ie){
-			ie.printStackTrace() ;
-			return false ;
-		}
-		return true ;
+			ie.printStackTrace();		
+		} 
+		return in;
 	}
 
 	 

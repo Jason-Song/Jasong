@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.good.market.mapper.ProduceModelDao">
+
+	<select id="produceModelList" resultType="java.util.HashMap">
+		select MODEL_TYPE,MODEL_NAME from T_PRODUCT_MODEL
+    </select>
+    
+	<select id="getProductData" resultType="java.util.HashMap">
+		select HDFS_NAME,SCENE from T_PRODUCT_DATA WHERE ID=#{fileId}
+    </select>
+
+</mapper>
+

@@ -58,10 +58,24 @@
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-md-4">
-							<label class="control-label">模型类型</label>
-							<select class="form-control" id="s_modelType" name="s_modelType"></select>
+							<input id='hdfsName' class="hidden"></input>		
+							<input id='sceneId' class="hidden"></input>	
+							<label class="control-label">业务数据</label>
+							<select class="form-control" id="s_productData" name="s_productData"></select>
 						</div>
-					</div>
+						<div class="col-md-4">
+							<label class="control-label">模型类型</label>
+							<select class="form-control" id="s_produceModel" name="s_produceModel"></select>
+						</div>
+						<div class="col-md-4">
+						   <div class="btn-group " data-toggle="buttons">
+								<div style="width:50px;height:27px;" ></div>
+								<label class="btn btn-blue" id="calcubutton">
+									<input type="checkbox">计算</input>
+								</label>
+						   </div>
+						</div>
+					</div>						
 				</div>
 				<div class="panel-body-">
 					<div class="row">
@@ -115,366 +129,81 @@
 <script src="../../assets/js/echarts/echarts.min.js"></script>
 <script src="../../assets/js/echarts/macarons.js"></script>
 
-	<s:enums keys="market_modelType"></s:enums>
 	<script type="text/javascript">
-		$(function() {
-			//下拉框数据绑定
-			WebUtils.bindSelect('s_modelType', 'market_modelType', true);
+	$(function(){
+		//获取文件ID动态菜单
+		$.ajax({    
+		    "type":'post',    
+		    "url": "getSelectData",  
+		    "success" : function(data) {
+			    var cond_list = data.data;
+			    console.log(cond_list);
+			    var opts = "";
+			    for(var cond_index = 0;cond_index < cond_list.length;cond_index++){
+			    	var cond = cond_list[cond_index]; 
+			    	opts += "<option value='"+cond.ID+"'>"+cond.IDANDNAME+"</option>";  
+			    }
+			    $("#s_productData").append("<option value=''></option>"+opts);
+			   // $("#condIds").append(opts);
+		     }    
 		});
-	</script>
-	<script type="text/javascript">
-	
-	
-	$(function () {
-		$("#s_condIds").change(function() {
-	            var arr = [];
-	        	$.ajax({
-	        		type:"post",
-	        		data:"fileId="+$("#s_condIds").val(),
-	        		url:"modelDataList",
-	        		dataType:"json",
-	        		success:function(dt){
-	       				if(dt.data!=null){
-	       					$(dt.data).each(function(index,item){
-	                            arr.push({
-	                            	name:item.name,
-	                            	value:item.num
-	                            });
-	                        });
-	           				//chart.series[0].setData(arr);
-	       				}
-	       				getModelIndex(arr);
-
-	       				var classno = dt.data[0].classno;
-	       				var matab = "<table><tr><td></td><td></td><td colspan='2'>预测</td><td></td></tr><tr><td></td><td></td><td>1</td><td>2</td></tr>";
-	       				for(var i=0;i<classno;i++){
-	       					if(i==0)matab += "<table><tr><td></td><td></td><td colspan='"+classno+"'>预测</td><td></td></tr><tr><td></td><td></td><td>1</td><td>2</td></tr>";
-	       				}
-	       				
-	       				var treestr = dt.data[0].tree;
-	       				//$("#matrix").html(dt.data[0].matrix);
-	       				$("#tree").html(treestr);
-	       				
-	       			    var myChart = echarts.init(document.getElementById('treeModel'), 'macarons');  
-	       				myChart.showLoading();
-	       				var trees = parseTree(treestr," Tree ");
-						var treedepths = treestr.split(" Tree ");
-	       			    var optseries = [];
-	       			    var legendata = [];
-	       			 	var treeno = trees.length;
-	       			 	var step = 100/treeno;
-	       			    for(var k=0;k<treeno;k++){
-	       			    	var ifs = treedepths[k+1].split(" Else ");
-	       			    	var ifno = ifs[0].split(" If ");
-	       			    	var trdepth = ifno.length+1;
-	       			    	var treename = "Tree"+k;
-	       			    	legendata.push({
-       				            name: treename,
-       				            icon: 'rectangle'
-       				        });
-	       			    	optseries.push({
-       				            type: 'tree',
-       				            name: treename,
-       				            data: [trees[k]],
-
-       				            top: '11%',
-       				            left: (k*step+12)+'%',
-       				            bottom: '20%',
-       				            right: ((treeno-1-k)*step+7)+'%',
-       				            
-       			                initialTreeDepth: trdepth,
-
-       				            symbolSize: 7,
-       			                orient: 'vertical',
-
-       				            label: {
-       				                normal: {
-       				                    position: 'top',
-       				                    verticalAlign: 'middle',
-       				                    rotate:-90,
-       				                    align: 'right'
-       				                }
-       				            },
-
-       				            leaves: {
-       				                label: {
-       				                    normal: {
-       				                        position: 'bottom',
-      				                        verticalAlign: 'middle',
-      				                        rotate:-90,
-       				                        align: 'left'
-       				                    }
-       				                }
-       				            },
-
-       				            expandAndCollapse: true,
-
-       				            animationDuration: 550,
-       				            animationDurationUpdate: 750
-
-       				        });
-	       			    }
-	       				myChart.hideLoading();
-
-	       				myChart.setOption(option = {
-       						title : {
-       	   				        text: '生成树',
-       	   				    },
-	       				    tooltip: {
-	       				        trigger: 'item',
-	       				        triggerOn: 'mousemove'
-	       				    },
-	       				    legend: {
-	       				        top: '8%',
-	       				        left: '0%',
-	       				        orient: 'vertical',
-	       				        data:legendata,
-	       				        borderColor: '#c23531'
-	       				    },
-	       				    toolbox: {
-	       				        show : true,
-	       				        feature : {
-	       				            mark : {show: true},
-	       				            dataView : {show: true, readOnly: false},
-	       				            restore : {show: true},
-	       				            saveAsImage : {show: true}
-	       				        }
-	       				    },
-	       				    series:optseries
-	       				});
-	       				loadList();
-	        		}
-	        	});
-        }); 
+	    $('#s_productData').select2({  
+            placeholder: "文件Id[文件name]",  
+            allowClear: true  
+        });
+		$("#s_productData").on("change",function(e){
+			$.ajax({    
+				"type":'get',    
+				"url": "getProductData", 
+				"data":	"fileId="+$("#s_productData").val(),	
+				"success" : function(data) { 
+					$("#hdfsName").val(data.data.HDFS_NAME);
+					$("#sceneId").val(data.data.SCENE);
+				 }    
+			});
+		});
+		$.ajax({    
+			"type":'get',    
+			"url": "produceModelList", 
+			"success" : function(data) { 
+				var model_list = data.data; 
+				var opts = "";
+				for(var model_index = 0;model_index < model_list.length;model_index++){
+					var model = model_list[model_index]; 
+					opts += "<option value='"+model.MODEL_TYPE+"'>"+model.MODEL_NAME+"</option>";  
+				}
+				$("#s_produceModel").append(opts);
+				//$("#s_produceModel").val(model_list[0]).trigger('change');
+			 }    
+		});
+		$('#s_produceModel').select2({  
+			placeholder: "选择模型",  
+			allowClear: true  
+		});	
+		$("#calcubutton").click(function(){  
+			var fileId = $("#s_productData").val();
+			var hdfsName = $("#hdfsName").val();
+			var scene = $("#sceneId").val();
+			if(fileId!=""&&hdfsName!=""&&scene!=""){
+				$.ajax({    
+					"type":'post',    
+					"url": "modelPredict", 
+					"dataType":"json",
+					"data":	{
+						"fileId":$("#s_productData").val(),
+						"hdfsName":$("#hdfsName").val(),
+						"sceneId":$("#sceneId").val()
+					},	
+					"success" : function(data) { 
+						alert(data.msg);
+					}    
+				});
+			}else{
+				parent.WebUtils.alert("请选择数据源和模型信息！");
+			}
+		}); 
 	});
 	
-	//解析随机森林文本
-	function parseTree(treestr,str){
-		var treearr=[];
-		if(treestr.indexOf(str)>=0){
-			var trees = treestr.split(str);
-
-			if(str==" Tree "){	   				
-				for(var j=0;j<trees.length-1;j++){
-					treearr[j] = new Object();
-					var splitstr = trees[j+1];
-					var nodes = splitstr.split(":");
-					treearr[j].name = "Tree"+nodes[0];
-					if(splitstr.indexOf(" If (feature ")>=0)treearr[j].children=parseTree(splitstr," If (feature ");
-				}
-			}else if(str==" If (feature "){
-				var ifeas = trees[1].split(" ");
-				var ifstr = " If (feature "+ifeas[0];
-				var ifarr = treestr.split(ifstr);
-				var splitstr = ifarr[1];
-				
-				var elsestr = " Else (feature "+ifeas[0];
-				var elseno = splitstr.indexOf(elsestr);
-				if(elseno>=0){
-					var ifsplitstrs = splitstr.split(elsestr);
-					var ifsplitstr = ifsplitstrs[0];
-				}else var ifsplitstr = splitstr;
-
-				treearr[0] = ifelseobj(elseno,ifsplitstr,ifstr,ifeas[0],0);
-				treearr[1] = ifelseobj(elseno,splitstr,elsestr,ifeas[0],1);
-			}
-		}else{
-			treearr[0] = new Object();
-			var predicts = treestr.split(" Predict: ");
-			treearr[0].name = "Predict:"+predicts[1];
-			treearr[0].value = "Predict:"+predicts[1];
-		}
-		return treearr;
-	}
-	
-	function ifelseobj(elseno,splitstr,elsestr,code,pos){
-		var treearr=new Object();
-		if(elseno>=0){
-			var subifs=splitstr.split(elsestr);
-			if(subifs.length>1||pos==0){
-				var subifarr = subifs[pos].split(")");
-				treearr.name = code+" "+subifarr[0];
-				treearr.children=parseTree(subifs[pos]," If (feature ");
-			}
-		}
-		return treearr;
-	}
-	
-	function getModelIndex(arr){
-		$.ajax({
-    		type:"post",
-    		url:"getLineData",
-    		data:"fileId="+$("#s_condIds").val(),
-    		dataType:"json",
-    		success:function(dt){    			
-   			    var myChart = echarts.init(document.getElementById('cont'), 'macarons');  
-   				myChart.showLoading();
-    			if(dt.data!=null){
-    				var ys = [];
-    				var xs = [];
-    				var j = 0;
-    				for(var i in dt.data){
-    					if(j==0){
-    						var yno = dt.data[i].length
-    						for(var k=yno-1;k>=0;k--){
-    							ys.push(k);
-    						}
-    					}
-           				xs.push({
-           					name:i,
-           					type:'bar',
-           					data:dt.data[i]
-           				});
-           				j++;
-           			}
-    			}
-    	        xs.push({
-    	            name: '样本分类数',
-    	            type: 'pie',
-    	            radius : '40%',
-    	            center: ['75%', '40%'],
-    	            label: {
-    	                normal: {
-    	                    formatter: '  {b|{b}：}{c}  {per|{d}%}  ',
-    	                    backgroundColor: '#eee',
-    	                    borderColor: '#aaa',
-    	                    borderWidth: 1,
-    	                    borderRadius: 4,
-    	                    rich: {
-
-    	                        b: {
-    	                            fontSize: 16,
-    	                            lineHeight: 33
-    	                        },
-    	                        per: {
-    	                            color: '#eee',
-    	                            backgroundColor: '#334455',
-    	                            padding: [2, 4],
-    	                            borderRadius: 2
-    	                        }
-    	                    }
-    	                }
-    	            },
-    	            data:arr,
-    	            itemStyle: {
-    	                emphasis: {
-    	                    shadowBlur: 10,
-    	                    shadowOffsetX: 0,
-    	                    shadowColor: 'rgba(0, 0, 0, 0.5)'
-    	                }
-    	            }
-    	        });
-   				myChart.hideLoading();
-    			myChart.setOption(option = {
-   				    title : [{
-   				        text: '训练结果指标',
-   				    },{
-   				        text: '样本数分类统计',
-   				        x: '75%',
-   				        textAlign: 'center'
-   				    }],
-   				    tooltip : {
-   				        trigger: 'axis'
-   				    },
-   				    legend: {
-   				    	left:'20%',
-   				        data:['准确率','召回率','F1']
-   				    },
-   				    toolbox: {
-   				        show : true,
-   				        feature : {
-   				            mark : {show: true},
-   				            dataView : {show: true, readOnly: false},
-   				            magicType: {show: true, type: ['line', 'bar']},
-   				            restore : {show: true},
-   				            saveAsImage : {show: true}
-   				        }
-   				    },
-	   				grid: [{
-	   			        top: 50,
-	   			        width: '50%',
-	   			        bottom: '45%',
-	   			        left: 10,
-	   			        containLabel: true
-	   			    }, {
-	   			        top: '55%',
-	   			        width: '50%',
-	   			        bottom: 0,
-	   			        left: 20,
-	   			        containLabel: true
-	   			    }],
-   				    calculable : true,
-   				    xAxis : [
-   				        {
-   				            type : 'value',
-   				            position:'top',
-   				            boundaryGap : [0, 0.01]
-   				        }
-   				    ],
-   				    yAxis : [
-   				        {
-   				            type : 'category',
-   				            data : ys
-   				        }
-   				    ],
-   				    series :xs
-   				});	                    
-    		}
-    	});
-	};
-	
-    //加载列表function  
-    function loadList() {  
-      //  var columns = ['a','b'];  
-		    //var myChart = echarts.init(document.getElementById('matrix'), 'macarons');  
-        //gridData属性  
-        $('#matrix').datagrid(InitGrid = {  
-            nowrap: true,  
-            autoRowHeight: true,  
-            striped: true,  
-            singleSelect: true,  
-            // url: Init.url + '&cmd=list',  
-            //data: json.listshuju,  
-            fitColumns: true,  
-            idField: 'Id',  
-            pagination: true,  
-            rownumbers: true,  
-            pageSize: 10,  
-            pageList: [5, 10, 15, 20, 50, 80, 200],  
-            toolbar: toolbar,  
-            columns: [ [ {
-            	name : 'Id',
-            	title : '记录时间',
-            	align : 'left',
-            	headalign : 'center',
-            	width : '19%'
-            	}, {
-            	name : 'region',
-            	title : '最大可用内存',
-            	align : 'left',
-            	headalign : 'center',
-            	width : '20%'
-            	}, {
-            	name : 'SR',
-            	title : '已用内存总数',
-            	align : 'left',
-            	headalign : 'center',
-            	width : '20%'
-            	}, {
-            	name : 'ST',
-            	title : '空闲内存',
-            	align : 'left',
-            	headalign : 'center',
-            	width : '20%'
-            	}] ],
-                data: [{ "Id": 1, "region": "8号线", "SR": 100, "ST": 80 }, { "Id": 2, "region": " 北京亦庄线", "SR": 40, "ST": 80 }, { "Id": 3, "region": " 重庆3号线", "SR": 30, "ST": 80 }, { "Id": 4, "region": " 成都3号线", "SR": 10, "ST": 80 }, { "Id": 5, "region": " 大连线", "SR": 10, "ST": 80 }]
-            // fit: true,  
-            //border: true  
-        });
-
-        //创建数据表格  
-
-    } 
 	</script>
 </body>
 </html>
