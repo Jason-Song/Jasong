@@ -1,2 +1,0 @@
-# Jasong
-JasongEngine is a machine learning engine deployed in spark + hadoop cluster environment, which contains a lot of algorithms for machine learning, and provides the model training, model application to invoke methods, final results will be stored in the Oracle  database for web page display.
