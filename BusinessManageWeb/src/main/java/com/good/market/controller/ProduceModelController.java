@@ -52,7 +52,7 @@ public class ProduceModelController {
     @RequestMapping(value = "/produceModelList", method = { RequestMethod.POST, RequestMethod.GET })
     @ResponseBody
     public WebPageResult produceModelList(WebRequest wr, HttpServletRequest request) throws Exception {
-    	List<Map<String,String>> list = produceModelService.produceModelList();
+    	List<Map<String,String>> list = produceModelService.produceModelList(request.getParameter("sceneId"));
     	WebPageResult ret = new WebPageResult(list);
     	
     	return ret;

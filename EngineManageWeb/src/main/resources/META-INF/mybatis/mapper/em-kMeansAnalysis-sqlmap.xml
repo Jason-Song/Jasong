@@ -39,7 +39,8 @@
     </select>
     
     <select id="getModelId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
-		select ID from T_PRODUCE_MODEL where MODEL_TYPE=#{modelType}
+		select ID from T_PRODUCE_MODEL T
+		where T.MODEL_TYPE=#{condition.modelType} and T.SCENE=#{condition.sceneId}
     </select>
     
     <insert id="insertProduceModel" useGeneratedKeys="false" keyProperty="id" parameterType="com.good.em.bean.ProduceModelPo" > 

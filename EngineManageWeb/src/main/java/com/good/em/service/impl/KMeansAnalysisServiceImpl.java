@@ -89,6 +89,7 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
     	ExecuteResult result = ExecuteResult.UNKNOWN;
         Date nowDate = new Date();
         String now = TimeTool.paserString(nowDate, "yyyy-MM-dd HH:mm:ss");
+        Map<String,Object> condition=new HashMap<String,Object>();
         
     	String userId = oper.getUserID();
     	try {
@@ -104,8 +105,9 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
 	    		Session session=jsch.getSession(username, host, 22);//为了连接做准备
 	    		session.setConfig("StrictHostKeyChecking", "no");
 	    		session.connect();
+	    		int sceneId = produceModel.getScene();
 	    		String command = "cd " + wbRoot + "ml/script;./applyModel.sh KMeans " 
-	    					+ produceModel.getModelNo() + " " + produceModel.getScene();
+	    					+ produceModel.getModelNo() + " " + sceneId;
 	    		
 	    		ChannelExec channel=(ChannelExec)session.openChannel("exec");
 	    		logger.info(command);
@@ -123,8 +125,9 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
 	    		in.close();  
 	    		channel.disconnect();
 	    		session.disconnect();
-	    		
-	    		Integer modelId = kMeansAnalysisDao.getModelId(6);
+	    		condition.put("modelType", 6);
+	    		condition.put("sceneId", sceneId);
+	    		Integer modelId = kMeansAnalysisDao.getModelId(condition);
 	    		if(modelId != null && modelId.intValue()>0){
 	    			produceModel.setLastUpdUser(userId);
 	    			produceModel.setLastUpdTime(now);

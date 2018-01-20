@@ -73,11 +73,17 @@
 								<label class="btn btn-blue" id="calcubutton">
 									<input type="checkbox">计算</input>
 								</label>
+								<label class="btn btn-blue" id="resbutton">
+									<input type="checkbox">查看结果</input>
+								</label>
 						   </div>
 						</div>
 					</div>						
 				</div>
 				<div class="panel-body-">
+					<div class="row">		
+						<div class="col-md-12" id="calcuInfo"></div>
+					</div>
 					<div class="row">
 						<div class="col-md-12" id="cont" style="width: 1100px; height: 400px; margin: 0 auto"></div>
 					</div>
@@ -159,22 +165,24 @@
 				"success" : function(data) { 
 					$("#hdfsName").val(data.data.HDFS_NAME);
 					$("#sceneId").val(data.data.SCENE);
+					$("s_produceModel").html("");
+					$.ajax({    
+						"type":'get',    
+						"url": "produceModelList", 
+						"data":	"sceneId="+$("#sceneId").val(),
+						"success" : function(data) { 
+							var model_list = data.data; 
+							var opts = "";
+							for(var model_index = 0;model_index < model_list.length;model_index++){
+								var model = model_list[model_index]; 
+								opts += "<option value='"+model.MODEL_TYPE+"'>"+model.MODEL_NAME+"</option>";  
+							}
+							$("#s_produceModel").append("<option value=''></option>"+opts);
+							//$("#s_produceModel").val(model_list[0]).trigger('change');
+						 }    
+					});
 				 }    
 			});
-		});
-		$.ajax({    
-			"type":'get',    
-			"url": "produceModelList", 
-			"success" : function(data) { 
-				var model_list = data.data; 
-				var opts = "";
-				for(var model_index = 0;model_index < model_list.length;model_index++){
-					var model = model_list[model_index]; 
-					opts += "<option value='"+model.MODEL_TYPE+"'>"+model.MODEL_NAME+"</option>";  
-				}
-				$("#s_produceModel").append(opts);
-				//$("#s_produceModel").val(model_list[0]).trigger('change');
-			 }    
 		});
 		$('#s_produceModel').select2({  
 			placeholder: "选择模型",  
@@ -184,7 +192,11 @@
 			var fileId = $("#s_productData").val();
 			var hdfsName = $("#hdfsName").val();
 			var scene = $("#sceneId").val();
-			if(fileId!=""&&hdfsName!=""&&scene!=""){
+			var modelType = $("#s_produceModel").val();
+			if(fileId!=""&&hdfsName!=""&&scene!=""&&modelType!=""){
+				$("#calcubutton").removeClass("active");
+				$("#calcubutton").addClass("disabled");
+				$("#calcuInfo").html("<div style='text-align:center;'><img src='../../images/loading.gif' /></div>");
 				$.ajax({    
 					"type":'post',    
 					"url": "modelPredict", 
@@ -192,11 +204,25 @@
 					"data":	{
 						"fileId":$("#s_productData").val(),
 						"hdfsName":$("#hdfsName").val(),
-						"sceneId":$("#sceneId").val()
+						"sceneId":$("#sceneId").val(),
+						"modelType":$("#s_produceModel").val()
 					},	
 					"success" : function(data) { 
-						alert(data.msg);
-					}    
+						var msglist = data.data;
+						var msg="";
+						for(var i=0;i<msglist.length;i++){
+							msg+=msglist[i];
+						}
+						
+						$("#calcubutton").removeClass("disabled");
+						$("#calcubutton").addClass("active");
+						$("#calcuInfo").html("计算详情：<br />计算成功！<br />"+msg);
+					}, 
+					"error":function(e){
+	        			$("#calcubutton").removeClass("disabled");
+						$("#calcubutton").addClass("active");
+						$("#calcuInfo").html("计算详情：<br />计算超时！<br />"+e.data);
+	        		}					
 				});
 			}else{
 				parent.WebUtils.alert("请选择数据源和模型信息！");

@@ -18,7 +18,7 @@ public interface KMeansAnalysisDao {
     
     public Map<String,Object> sceneFileInfo(@Param("fileId") String fileId);
 	
-    public Integer getModelId(int modelType)throws Exception;
+    public Integer getModelId(@Param("condition") Map<String,Object> condition)throws Exception;
     
     public void insertProduceModel(ProduceModelPo produceModel)throws Exception;
     

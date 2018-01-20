@@ -17,7 +17,7 @@ public interface ProduceModelService {
     
     public List<String> modelPredict(HttpServletRequest request,Operator oper) throws ServiceException;
     	
-    public List<Map<String,String>> produceModelList();
+    public List<Map<String,String>> produceModelList(String sceneId);
     
     public Map<String,Object> getProductData(String fileId) throws ServiceException;
     

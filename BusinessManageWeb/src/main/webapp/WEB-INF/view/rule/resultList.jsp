@@ -21,6 +21,7 @@
 	<link rel="stylesheet" href="../../assets/css/xenon-components.css">
 	<link rel="stylesheet" href="../../assets/css/xenon-skins.css">
 	<link rel="stylesheet" href="../../assets/css/custom.css">
+	<link rel="stylesheet" href="../../assets/css/hotactlist.css">
 
 	<script src="../../assets/js/jquery-1.11.1.min.js"></script>
 	<style type="text/css">
@@ -44,26 +45,36 @@
 			</div>
 			<div class="panel panel-default collapse show" id="contentPic">
 				<div class="panel-heading">
-					<h3 class="panel-title">结果列表</h3>
-					<div class="panel-options">
-						<a href="#" data-toggle="panel">
-							<span class="collapse-icon">&ndash;</span>
-							<span class="expand-icon">+</span>
-						</a>
-						<a href="#" data-toggle="remove">
-							&times;
-						</a>
-					</div>
-				</div>
-				<div class="panel-body">
-					<div class="row">
-						<div class="col-md-4">
-							<label class="control-label">模型类型</label>
-							<select class="form-control" id="s_modelType" name="s_modelType"></select>
-						</div>
-					</div>
+					<h3 class="panel-title">预测结果列表</h3>
 				</div>
 				<div class="panel-body-">
+					<div class="row">
+						      <div class="hotact-list">
+          
+                
+					<ul class="item-col3 y-clear" style="list-style:none;">
+					
+					<li><a href="https://www.aliyun.com/chinaglobal/promotion/virtual2017" target="_blank">
+						<p class="title" >随机森林模型</p>
+						<p class="desc" >高维稀疏数据分析</p>
+						<p class="more">查看预测结果列表&gt;</p>
+						<div class="imgs">
+							<img src="https://img.alicdn.com/tfs/TB1gxeoQFXXXXXUXVXXXXXXXXXX-200-200.png" class="icon"><img src="https://img.alicdn.com/tfs/TB1m0KxQFXXXXayXFXXXXXXXXXX-200-200.png" class="hicon">
+						</div>
+					</a></li>
+					
+					<li><a href="https://promotion.aliyun.com/ntms/campus2017.html" target="_blank">
+						<p class="title" >K均值聚类模型</p>
+						<p class="desc" >简单聚类分析</p>
+						<p class="more">查看预测结果列表&gt;</p>
+						<div class="imgs">
+							<img src="https://img.alicdn.com/tfs/TB1QJGtQFXXXXaHXFXXXXXXXXXX-200-200.png" class="icon"><img src="https://img.alicdn.com/tfs/TB1auutQFXXXXaVXFXXXXXXXXXX-200-200.png" class="hicon">
+						</div>
+					</a></li></ul>
+				</div>
+						
+						
+					</div>
 					<div class="row">
 						<div class="col-md-12" id="cont" style="width: 1100px; height: 400px; margin: 0 auto"></div>
 					</div>

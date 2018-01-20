@@ -67,21 +67,29 @@ public class ProduceModelServiceImpl implements ProduceModelService {
 			String wbSpark = "";
     		if(sparkHome!=null) wbSpark = sparkHome.getParaValue()+"bin/";
     		String wbRoot = paramDao.getParams("WB_ROOT_PATH", "EM").getParaValue();
+    		
+    		int modelType = Integer.parseInt(request.getParameter("modelType"));
+    		String command = "";
+    		switch(modelType){
+    			case 6:
+    				command = "cd " + wbRoot + "ml/package/produce/KMeans;" + wbSpark 
+	        			+ "spark-submit --class com.testspark.WbKMeans KMeans.jar " + upRoot 
+	        			+ request.getParameter("hdfsName") + " " + preRoot + preName + " " 
+	        			+ request.getParameter("fileId") + " " + userId + " "
+	        			+ request.getParameter("sceneId")+" file://" + wbRoot;
+	    			break;
+    			default:
+    				break;
+    		}
+    		logger.info(command);
 
 			JSch jsch = new JSch();
-			
 			jsch.addIdentity(pubKeyPath);
     		Session session=jsch.getSession(username, host, 22);//为了连接做准备
     		session.setConfig("StrictHostKeyChecking", "no");
     		session.connect();
-    		String command = "cd " + wbRoot + "ml/package/produce/KMeans;" + wbSpark 
-    			+ "spark-submit --class com.testspark.WbKMeans KMeans.jar " + upRoot 
-    			+ request.getParameter("hdfsName") + " " + preRoot + preName + " " 
-    			+ request.getParameter("fileId") + " " + userId + " "
-    			+ request.getParameter("sceneId")+" file://" + wbRoot;
     		
     		ChannelExec channel=(ChannelExec)session.openChannel("exec");
-    		logger.info(command);
     		channel.setCommand(command);
     		
     		BufferedReader in = new BufferedReader(new InputStreamReader(channel.getInputStream()));
@@ -112,8 +120,8 @@ public class ProduceModelServiceImpl implements ProduceModelService {
     }
     
     @Override
-    public List<Map<String,String>> produceModelList(){
-    	return produceModelDao.produceModelList();
+    public List<Map<String,String>> produceModelList(String sceneId){
+    	return produceModelDao.produceModelList(sceneId);
     }
     
     public Map<String,Object> getProductData(String fileId) throws ServiceException{
