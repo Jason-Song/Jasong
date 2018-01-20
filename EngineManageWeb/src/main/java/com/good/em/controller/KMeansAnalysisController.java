@@ -1,6 +1,5 @@
 package com.good.em.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.good.comm.web.WebPageResult;
 import com.good.comm.web.WebRequest;
-import com.good.em.bean.ProductModelPo;
+import com.good.em.bean.ProduceModelPo;
 import com.good.em.service.KMeansAnalysisService;
 import com.good.em.service.ModelAnalysisService;
 import com.good.sys.MsgConstants;
@@ -70,13 +69,14 @@ public class KMeansAnalysisController {
 
 		LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
 		try{
-			ProductModelPo productModel = new ProductModelPo();
-			productModel.setModelName(request.getParameter("modelName"));
-			productModel.setModelType(6);
-			productModel.setPredictId(Integer.parseInt(request.getParameter("predictId")));
-			productModel.setModelNo(request.getParameter("modelNo"));
+			ProduceModelPo produceModel = new ProduceModelPo();
+			produceModel.setModelName(request.getParameter("modelName"));
+			produceModel.setModelType(6);
+			produceModel.setScene(Integer.parseInt(request.getParameter("sceneId")));
+			produceModel.setPredictId(Integer.parseInt(request.getParameter("predictId")));
+			produceModel.setModelNo(request.getParameter("modelNo"));
 			
-			List<String> msglist = kMeansAnalysisService.runApplyModel(productModel, linfo.getOperator());
+			List<String> msglist = kMeansAnalysisService.runApplyModel(produceModel, linfo.getOperator());
 			ret = new WebPageResult(msglist);
 			ret.setMsg("应用模型成功！");
 		}catch(Exception e){
@@ -104,6 +104,15 @@ public class KMeansAnalysisController {
 		}
 		return ret;
 	}
+	
+	@RequestMapping(value = "/sceneFileInfo", method = { RequestMethod.POST, RequestMethod.GET })
+    @ResponseBody
+    public WebPageResult sceneFileInfo(WebRequest wr, @RequestParam("fileId") String fileId) throws Exception {   	
+    	Map<String,Object> list = kMeansAnalysisService.sceneFileInfo(fileId);
+    	WebPageResult ret = new WebPageResult(list);
+    	
+    	return ret;
+    }
 	
     @RequestMapping(value = "/modelNoList", method = { RequestMethod.POST, RequestMethod.GET })
     @ResponseBody

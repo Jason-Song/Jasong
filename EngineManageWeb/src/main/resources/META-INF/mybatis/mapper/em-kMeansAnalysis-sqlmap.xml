@@ -20,6 +20,17 @@
     	</where>
     </select>
     
+    <select id="sceneFileInfo" resultType="java.util.HashMap">
+		select 	T.FILE_NAME AS fileName,
+				T.SCENE		AS sceneId,
+				S.NAME		AS sceneName
+		from T_TRAIN_DATA T
+		LEFT JOIN T_SCENE S ON S.ID=T.SCENE
+		<where> 
+			T.ID = #{fileId}
+    	</where>
+    </select>
+    
     <select id="modelNoList" resultType="java.lang.String">
     	select SUBSTR(TRAIN_MODEL,-22) AS MODELNO from T_KMEANS_INDEX T
     	<where> 
@@ -28,21 +39,22 @@
     </select>
     
     <select id="getModelId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
-		select ID from T_PRODUCT_MODEL where MODEL_TYPE=#{modelType}
+		select ID from T_PRODUCE_MODEL where MODEL_TYPE=#{modelType}
     </select>
     
-    <insert id="insertProductModel" useGeneratedKeys="false" keyProperty="id" parameterType="com.good.em.bean.ProductModelPo" > 
-        insert into T_PRODUCT_MODEL (ID,MODEL_TYPE,MODEL_NAME,MODEL_NO,PREDICT_ID,CREATE_USER,CREATE_TIME)
-        values(SEQ_T_PRODUCT_MODEL.nextval ,#{modelType,jdbcType=INTEGER},#{modelName,jdbcType=VARCHAR},#{modelNo,jdbcType=VARCHAR},#{predictId,jdbcType=INTEGER},#{createUser,jdbcType=CHAR},#{createTime,jdbcType=CHAR})
+    <insert id="insertProduceModel" useGeneratedKeys="false" keyProperty="id" parameterType="com.good.em.bean.ProduceModelPo" > 
+        insert into T_PRODUCE_MODEL (ID,MODEL_TYPE,MODEL_NAME,MODEL_NO,PREDICT_ID,SCENE,CREATE_USER,CREATE_TIME)
+        values(SEQ_T_PRODUCE_MODEL.nextval ,#{modelType,jdbcType=INTEGER},#{modelName,jdbcType=VARCHAR},#{modelNo,jdbcType=VARCHAR},#{predictId,jdbcType=INTEGER},#{scene,jdbcType=INTEGER},#{createUser,jdbcType=CHAR},#{createTime,jdbcType=CHAR})
     </insert>
     
-    <update id="updateProductModel" parameterType="com.good.em.bean.ProductModelPo">
-        update T_PRODUCT_MODEL
+    <update id="updateProduceModel" parameterType="com.good.em.bean.ProduceModelPo">
+        update T_PRODUCE_MODEL
         <set>
             <if test="modelType != null"> MODEL_TYPE = #{modelType}, </if>
             <if test="modelName != null"> MODEL_NAME = #{modelName}, </if>
             <if test="modelNo != null"> MODEL_NO = #{modelNo}, </if>
             <if test="predictId != null"> PREDICT_ID = #{predictId}, </if>
+            <if test="scene != null"> SCENE = #{scene}, </if>
             <if test="lastUpdUser != null"> LAST_UPD_USER = #{lastUpdUser}, </if>
             LAST_UPD_TIME = #{lastUpdTime}
         </set>

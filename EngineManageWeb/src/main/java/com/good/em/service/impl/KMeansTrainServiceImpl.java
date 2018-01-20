@@ -77,10 +77,11 @@ public class KMeansTrainServiceImpl implements KMeansTrainService {
 	        Session session=jsch.getSession(username, host, 22);//为了连接做准备
 	        session.setConfig("StrictHostKeyChecking", "no");
 	        session.connect();
+	        String sceneId = request.getParameter("t_scene");
 	        String command = "cd " + wbRoot + "ml/package/train/KMeans;" + wbSpark + "spark-submit --class com.testspark.WbKMeans KMeans.jar "
 	        		+ upRoot + request.getParameter("hdfsName") + " " + request.getParameter("numClusters") + " " 
-	        		+ request.getParameter("numIterations") + " file://" + wbRoot + "ml/model/train/KMeans/"
-	        		+ modelName + " " + preRoot + preName + " " + request.getParameter("id") + " " + userId + " " + request.getParameter("t_scene");
+	        		+ request.getParameter("numIterations") + " file://" + wbRoot + "ml/model/train/" + sceneId + "/KMeans/"
+	        		+ modelName + " " + preRoot + preName + " " + request.getParameter("id") + " " + userId + " " + sceneId;
 
 	        ChannelExec channel=(ChannelExec)session.openChannel("exec");
 	        logger.info(command);
@@ -110,59 +111,6 @@ public class KMeansTrainServiceImpl implements KMeansTrainService {
             logService.addAuditLog(oper, BizType.EM, "runKMeansTrain", "调用KMeans算法", msglist.toString().substring(0,20), FunctionType.NORMAL, result);
         }
         return msglist;
-    }
-    
-    @Override    
-    public List<String> runApplyModel(HttpServletRequest request,Operator oper) throws ServiceException{
-    	List<String> msglist = new ArrayList<String>();
-    	ExecuteResult result = ExecuteResult.UNKNOWN;
-    	
-    	LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
-    	String userId = linfo.getOperator().getUserID();
-    	try {
-    		String modelName = RandomUtil.getRandomFileName();
-    		String pubKeyPath = paramDao.getParams("SPARK_SSH_PUBKEY", "EM").getParaValue();
-    		String username = paramDao.getParams("SPARK_CLIENT_USER", "EM").getParaValue();
-    		String host = paramDao.getParams("SPARK_CLIENT_HOST", "EM").getParaValue();
-    		String wbRoot = paramDao.getParams("WB_ROOT_PATH", "EM").getParaValue();
-
-    		JSch jsch = new JSch();
-    		
-    		jsch.addIdentity(pubKeyPath);
-    		
-    		Session session=jsch.getSession(username, host, 22);//为了连接做准备
-    		session.setConfig("StrictHostKeyChecking", "no");
-    		session.connect();
-    		String command = wbRoot + "ml/script/applyModel.sh RandomForestClassification " + request.getParameter("modelNo");
-    		
-    		ChannelExec channel=(ChannelExec)session.openChannel("exec");
-    		logger.info(command);
-    		channel.setCommand(command);
-    		
-    		BufferedReader in = new BufferedReader(new InputStreamReader(channel.getInputStream()));
-    		
-    		channel.connect();
-    		String msg;
-    		while((msg = in.readLine()) != null){
-    			logger.info(msg);
-    			msglist.add(msg);
-    		}
-    		
-    		in.close();  
-    		channel.disconnect();
-    		session.disconnect();
-    		result = ExecuteResult.SUCCESS;
-    	} catch (JSchException e) {
-    		// TODO Auto-generated catch block
-    		result = ExecuteResult.FAIL;
-    		e.printStackTrace();
-    	} catch (Exception ex){
-    		result = ExecuteResult.FAIL;
-    		ex.printStackTrace();
-    	} finally {
-    		logService.addAuditLog(oper, BizType.EM, "addTrainData", "调用随机森林算法:", msglist.toString().substring(0,20), FunctionType.NORMAL, result);
-    	}
-    	return msglist;
     }
     
 }

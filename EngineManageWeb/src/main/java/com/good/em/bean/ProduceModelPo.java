@@ -2,7 +2,7 @@ package com.good.em.bean;
 
 import java.io.Serializable;
 
-public class ProductModelPo implements Serializable {
+public class ProduceModelPo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -26,6 +26,10 @@ public class ProductModelPo implements Serializable {
 	 * 预测结果文件ID
 	 */
 	private Integer predictId;
+	/**
+	 * 场景ID
+	 */
+	private Integer scene;
 	/**
 	 * 创建用户
 	 */
@@ -97,6 +101,12 @@ public class ProductModelPo implements Serializable {
 	}
 	public void setLastUpdTime(String lastUpdTime) {
 		this.lastUpdTime = lastUpdTime;
+	}
+	public Integer getScene() {
+		return scene;
+	}
+	public void setScene(Integer scene) {
+		this.scene = scene;
 	}
 
 }

@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
-
-import com.good.em.bean.ProductModelPo;
+import com.good.em.bean.ProduceModelPo;
 
 
 public interface KMeansAnalysisDao {
@@ -16,11 +15,13 @@ public interface KMeansAnalysisDao {
 	public List<Map<String,String>> getCenters(@Param("kmeansId") BigDecimal kmeansId)throws Exception;
 	
     public List<String> modelNoList(@Param("fileId") String fileId);
+    
+    public Map<String,Object> sceneFileInfo(@Param("fileId") String fileId);
 	
     public Integer getModelId(int modelType)throws Exception;
     
-    public void insertProductModel(ProductModelPo productModel)throws Exception;
+    public void insertProduceModel(ProduceModelPo produceModel)throws Exception;
     
-    public void updateProductModel(ProductModelPo productModel)throws Exception;
+    public void updateProduceModel(ProduceModelPo produceModel)throws Exception;
     
 }

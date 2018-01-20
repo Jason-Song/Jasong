@@ -57,16 +57,22 @@
 				</div>
 				<div class="panel-body">
 					<div class="row">
-						<div class="col-md-4">
+						<div class="col-md-3">
 							<label class="control-label">文件Id</label>
-							<input class="form-control" readonly="readonly" id="s_fileId" name="s_fileId" value=<c:if test="${not empty fileId}">${requestScope.fileId}</c:if> />
+							<input class="hidden" id="s_fileId" name="s_fileId" value=<c:if test="${not empty fileId}">${requestScope.fileId}</c:if> />
+							<input class="form-control" readonly="readonly" id="s_fileName" name="s_fileName" />
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-3">
+							<input class="hidden" id="s_sceneId"></input>
+							<label class="control-label">适用场景</label>
+							<input class="form-control" readonly="readonly" id="s_sceneName"></input>
+						</div>
+						<div class="col-md-3">
 							<label class="control-label">模型序列号</label>
 							<select class="form-control" id="s_modelNo" ></select>
 						</div>
-						<div class="col-md-4">
-	  				       <div class="btn-group " data-toggle="buttons">
+						<div class="col-md-3">
+							<div class="btn-group " data-toggle="buttons">
 	  				       		<div style="width:50px;height:27px;" ></div>
 	                            <label class="btn btn-blue" id="applybutton">
 	                                <input type="checkbox">应用</input>
@@ -144,20 +150,16 @@
 	<script type="text/javascript">
  		
 	$(function(){
-		$("#applybutton").click(function(){  
-			$.ajax({    
-				"type":'post',    
-				"url": "modelApply", 
-				"data":	{
-					"predictId":$("#predictId").val(),
-					"modelName":"K均值聚类模型",
-					"modelNo":$("#s_modelNo").val()
-				},	
-				"success" : function(data) { 
-					alert(data.msg);
-				}    
-			});
-		}); 
+		$.ajax({    
+			"type":'get',    
+			"url": "sceneFileInfo", 
+			"data":	"fileId="+$("#s_fileId").val(),	
+			"success" : function(data) { 
+				$("#s_fileName").val(data.data.FILENAME);
+				$("#s_sceneId").val(data.data.SCENEID);
+				$("#s_sceneName").val(data.data.SCENENAME);
+			}    
+		});		
 		$.ajax({    
 			"type":'get',    
 			"url": "modelNoList", 
@@ -171,12 +173,27 @@
 				}
 				$("#s_modelNo").append(opts);
 				$("#s_modelNo").val(model_list[0]).trigger('change');
-			 }    
+			}    
 		});
 		$('#s_modelNo').select2({  
 			placeholder: "选择模型",  
 			//allowClear: true  
 		});	
+		$("#applybutton").click(function(){  
+			$.ajax({    
+				"type":'post',    
+				"url": "modelApply", 
+				"data":	{
+					"predictId":$("#predictId").val(),
+					"modelName":"K均值聚类模型",
+					"modelNo":$("#s_modelNo").val(),
+					"sceneId":$("#s_sceneId").val()
+				},	
+				"success" : function(data) { 
+					alert(data.msg);
+				}    
+			});
+		});
 		$("#s_modelNo").on("change",function(e){
 			var myChart = echarts.init(document.getElementById('cont'));  
 			var pChart = echarts.init(document.getElementById('points'));  

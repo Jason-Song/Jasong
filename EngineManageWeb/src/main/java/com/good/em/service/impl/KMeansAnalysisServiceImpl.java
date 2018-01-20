@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import com.good.comm.enu.BizType;
 import com.good.comm.enu.ExecuteResult;
 import com.good.comm.enu.FunctionType;
-import com.good.em.bean.ProductModelPo;
+import com.good.em.bean.ProduceModelPo;
 import com.good.em.mapper.KMeansAnalysisDao;
 import com.good.em.service.KMeansAnalysisService;
 import com.good.sys.ServiceException;
@@ -84,7 +84,7 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
     }
     
     @Override    
-    public List<String> runApplyModel(ProductModelPo productModel,Operator oper) throws ServiceException{
+    public List<String> runApplyModel(ProduceModelPo produceModel,Operator oper) throws ServiceException{
     	List<String> msglist = new ArrayList<String>();
     	ExecuteResult result = ExecuteResult.UNKNOWN;
         Date nowDate = new Date();
@@ -104,7 +104,8 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
 	    		Session session=jsch.getSession(username, host, 22);//为了连接做准备
 	    		session.setConfig("StrictHostKeyChecking", "no");
 	    		session.connect();
-	    		String command = "cd " + wbRoot + "ml/script;./applyModel.sh KMeans " + productModel.getModelNo();
+	    		String command = "cd " + wbRoot + "ml/script;./applyModel.sh KMeans " 
+	    					+ produceModel.getModelNo() + " " + produceModel.getScene();
 	    		
 	    		ChannelExec channel=(ChannelExec)session.openChannel("exec");
 	    		logger.info(command);
@@ -125,14 +126,14 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
 	    		
 	    		Integer modelId = kMeansAnalysisDao.getModelId(6);
 	    		if(modelId != null && modelId.intValue()>0){
-	    			productModel.setLastUpdUser(userId);
-	    			productModel.setLastUpdTime(now);
-	    			productModel.setId(modelId);
-	    			kMeansAnalysisDao.updateProductModel(productModel);
+	    			produceModel.setLastUpdUser(userId);
+	    			produceModel.setLastUpdTime(now);
+	    			produceModel.setId(modelId);
+	    			kMeansAnalysisDao.updateProduceModel(produceModel);
 	    		}else{
-	    			productModel.setCreateUser(userId);
-	    			productModel.setCreateTime(now);
-	    			kMeansAnalysisDao.insertProductModel(productModel);
+	    			produceModel.setCreateUser(userId);
+	    			produceModel.setCreateTime(now);
+	    			kMeansAnalysisDao.insertProduceModel(produceModel);
 	    		}
     		}
     		result = ExecuteResult.SUCCESS;
@@ -144,7 +145,7 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
     		result = ExecuteResult.FAIL;
     		ex.printStackTrace();
     	} finally {
-    		logService.addAuditLog(oper, BizType.EM, "runApplyModel", "应用KMeans模型", productModel.getModelNo(), FunctionType.NORMAL, result);
+    		logService.addAuditLog(oper, BizType.EM, "runApplyModel", "应用KMeans模型", produceModel.getModelNo(), FunctionType.NORMAL, result);
     	}
     	return msglist;
     }
@@ -152,5 +153,9 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
 	public List<String> modelNoList(String fileId) throws ServiceException{
 		return kMeansAnalysisDao.modelNoList(fileId);
 	}
-
+	
+	public Map<String,Object> sceneFileInfo(String fileId) throws ServiceException{
+		return kMeansAnalysisDao.sceneFileInfo(fileId);
+	}
+	
 }
