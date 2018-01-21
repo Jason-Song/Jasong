@@ -54,21 +54,21 @@
                 
 					<ul class="item-col3 y-clear" style="list-style:none;">
 					
-					<li><a href="https://www.aliyun.com/chinaglobal/promotion/virtual2017" target="_blank">
+					<li><a href="randomForestResult">
 						<p class="title" >随机森林模型</p>
 						<p class="desc" >高维稀疏数据分析</p>
 						<p class="more">查看预测结果列表&gt;</p>
 						<div class="imgs">
-							<img src="https://img.alicdn.com/tfs/TB1gxeoQFXXXXXUXVXXXXXXXXXX-200-200.png" class="icon"><img src="https://img.alicdn.com/tfs/TB1m0KxQFXXXXayXFXXXXXXXXXX-200-200.png" class="hicon">
+							<img src="../../assets/images/four-atom.png" class="icon"><img src="../../assets/images/edge-four-atom.png" class="hicon">
 						</div>
 					</a></li>
 					
-					<li><a href="https://promotion.aliyun.com/ntms/campus2017.html" target="_blank">
+					<li><a href="kMeansResult">
 						<p class="title" >K均值聚类模型</p>
 						<p class="desc" >简单聚类分析</p>
 						<p class="more">查看预测结果列表&gt;</p>
 						<div class="imgs">
-							<img src="https://img.alicdn.com/tfs/TB1QJGtQFXXXXaHXFXXXXXXXXXX-200-200.png" class="icon"><img src="https://img.alicdn.com/tfs/TB1auutQFXXXXaVXFXXXXXXXXXX-200-200.png" class="hicon">
+							<img src="../../assets/images/eight-square.png" class="icon"><img src="../../assets/images/edge-eight-square.png" class="hicon">
 						</div>
 					</a></li></ul>
 				</div>

@@ -4,7 +4,6 @@ package com.good.market.service.impl;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -124,6 +123,7 @@ public class ProduceModelServiceImpl implements ProduceModelService {
     	return produceModelDao.produceModelList(sceneId);
     }
     
+    @Override
     public Map<String,Object> getProductData(String fileId) throws ServiceException{
     	return produceModelDao.getProductData(fileId);
     }
