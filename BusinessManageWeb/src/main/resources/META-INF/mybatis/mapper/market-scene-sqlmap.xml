@@ -24,14 +24,10 @@
         		T.COND_NAME		as condName,
         		T.STRATEGY_NAME	as strategyName,
         		T.CREATE_USER  	as createUser,
-        		CU.NAME			as crtUserName,
         		T.CREATE_TIME   as createTime,
         		T.LAST_UPD_USER as lastUpdUser,
-        		UU.NAME			as updUserName,
         		T.LAST_UPD_TIME as lastUpdTime
         from T_SCENE T
-        left join T_USER CU on T.CREATE_USER = CU.USERID
-        left join T_USER UU on T.LAST_UPD_USER = UU.USERID
         <where>1=1
             <if test="condition.name != null and condition.name != ''"> and T.NAME = #{condition.name} </if>
             <if test="condition.sceneDesc != null and condition.sceneDesc != ''"> and T.SCENE_DESC like '%${condition.sceneDesc}%' </if>
@@ -49,7 +45,7 @@
     
 	<insert id="insertScene" useGeneratedKeys="false" keyProperty="id" parameterType="com.good.market.bean.ScenePo" > 
         insert into T_SCENE (ID,NAME,SCENE_DESC,COND_NAME,STRATEGY_NAME,CREATE_USER,CREATE_TIME,LAST_UPD_USER,LAST_UPD_TIME)
-        values(SEQ_T_SCENE.nextval ,#{name,jdbcType=VARCHAR},#{sceneDesc,jdbcType=VARCHAR},#{condName,jdbcType=VARCHAR},#{strategyName,jdbcType=VARCHAR},#{createUser,jdbcType=INTEGER},#{createTime,jdbcType=CHAR},#{lastUpdUser,jdbcType=INTEGER},#{lastUpdTime,jdbcType=CHAR})
+        values(SEQ_T_SCENE.nextval ,#{name,jdbcType=VARCHAR},#{sceneDesc,jdbcType=VARCHAR},#{condName,jdbcType=VARCHAR},#{strategyName,jdbcType=VARCHAR},#{createUser,jdbcType=CHAR},#{createTime,jdbcType=CHAR},#{lastUpdUser,jdbcType=CHAR},#{lastUpdTime,jdbcType=CHAR})
     </insert>
 
 </mapper>

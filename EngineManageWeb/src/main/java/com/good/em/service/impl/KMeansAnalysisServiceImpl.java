@@ -97,6 +97,8 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
     		String username = paramDao.getParams("SPARK_CLIENT_USER", "EM").getParaValue();
     		String host = paramDao.getParams("SPARK_CLIENT_HOST", "EM").getParaValue();
     		String wbRoot = paramDao.getParams("WB_ROOT_PATH", "EM").getParaValue();
+    		String produceModelRoot = paramDao.getParams("PRODUCE_MODEL_PATH", "EM").getParaValue();
+    		String trainModelRoot = paramDao.getParams("TRAIN_MODEL_PATH", "EM").getParaValue();
 
     		JSch jsch = new JSch();
     		
@@ -107,7 +109,8 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
 	    		session.connect();
 	    		int sceneId = produceModel.getScene();
 	    		String command = "cd " + wbRoot + "ml/script;./applyModel.sh KMeans " 
-	    					+ produceModel.getModelNo() + " " + sceneId;
+	    					+ produceModel.getModelNo() + " " + sceneId + " " + trainModelRoot + " "
+	    					+ produceModelRoot;
 	    		
 	    		ChannelExec channel=(ChannelExec)session.openChannel("exec");
 	    		logger.info(command);

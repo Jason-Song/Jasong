@@ -88,9 +88,13 @@ VALUES ('TRAIN_UPLOAD_PATH', 'EM', 'hdfs://CDH1:9000/datafiles/ml/upload/train/'
 INSERT INTO `wb`.`sys_params` (`PARA_ID`,`PARA_RANK`,`PARA_VALUE`,`REMARK`,`CRT_USER`,`CRT_TIME`,`UPD_USER`,`UPD_TIME`,`EXT`)
 VALUES ('TRAIN_PREDICT_PATH', 'EM', 'hdfs://CDH1:9000/datafiles/ml/predict/train/', '训练模型预测结果HDFS路径', 'admin', now(), null, null, null);
 INSERT INTO `wb`.`sys_params` (`PARA_ID`,`PARA_RANK`,`PARA_VALUE`,`REMARK`,`CRT_USER`,`CRT_TIME`,`UPD_USER`,`UPD_TIME`,`EXT`)
+VALUES ('TRAIN_MODEL_PATH', 'EM', 'hdfs://CDH1:9000/datafiles/ml/model/train/', '训练模型HDFS路径', 'admin', now(), null, null, null);
+INSERT INTO `wb`.`sys_params` (`PARA_ID`,`PARA_RANK`,`PARA_VALUE`,`REMARK`,`CRT_USER`,`CRT_TIME`,`UPD_USER`,`UPD_TIME`,`EXT`)
 VALUES ('PRODUCE_UPLOAD_PATH', 'EM', 'hdfs://CDH1:9000/datafiles/ml/upload/produce/', '生产数据HDFS上传路径', 'admin', now(), null, null, null);
 INSERT INTO `wb`.`sys_params` (`PARA_ID`,`PARA_RANK`,`PARA_VALUE`,`REMARK`,`CRT_USER`,`CRT_TIME`,`UPD_USER`,`UPD_TIME`,`EXT`)
 VALUES ('PRODUCE_PREDICT_PATH', 'EM', 'hdfs://CDH1:9000/datafiles/ml/predict/produce/', '生产模型预测结果HDFS路径', 'admin', now(), null, null, null);
+INSERT INTO `wb`.`sys_params` (`PARA_ID`,`PARA_RANK`,`PARA_VALUE`,`REMARK`,`CRT_USER`,`CRT_TIME`,`UPD_USER`,`UPD_TIME`,`EXT`)
+VALUES ('PRODUCE_MODEL_PATH', 'EM', 'hdfs://CDH1:9000/datafiles/ml/model/produce/', '生产模型HDFS路径', 'admin', now(), null, null, null);
 INSERT INTO `wb`.`sys_params` (`PARA_ID`,`PARA_RANK`,`PARA_VALUE`,`REMARK`,`CRT_USER`,`CRT_TIME`,`UPD_USER`,`UPD_TIME`,`EXT`)
 VALUES ('SPARK_CLIENT_USER', 'EM', 'hadoop', '运行慧脑引擎的登陆用户', 'admin', now(), null, null, null);
 INSERT INTO `wb`.`sys_params` (`PARA_ID`,`PARA_RANK`,`PARA_VALUE`,`REMARK`,`CRT_USER`,`CRT_TIME`,`UPD_USER`,`UPD_TIME`,`EXT`)

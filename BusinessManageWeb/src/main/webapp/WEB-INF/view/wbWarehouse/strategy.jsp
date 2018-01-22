@@ -284,9 +284,9 @@
 	            { "data" : "conds" },//策略需满足的条件
 	            { "data" : "exeCode" },//策略执行码
 	            { "data" : "exeDesc" },//策略描述
-	            { "data" : "crtUserName" },//创建用户名
+	            { "data" : "createUser" },//创建用户名
 	            { "data" : "createTime" },//创建时间
-	            { "data" : "updUserName" },//最后编辑用户名
+	            { "data" : "lastUpdUser" },//最后编辑用户名
 	            { "data" : "lastUpdTime" }//最后编辑时间
 	        ]
 	    };

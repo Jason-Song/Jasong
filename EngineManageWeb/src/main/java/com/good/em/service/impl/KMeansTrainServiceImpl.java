@@ -62,6 +62,7 @@ public class KMeansTrainServiceImpl implements KMeansTrainService {
     		String pubKeyPath = paramDao.getParams("SPARK_SSH_PUBKEY", "EM").getParaValue();
     		String upRoot = paramDao.getParams("TRAIN_UPLOAD_PATH", "EM").getParaValue();
     		String preRoot = paramDao.getParams("TRAIN_PREDICT_PATH", "EM").getParaValue();
+    		String trainModelRoot = paramDao.getParams("TRAIN_MODEL_PATH", "EM").getParaValue();
     		SysParamPo sparkHome = paramDao.getParams("WB_SPARK_HOME", "EM");
 			String wbSpark = "";
     		if(sparkHome!=null) wbSpark = sparkHome.getParaValue()+"bin/";
@@ -80,7 +81,7 @@ public class KMeansTrainServiceImpl implements KMeansTrainService {
 	        String sceneId = request.getParameter("t_scene");
 	        String command = "cd " + wbRoot + "ml/package/train/KMeans;" + wbSpark + "spark-submit --class com.testspark.WbKMeans KMeans.jar "
 	        		+ upRoot + request.getParameter("hdfsName") + " " + request.getParameter("numClusters") + " " 
-	        		+ request.getParameter("numIterations") + " file://" + wbRoot + "ml/model/train/" + sceneId + "/KMeans/"
+	        		+ request.getParameter("numIterations") + " " + trainModelRoot + sceneId + "/KMeans/"
 	        		+ modelName + " " + preRoot + preName + " " + request.getParameter("id") + " " + userId + " " + sceneId;
 
 	        ChannelExec channel=(ChannelExec)session.openChannel("exec");

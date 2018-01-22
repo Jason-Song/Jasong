@@ -53,7 +53,7 @@ public class TrainDataServiceImpl implements TrainDataService {
         String now = TimeTool.paserString(nowDate, "yyyy-MM-dd HH:mm:ss");
         
         try {
-            Integer userId = userDao.list(oper.getUserID());
+            String userId = oper.getUserID();
             if(userId != null){
             	trainData.setUploadUser(userId);
             	trainData.setUploadTime(now);

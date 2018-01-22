@@ -53,7 +53,7 @@ public class SceneServiceImpl implements SceneService {
         String now = TimeTool.paserString(nowDate, "yyyy-MM-dd HH:mm:ss");
         
         try {
-            Integer userId = userDao.list(oper.getUserID());
+            String userId = oper.getUserID();
             if(userId != null){
             	scene.setCreateUser(userId);
             	scene.setCreateTime(now);

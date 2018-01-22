@@ -53,7 +53,7 @@ public class StrategyServiceImpl implements StrategyService {
         String now = TimeTool.paserString(nowDate, "yyyy-MM-dd HH:mm:ss");
         
         try {
-            Integer userId = userDao.list(oper.getUserID());
+            String userId = oper.getUserID();
             if(userId != null){
             	strategy.setCreateUser(userId);
             	strategy.setCreateTime(now);

@@ -10,7 +10,7 @@ VALUES('sys','strategy','策略配置','/market/wbWarehouse/strategy','wb_1','3'
 INSERT INTO `wb`.`sys_menu` (`MENU_ID`, `NODE_ID`, `NODE_NAME`, `NODE_URL`, `PARENT_NODE`, `SEQ_ID`, `NODE_IMG`, `RELA_FLAG`, `NODE_TARGET`, `NODE_CMD`, `NODE_VISIBLE`, `NODE_TOOLTIP`, `HAS_CHILD_FLAG`, `CRT_USER`, `CRT_TIME`, `UPD_USER`, `UPD_TIME`, `EXT`)
 VALUES('sys','wb_2','慧脑决策','','market','3','linecons-cloud','1',NULL,NULL,'1',NULL,'1',NULL,now(),NULL,now(),NULL);
 INSERT INTO `sys_menu` (`MENU_ID`, `NODE_ID`, `NODE_NAME`, `NODE_URL`, `PARENT_NODE`, `SEQ_ID`, `NODE_IMG`, `RELA_FLAG`, `NODE_TARGET`, `NODE_CMD`, `NODE_VISIBLE`, `NODE_TOOLTIP`, `HAS_CHILD_FLAG`, `CRT_USER`, `CRT_TIME`, `UPD_USER`, `UPD_TIME`, `EXT`)
-VALUES('sys','dataUpload','业务数据','/market/rule/productData','wb_2','1','linecons-lightbulb','1',NULL,NULL,'1',NULL,NULL,NULL,now(),NULL,now(),NULL);
+VALUES('sys','productData','业务数据','/market/rule/productData','wb_2','1','linecons-lightbulb','1',NULL,NULL,'1',NULL,NULL,NULL,now(),NULL,now(),NULL);
 INSERT INTO `sys_menu` (`MENU_ID`, `NODE_ID`, `NODE_NAME`, `NODE_URL`, `PARENT_NODE`, `SEQ_ID`, `NODE_IMG`, `RELA_FLAG`, `NODE_TARGET`, `NODE_CMD`, `NODE_VISIBLE`, `NODE_TOOLTIP`, `HAS_CHILD_FLAG`, `CRT_USER`, `CRT_TIME`, `UPD_USER`, `UPD_TIME`, `EXT`)
 VALUES('sys','reasonAnalysis','因素分析','/market/rule/modelAnalysis','wb_2','2','linecons-lightbulb','1',NULL,NULL,'1',NULL,NULL,NULL,now(),NULL,now(),NULL);
 INSERT INTO `sys_menu` (`MENU_ID`, `NODE_ID`, `NODE_NAME`, `NODE_URL`, `PARENT_NODE`, `SEQ_ID`, `NODE_IMG`, `RELA_FLAG`, `NODE_TARGET`, `NODE_CMD`, `NODE_VISIBLE`, `NODE_TOOLTIP`, `HAS_CHILD_FLAG`, `CRT_USER`, `CRT_TIME`, `UPD_USER`, `UPD_TIME`, `EXT`)

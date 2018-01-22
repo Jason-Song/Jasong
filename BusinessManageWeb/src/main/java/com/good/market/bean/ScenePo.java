@@ -29,11 +29,7 @@ public class ScenePo implements Serializable {
 	/**
 	 * 创建用户
 	 */
-	private Integer createUser;
-    /**
-     * 创建用户名
-     */
-    private String crtUserName;
+	private String createUser;
 	/**
 	 * 创建时间
 	 */
@@ -41,11 +37,7 @@ public class ScenePo implements Serializable {
 	/**
 	 * 最后修改用户
 	 */
-    private Integer lastUpdUser;
-    /**
-     * 最后修改用户名
-     */
-    private String updUserName;
+    private String lastUpdUser;
     /**
      * 最后修改时间
      */
@@ -81,41 +73,29 @@ public class ScenePo implements Serializable {
 	public void setStrategyName(String strategyName) {
 		this.strategyName = strategyName;
 	}
-	public Integer getCreateUser() {
-		return createUser;
-	}
-	public void setCreateUser(Integer createUser) {
-		this.createUser = createUser;
-	}
-	public String getCrtUserName() {
-		return crtUserName;
-	}
-	public void setCrtUserName(String crtUserName) {
-		this.crtUserName = crtUserName;
-	}
 	public String getCreateTime() {
 		return createTime;
 	}
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
-	public Integer getLastUpdUser() {
+	public String getLastUpdUser() {
 		return lastUpdUser;
 	}
-	public void setLastUpdUser(Integer lastUpdUser) {
+	public void setLastUpdUser(String lastUpdUser) {
 		this.lastUpdUser = lastUpdUser;
-	}
-	public String getUpdUserName() {
-		return updUserName;
-	}
-	public void setUpdUserName(String updUserName) {
-		this.updUserName = updUserName;
 	}
 	public String getLastUpdTime() {
 		return lastUpdTime;
 	}
 	public void setLastUpdTime(String lastUpdTime) {
 		this.lastUpdTime = lastUpdTime;
+	}
+	public String getCreateUser() {
+		return createUser;
+	}
+	public void setCreateUser(String createUser) {
+		this.createUser = createUser;
 	}
 
 }

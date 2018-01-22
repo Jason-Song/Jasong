@@ -62,6 +62,7 @@ public class ProduceModelServiceImpl implements ProduceModelService {
     		String pubKeyPath = paramDao.getParams("SPARK_SSH_PUBKEY", "EM").getParaValue();
     		String upRoot = paramDao.getParams("PRODUCE_UPLOAD_PATH", "EM").getParaValue();
     		String preRoot = paramDao.getParams("PRODUCE_PREDICT_PATH", "EM").getParaValue();
+    		String produceModelRoot = paramDao.getParams("PRODUCE_MODEL_PATH", "EM").getParaValue();
     		SysParamPo sparkHome = paramDao.getParams("WB_SPARK_HOME", "EM");
 			String wbSpark = "";
     		if(sparkHome!=null) wbSpark = sparkHome.getParaValue()+"bin/";
@@ -69,13 +70,14 @@ public class ProduceModelServiceImpl implements ProduceModelService {
     		
     		int modelType = Integer.parseInt(request.getParameter("modelType"));
     		String command = "";
+    		String sceneId = request.getParameter("sceneId");
     		switch(modelType){
     			case 6:
     				command = "cd " + wbRoot + "ml/package/produce/KMeans;" + wbSpark 
 	        			+ "spark-submit --class com.testspark.WbKMeans KMeans.jar " + upRoot 
 	        			+ request.getParameter("hdfsName") + " " + preRoot + preName + " " 
 	        			+ request.getParameter("fileId") + " " + userId + " "
-	        			+ request.getParameter("sceneId")+" file://" + wbRoot;
+	        			+ sceneId +" " + produceModelRoot + sceneId + "/KMeans";
 	    			break;
     			default:
     				break;

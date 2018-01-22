@@ -22,14 +22,10 @@
         		T.EXE_CODE 		as exeCode,
         		T.EXE_DESC	 	as exeDesc,
         		T.CREATE_USER  	as createUser,
-        		CU.NAME			as crtUserName,
         		T.CREATE_TIME   as createTime,
         		T.LAST_UPD_USER as lastUpdUser,
-        		UU.NAME			as updUserName,
         		T.LAST_UPD_TIME as lastUpdTime
         from T_STRATEGY T
-        left join T_USER CU on T.CREATE_USER = CU.USERID
-        left join T_USER UU on T.LAST_UPD_USER = UU.USERID
         <where>1=1
             <if test="condition.conds != null and condition.conds != ''"> and T.COND_IDS like '%,${condition.condIds},%' </if>
             <if test="condition.exeCode != null and condition.exeCode != ''"> and T.EXE_CODE = #{condition.exeCode} </if>
@@ -46,7 +42,7 @@
     
 	<insert id="insertStrategy" useGeneratedKeys="false" keyProperty="id" parameterType="com.good.market.bean.StrategyPo" > 
         insert into T_STRATEGY (ID,CODE_IDS,EXE_CODE,EXE_DESC,CREATE_USER,CREATE_TIME,LAST_UPD_USER,LAST_UPD_TIME)
-        values(SEQ_T_STRATEGY.nextval ,#{condIds,jdbcType=VARCHAR},#{exeCode,jdbcType=VARCHAR},#{exeDesc,jdbcType=VARCHAR},#{createUser,jdbcType=INTEGER},#{createTime,jdbcType=CHAR},#{lastUpdUser,jdbcType=INTEGER},#{lastUpdTime,jdbcType=CHAR})
+        values(SEQ_T_STRATEGY.nextval ,#{condIds,jdbcType=VARCHAR},#{exeCode,jdbcType=VARCHAR},#{exeDesc,jdbcType=VARCHAR},#{createUser,jdbcType=CHAR},#{createTime,jdbcType=CHAR},#{lastUpdUser,jdbcType=CHAR},#{lastUpdTime,jdbcType=CHAR})
     </insert>
 
 </mapper>
