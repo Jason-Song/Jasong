@@ -89,7 +89,7 @@
 							<div id="wssse" ></div>
 						</div>
 						<div class="col-md-4">
-							<label class="control-label">训练耗时(ms)：</label>
+							<label class="control-label">每条记录训练耗时(ms/条)：</label>
 							<div class="" id="performance"></div>
 						</div>
 					</div>

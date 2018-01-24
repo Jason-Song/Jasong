@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.good.comm.web.WebPageResult;
 import com.good.comm.web.WebRequest;
@@ -34,6 +35,13 @@ public class KMeansResultController {
     @RequestMapping(value = "/kMeansResult", method = { RequestMethod.GET})
     public String toPage() throws Exception {
         return "/rule/kMeansResult";
+    }
+    
+    @RequestMapping(value = "/kMeansById", method = { RequestMethod.GET })
+    public ModelAndView kMeansResult(HttpServletRequest request) throws Exception {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("/rule/kMeansById");
+        return mv;
     }
     
 	@SuppressWarnings("unchecked")
