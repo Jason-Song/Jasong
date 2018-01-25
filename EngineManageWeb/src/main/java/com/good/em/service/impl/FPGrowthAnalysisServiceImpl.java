@@ -106,12 +106,12 @@ public class FPGrowthAnalysisServiceImpl implements FPGrowthAnalysisService {
 	        result = ExecuteResult.FAIL;
 			ex.printStackTrace();
 		} finally {
-            logService.addAuditLog(oper, BizType.EM, "getFrequentRes", "获取频次、预测结果、频次模型",rulePath.substring(-22) , FunctionType.QUERY, result);
+            logService.addAuditLog(oper, BizType.EM, "getFrequentRes", "获取频次、预测结果、频次模型", rulePath, FunctionType.QUERY, result);
         }
         return res;
     }
     
-    @Override    
+    @Override  
     public List<String> runApplyModel(ProduceModelPo produceModel,Operator oper) throws ServiceException{
     	List<String> msglist = new ArrayList<String>();
     	ExecuteResult result = ExecuteResult.UNKNOWN;

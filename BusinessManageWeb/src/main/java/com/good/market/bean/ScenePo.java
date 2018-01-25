@@ -19,13 +19,25 @@ public class ScenePo implements Serializable {
 	 */
 	private String sceneDesc;
 	/**
-	 * 条件名
+	 * 数据维度名
 	 */
 	private String condName;
+	/**
+	 * 行唯一标识号
+	 */
+	private String shortRow;
 	/**
 	 * 策略名
 	 */
 	private String strategyName;
+	/**
+	 * 行唯一标识HDFS路径
+	 */
+	private String rowName;
+	/**
+	 * 数据维度HDFS路径
+	 */
+	private String columnName;
 	/**
 	 * 创建用户
 	 */
@@ -96,6 +108,24 @@ public class ScenePo implements Serializable {
 	}
 	public void setCreateUser(String createUser) {
 		this.createUser = createUser;
+	}
+	public String getShortRow() {
+		return shortRow;
+	}
+	public void setShortRow(String shortRow) {
+		this.shortRow = shortRow;
+	}
+	public String getRowName() {
+		return rowName;
+	}
+	public void setRowName(String rowName) {
+		this.rowName = rowName;
+	}
+	public String getColumnName() {
+		return columnName;
+	}
+	public void setColumnName(String columnName) {
+		this.columnName = columnName;
 	}
 
 }

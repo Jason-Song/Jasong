@@ -170,7 +170,10 @@
                                 <th>场景ID</th>
                                 <th>场景名称</th>
                                 <th>场景描述</th>
-                                <th>条件名称</th>
+                                <th>数据维度名称</th>
+                                <th>数据维度HDFS路径</th>
+                                <th>行唯一标识名称</th>
+								<th>行名称HDFS路径</th>
                                 <th>策略名称</th>
                                 <th>创建用户</th>
                                 <th>创建时间</th>
@@ -184,29 +187,35 @@
 			</div>
 		</div>
 	</div>
-<div class="modal fade" id="detail">
+<div class="modal fade" id="editdetail">
    <div class="modal-dialog" >
-       <div class="modal-content">
-			<form method="post" class="validate" id="dataform" onsubmit="return submitDetail();">
+		<div class="modal-content">
+	      	<form id="editform" method="post"  onsubmit="return submitEditDetail();">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				<h4 id="modaltitle" class="modal-title"></h4>
 			</div>
 					<div class="modal-body">
 						<div class="row" >
-							<input name='id' class="hidden"></input>
-							<div class="col-md-12">
+							<input name='e_id' class="hidden"></input>
+							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label">场景名称</label>
-									<input class="form-control" name="name" placeholder="场景名称" data-validate="required" data-message-required="此项必须输入." required="required"></input>
+									<input class="form-control" name="e_name" id="e_name" placeholder="场景名称" data-validate="required" data-message-required="此项必须输入." rssequired="required"></input>
 								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="name" class="control-label">策略名称定义</label>
+									<input class="form-control" name="e_strategyName" id="e_strategyName" placeholder="策略名称定义" ></input>
+								</div>			
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-md-12">
 								<div class="form-group">
 									<label class="control-label">场景描述</label>
-									<textarea id="sceneDesc" name="sceneDesc" class="col-md-12" rows="4" data-validate="required" data-message-required="此项必须输入." required="required"></textarea>
+									<textarea id="e_sceneDesc" name="e_sceneDesc" class="col-md-12" rows="4" ></textarea>
 								</div>			
 							</div>
 						</div>
@@ -214,24 +223,83 @@
 							<div class="col-md-12">
 								<div class="form-group">
 									<label class="control-label">数据维度名称</label>
-									<textarea id="condName" name="condName" class="col-md-12" rows="4" data-validate="required" data-message-required="此项必须输入." required="required"></textarea>
+									<textarea id="e_condName" name="e_condName" class="col-md-12" rows="4" ></textarea>
 								</div>
+							</div>
+						</div>
+						<div class="row">		
+							<div class="col-md-12">
+								<div class="form-group">
+									<label class="control-label">数据行唯一识别编号</label>
+									<textarea id="e_shortRow" name="e_shortRow" class="col-md-12" rows="4" ></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+						<button type="submit" class="btn btn-success" id="update_button">保存</button>
+					</div>
+			</form>
+       </div>
+   </div>
+</div>
+<div class="modal fade" id="detail">
+   <div class="modal-dialog" >
+       <div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 id="modaltitle" class="modal-title"></h4>
+			</div>
+					<div class="modal-body">
+						<form id="dataform" enctype="multipart/form-data" onsubmit="return submitDetail();">
+						<div class="row" >
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="control-label">场景名称</label>
+									<input class="form-control" name="name" id="name" placeholder="场景名称" data-validate="required" data-message-required="此项必须输入." rssequired="required"></input>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="name" class="control-label">策略名称定义</label>
+									<input class="form-control" name="strategyName" id="strategyName" placeholder="策略名称定义" ></input>
+								</div>			
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-md-12">
 								<div class="form-group">
-									<label for="name" class="control-label">策略名称</label>
-									<input class="form-control" name="strategyName" placeholder="策略名称" data-validate="required" data-message-required="此项必须输入." required="required"></input>
+									<label class="control-label">场景描述</label>
+									<textarea id="sceneDesc" name="sceneDesc" class="col-md-12" rows="4" ></textarea>
 								</div>			
 							</div>
 						</div>
+						<div class="row">		
+							<div class="col-md-12">
+								<div class="form-group">
+									<label class="control-label">数据维度名称</label>
+									<input type="file" name="file" id="file" style='width:100%'></input>
+									<textarea id="condName" name="condName" class="col-md-12" rows="4" ></textarea>
+								</div>
+							</div>
+						</div>
+						<div class="row">		
+							<div class="col-md-12">
+								<div class="form-group">
+									<label class="control-label">数据行唯一识别编号</label>
+									<input type="file" name="fileRow" id="fileRow" style='width:100%'></input>
+									<textarea id="shortRow" name="shortRow" class="col-md-12" rows="4" ></textarea>
+								</div>
+							</div>
+						</div>
+						
+						</form>
 					</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-					<button type="submit" class="btn btn-success" id="insert_button">保存</button>
-				</div>
-           </form>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+						<button type="submit" class="btn btn-success" id="insert_button">保存</button>
+					</div>
        </div>
    </div>
 </div>
@@ -295,6 +363,9 @@
 	            { "data" : "name" },//条件适用数据特征码
 	            { "data" : "sceneDesc" },//条件值
 	            { "data" : "condName" },//条件类型
+	            { "data" : "columnName" },//条件类型
+	            { "data" : "shortRow" },//条件类型
+	            { "data" : "rowName" },//条件类型
 	            { "data" : "strategyName" },//条件描述
 	            { "data" : "createUser" },//创建用户名
 	            { "data" : "createTime" },//创建时间
@@ -320,22 +391,28 @@
 			$('#detail').modal({show:true,backdrop:"static"});
 		});
 		
+		$('#insert_button').click(function() {
+			
+			uploadFile();
+		});
+		
 		//修改
 		$('#editbutton').click( function () {
 			var data = table.row('.selected').data();
 			if (data) {
 				if(data.length>1)parent.WebUtils.alert("请选择一条记录");
-				$("#detail").on("shown.bs.modal",function(){
-					$("#dataform").attr("action","sceneEdit");
+				$("#editdetail").on("shown.bs.modal",function(){
+					$("#editform").attr("action","sceneEdit");
 					$(".modal-title").html("修改场景");
-					$("#condName").val(data['condName']);
+					$("#e_condName").val(data['condName']);
+					$("#e_shortRow").val(data['shortRow']);
 					//$("#condType").val(data['condType']).trigger("change");;
-					$("input[name='strategyName']").val(data['strategyName']);
-					$("input[name='id']").val(data['id']);
-					$("#sceneDesc").val(data['sceneDesc']);
-					$("input[name='name']").val(data['name']);
+					$("input[name='e_strategyName']").val(data['strategyName']);
+					$("input[name='e_id']").val(data['id']);
+					$("#e_sceneDesc").val(data['sceneDesc']);
+					$("input[name='e_name']").val(data['name']);
 				});
-				$('#detail').modal({show:true, backdrop:'static'});
+				$('#editdetail').modal({show:true, backdrop:'static'});
 			}else {
 				parent.WebUtils.alert("请选择一条记录");
 			}
@@ -359,12 +436,86 @@
 	    	}
 	    });
 		
+		//验证是不是txt文件
+		$("#file").change(function(ev) {
+			var filePath = this.value;
+			var fileExt = filePath.substring(filePath.lastIndexOf(".")).toLowerCase();
+			if (!checkFileExt(fileExt)) {
+				parent.WebUtils.alert("上传的文件不是txt格式,请重新选择上传文件！");
+				this.value = "";
+				return false;
+			}
+		});
+		
+		//验证是不是txt文件
+		$("#fileRow").change(function(ev) {
+			var filePath = this.value;
+			var fileExt = filePath.substring(filePath.lastIndexOf(".")).toLowerCase();
+			if (!checkFileExt(fileExt)) {
+				parent.WebUtils.alert("上传的文件不是txt格式,请重新选择上传文件！");
+				this.value = "";
+				return false;
+			}
+		});
+		
 		//明细对话框消失后刷新
 		$('#detail').on('hidden.bs.modal', function (event) {
 			table.draw();
-		});
+		});  
 	    
 	});
+	
+	function checkFileExt(ext) {
+        if (!ext.match(/.txt/i)) {
+            return false;
+        }
+        return true;
+    }
+	
+	function uploadFile() {
+    	var oData = new FormData();
+    	var fileObj = document.getElementById("file").files[0]; // 获取文件对象
+		var fileRowObj = document.getElementById("fileRow").files[0];
+    	var sceneObj = document.getElementById("name"); // 获取部门
+    	var sceneDescObj = document.getElementById("sceneDesc"); // 获取文件类型
+    	var strategyObj = document.getElementById("strategyName"); // 获取文件描述
+    	var condNameObj = document.getElementById("condName"); 
+    	var shortRowObj = document.getElementById("shortRow"); // 获取文件描述
+    	if(fileObj==null)oData.append("file","");
+		else oData.append("file", fileObj);
+		if(fileRowObj==null)oData.append("fileRow","");
+		else oData.append("fileRow", fileRowObj); 
+    	oData.append("name",sceneObj.value);  
+    	oData.append("sceneDesc",sceneDescObj.value);  
+    	oData.append("strategyName",strategyObj.value);  
+    	oData.append("condName", condNameObj.value); 
+		oData.append("shortRow", shortRowObj.value);  
+    	var oReq = new XMLHttpRequest();  
+    	oReq.open( "POST", "sceneAdd" , true );  
+    	oReq.onload = function(oEvent) {  
+    	     if (oReq.status == 200) {  
+		        $('#detail').modal('hide');
+		    	parent.WebUtils.alert("操作成功！");
+    	     } else {  
+		        $('#detail').modal('hide');
+	    		parent.WebUtils.alert("操作失败！");
+	         }  
+    	};  
+    	oReq.send(oData);
+    }
+	
+	function submitEditDetail() {
+		var form = $('#editdetail form');
+		if (form.valid()) {
+			var url = form.attr('action');
+			var data = form.serialize();
+			WebUtils.ajaxSubmit(url,data,function(result){
+				$('#editdetail').modal('hide');
+			    table.draw();
+			});
+		}
+		return false;
+	}
 	
 	function submitDetail() {
 		var form = $('#detail form');

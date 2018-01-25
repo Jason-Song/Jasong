@@ -77,6 +77,9 @@
 	                            <label class="btn btn-blue" id="applybutton">
 	                                <input type="checkbox">应用</input>
 	                            </label>
+								<label class="btn btn-blue predictbutton">
+	                                <input type="checkbox">下载预测结果</input>
+	                            </label>
 	                       </div>
 						</div>
 					</div>
@@ -89,12 +92,30 @@
 						</div>
 					</div>
 					<div class="row">
+						<div class="btn-group " data-toggle="buttons">
+							<div style="width:50px;height:27px;" ></div>
+							<label class="btn btn-blue" id="freqbutton">
+								<input type="checkbox">下载频次结果</input>
+							</label>
+						</div>
 						<div class="col-md-12" id="cont" style="width: 1100px;height:700px; margin: 0 auto"></div>
 					</div>
 					<div class="row">
+						<div class="btn-group " data-toggle="buttons">
+							<div style="width:50px;height:27px;" ></div>
+							<label class="btn btn-blue" id="rulebutton">
+								<input type="checkbox">下载频次规则</input>
+							</label>
+						</div>
 						<div class="col-md-12" id="points" style="width: 1100px;height:1000px; margin: 0 auto"></div>
 					</div>
 					<div class="row">
+						<div class="btn-group " data-toggle="buttons">
+							<div style="width:50px;height:27px;" ></div>
+							<label class="btn btn-blue predictbutton">
+								<input type="checkbox">下载预测结果</input>
+							</label>
+						</div>
 						<div class="col-md-12" id="predict" style="width: 1100px;height:1000px; margin: 0 auto"></div>
 					</div>
 				</div>
@@ -145,11 +166,17 @@
 	<script type="text/javascript">
  		
 	$(function(){
+		var sceneId;
+		var predictContent;
+		var freqContent;
+		var ruleContent;
 		$.ajax({    
 			"type":'get',    
 			"url": "sceneFileInfo", 
 			"data":	"fileId="+$("#s_fileId").val(),	
+			"async":false,
 			"success" : function(data) { 
+				sceneId=data.data.SCENEID;
 				$("#s_fileName").val(data.data.FILENAME);
 				$("#s_sceneId").val(data.data.SCENEID);
 				$("#s_sceneName").val(data.data.SCENENAME);
@@ -189,10 +216,16 @@
 				}    
 			});
 		});
+		
 		$("#s_modelNo").on("change",function(e){
 			var myChart = echarts.init(document.getElementById('cont'));
 			var pChart = echarts.init(document.getElementById('points'));  
 			var preChart = echarts.init(document.getElementById('predict'));
+			
+			predictContent="行唯一标识号 前提条件 预测结果\n";
+			freqContent="组合 频次(次)\n";
+			ruleContent="前提 结论 置信度\n";
+			
    			myChart.showLoading();			
 			pChart.showLoading();	
 			preChart.showLoading();
@@ -205,8 +238,7 @@
 				},
 				dataType:"json",
 				success:function(dt){    			
-
-					if(dt.data!=null){
+					if(dt.data!=null){							
 						var datas = [];
 						var xs = [];
 						var ys = [];
@@ -220,14 +252,16 @@
 						var pdatas = [];
 						var centermap=[];
 						
-						
 						var inarray="";
 						var j=1;
 						for(var i = dlength;i>0;i--){
 							var index = i-1;
 							var freq = JSON.parse(freqs[index]);
-							ys.push(freq.items.join("+"));
-							datas.push(freq.freq);
+							var combine = freq.items.join("+");
+							var freqval=freq.freq;
+							ys.push(combine);
+							datas.push(freqval);
+							freqContent+="["+combine+"] "+freqval+"\n";
 						}
 						xs.push({
 							name:'出现频次',
@@ -269,7 +303,12 @@
 						xAxis : [
 							{
 								type : 'value',
-								position:'top'
+								position:'top',
+								axisLabel: {
+									formatter : function(v) {
+										return v + '次'
+									}
+								}
 							}
 						],
 						yAxis : [
@@ -295,8 +334,7 @@
 						xp.push(ant);
 						if(repeat.indexOf(cons)<0)yp.push(cons);
 						repeat.push(cons);
-						
-						//datas.push(freq.freq);
+						ruleContent+="["+ant+"] ["+cons+"] "+confi+"\n";
 					}
 					var schema = [
 						{name: '前提', index: 0, text: '前提'},
@@ -378,8 +416,7 @@
 							{
 								name: '规则点',
 								type: 'effectScatter',
-								data: pdatas,
-								
+								data: pdatas,								
 								hoverAnimation: true,
 								itemStyle: itemStyle,
 								zlevel: 1,
@@ -391,29 +428,47 @@
 								}
 							}								
 						]
-					});
+					},true);
 					
 					var xpre=[];
 					var ypre=[];
 					var predatas=[];
 					var prepeat=[];
-					
+					var rows=[];
+					$.ajax({    
+						"type":'post',    
+						"url": "getSceneRow", 
+						"data":	"sceneId="+sceneId,	
+						"async":false,
+						"success" : function(data) { 
+							rows=data.data;
+						}    
+					});
+					var rowno = rows.length;
+					var flag=(rowno>0);
 					for(var i = 0;i< pre.length;i++){
 						//var index = i;
 						var pred = JSON.parse(pre[i]);
 						var product = pred.items.join("+");
 						var res = pred.prediction.join("+");
 					
-						
 						predatas.push([i,res,product]);
-						xpre.push("第"+(i+1)+"条记录");
+						if(flag){
+							var rowstr=rows[i];
+							xpre.push(rowstr);
+							predictContent+=rowstr;
+						}else{
+							var rowstr = "第"+(i+1)+"条记录";
+							xpre.push(rowstr);
+							predictContent+=rowstr;
+						}
 						if(prepeat.indexOf(res)<0)ypre.push(res);
 						prepeat.push(res);
-						
+						predictContent+=" ["+product+"] ["+res+"]\n";
 					}
 					
 					var preschema = [
-						{name: '行号', index: 0, text: '条记录'},
+						{name: '唯一标识', index: 0, text: '行号'},
 						{name: '预测', index: 1, text: '预测'},
 						{name: '前提', index: 2, text: '前提'}						
 					];
@@ -429,7 +484,7 @@
 							borderWidth: 1,
 							formatter: function (obj) {
 								var value = obj.value;
-								return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'+'第'+(value[0]+1)+ '条记录</div>'
+								return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'+(flag?rows[value[0]]:('第'+(value[0]+1)+ '条记录'))+'</div>'
 									+ preschema[2].text + '：' + value[2] + '<br>'
 									+ preschema[1].text + '：' + value[1] + '<br><br>'
 									+ '由 '+value[2] + ' 依据频次规则推出 '+ value[1]+ '<br>';
@@ -437,9 +492,9 @@
 						},
 						grid: {
 							top: 60,
-							width: '90%',
+							width: '85%',
 							bottom: '15%',
-							left: 70,
+							left: 60,
 							containLabel: true
 						},
 						toolbox: {
@@ -461,7 +516,7 @@
 						},					
 						 xAxis : [
 							{
-								name:'行号',
+								name:(flag?'行唯一标识号':'行号'),
 								type : 'category',
 								data:xpre
 							}
@@ -470,16 +525,14 @@
 							{
 								name:'预测结果',
 								type : 'category',
-								data:ypre
-								
+								data:ypre	
 							}
 						],
 						series : [
 							{
 								name: '预测结果点',
 								type: 'effectScatter',
-								data: predatas,
-								
+								data: predatas,	
 								hoverAnimation: true,
 								itemStyle: itemStyle,
 								zlevel: 1,
@@ -491,11 +544,34 @@
 								}
 							}								
 						]
-					});
+					},true);
 				}
 			});
 		});
+		$("#rulebutton").click(function(){  
+			var modelNo = $("#s_modelNo").val();
+			downloadFile("FPGrowth-"+modelNo+"号模型频次规则文件.txt", ruleContent);
+		});
+		$("#freqbutton").click(function(){  
+			var modelNo = $("#s_modelNo").val();
+			downloadFile("FPGrowth-"+modelNo+"号模型频次结果文件.txt", freqContent);
+		});
+		$(".predictbutton").click(function(){ 
+			var modelNo = $("#s_modelNo").val();
+			downloadFile("FPGrowth-"+modelNo+"号模型预测结果文件.txt", predictContent);
+		});
 	}); 
+
+
+	function downloadFile(fileName, content){
+		var aLink = document.createElement('a');
+		var blob = new Blob([content]);
+		var evt = document.createEvent("HTMLEvents");
+		evt.initEvent("click", false, false);//initEvent 不加后两个参数在FF下会报错
+		aLink.download = fileName;
+		aLink.href = URL.createObjectURL(blob);
+		aLink.dispatchEvent(evt);
+	}
 	</script>
 </body>
 </html>

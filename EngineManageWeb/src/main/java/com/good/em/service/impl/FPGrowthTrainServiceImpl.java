@@ -56,6 +56,9 @@ public class FPGrowthTrainServiceImpl implements FPGrowthTrainService {
 
         LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
         String userId = linfo.getOperator().getUserID();
+		String preName = RandomUtil.getRandomFileName();
+		String modelName = RandomUtil.getRandomFileName();
+		String freqName = RandomUtil.getRandomFileName();
         try {
     		String username = paramDao.getParams("SPARK_CLIENT_USER", "EM").getParaValue();
     		String host = paramDao.getParams("SPARK_CLIENT_HOST", "EM").getParaValue();
@@ -67,10 +70,6 @@ public class FPGrowthTrainServiceImpl implements FPGrowthTrainService {
 			String wbSpark = "";
     		if(sparkHome!=null) wbSpark = sparkHome.getParaValue()+"bin/";
     		String wbRoot = paramDao.getParams("WB_ROOT_PATH", "EM").getParaValue();
-
-    		String preName = RandomUtil.getRandomFileName();
-    		String modelName = RandomUtil.getRandomFileName();
-    		String freqName = RandomUtil.getRandomFileName();
 
             JSch jsch = new JSch();
 
@@ -85,7 +84,6 @@ public class FPGrowthTrainServiceImpl implements FPGrowthTrainService {
 	        		+ request.getParameter("minConfidence") + " " + request.getParameter("numPartitions") + " "  
 	        		+ trainModelRoot + sceneId + "/FPGrowth/" + modelName + " " + preRoot + preName + " " 
 	        		+ request.getParameter("id") + " " + userId + " " + sceneId + " " + preRoot + "freq" + freqName;
-
 	        ChannelExec channel=(ChannelExec)session.openChannel("exec");
 	        logger.info(command);
 	        channel.setCommand(command);
@@ -111,7 +109,7 @@ public class FPGrowthTrainServiceImpl implements FPGrowthTrainService {
 	        result = ExecuteResult.FAIL;
 			ex.printStackTrace();
 		} finally {
-            logService.addAuditLog(oper, BizType.EM, "runFPGrowthTrain", "调用FPGrowth算法", msglist.toString().substring(0,20), FunctionType.NORMAL, result);
+            logService.addAuditLog(oper, BizType.EM, "runFPGrowthTrain", "调用FPGrowth算法", modelName, FunctionType.NORMAL, result);
         }
         return msglist;
     }

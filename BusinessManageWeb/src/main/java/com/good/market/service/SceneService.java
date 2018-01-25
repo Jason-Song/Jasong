@@ -1,5 +1,6 @@
 package com.good.market.service;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -18,4 +19,8 @@ public interface SceneService {
     
     public void addScene(Operator oper, ScenePo scene) throws ServiceException;
     
+    public void editScene(Operator oper, ScenePo scene) throws ServiceException;
+
+    public String uploadToHdfs(InputStream is) throws ServiceException;
+
 }

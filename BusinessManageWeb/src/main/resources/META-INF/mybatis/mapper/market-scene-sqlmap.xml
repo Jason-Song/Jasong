@@ -10,6 +10,9 @@
         <result property="name" column="NAME"/>
         <result property="sceneDesc" column="SCENE_DESC"/>
         <result property="condName" column="COND_NAME"/>
+        <result property="columnName" column="COLUMN_NAME"/>
+        <result property="shortRow" column="SHORT_ROW"/>
+        <result property="rowName" column="ROW_NAME"/>
         <result property="strategyName" column="STRATEGY_NAME"/>
         <result property="createUser" column="CREATE_USER"/>
         <result property="createTime" column="CREATE_TIME"/>
@@ -22,6 +25,9 @@
         		T.NAME   		as name,
         		T.SCENE_DESC 	as sceneDesc,
         		T.COND_NAME		as condName,
+        		T.COLUMN_NAME	as columnName,
+        		T.SHORT_ROW		as shortRow,
+        		T.ROW_NAME		as rowName,
         		T.STRATEGY_NAME	as strategyName,
         		T.CREATE_USER  	as createUser,
         		T.CREATE_TIME   as createTime,
@@ -44,9 +50,23 @@
     </select>
     
 	<insert id="insertScene" useGeneratedKeys="false" keyProperty="id" parameterType="com.good.market.bean.ScenePo" > 
-        insert into T_SCENE (ID,NAME,SCENE_DESC,COND_NAME,STRATEGY_NAME,CREATE_USER,CREATE_TIME,LAST_UPD_USER,LAST_UPD_TIME)
-        values(SEQ_T_SCENE.nextval ,#{name,jdbcType=VARCHAR},#{sceneDesc,jdbcType=VARCHAR},#{condName,jdbcType=VARCHAR},#{strategyName,jdbcType=VARCHAR},#{createUser,jdbcType=CHAR},#{createTime,jdbcType=CHAR},#{lastUpdUser,jdbcType=CHAR},#{lastUpdTime,jdbcType=CHAR})
+        insert into T_SCENE (ID,NAME,SCENE_DESC,SHORT_ROW,COND_NAME,ROW_NAME,COLUMN_NAME,STRATEGY_NAME,CREATE_USER,CREATE_TIME,LAST_UPD_USER,LAST_UPD_TIME)
+        values(SEQ_T_SCENE.nextval ,#{name,jdbcType=VARCHAR},#{sceneDesc,jdbcType=VARCHAR},#{shortRow,jdbcType=VARCHAR},#{condName,jdbcType=VARCHAR},#{rowName,jdbcType=VARCHAR},#{columnName,jdbcType=VARCHAR},#{strategyName,jdbcType=VARCHAR},#{createUser,jdbcType=CHAR},#{createTime,jdbcType=CHAR},#{lastUpdUser,jdbcType=CHAR},#{lastUpdTime,jdbcType=CHAR})
     </insert>
+    
+    <update id="updateScene" parameterType="com.good.market.bean.ScenePo">
+        update T_SCENE
+        <set>
+            <if test="name != null"> NAME = #{name}, </if>
+            <if test="sceneDesc != null"> SCENE_DESC = #{sceneDesc}, </if>
+            <if test="shortRow != null"> SHORT_ROW = #{shortRow}, </if>
+            <if test="condName != null"> COND_NAME = #{condName}, </if>
+            <if test="strategyName != null"> STRATEGY_NAME = #{strategyName}, </if>
+            <if test="lastUpdUser != null"> LAST_UPD_USER = #{lastUpdUser}, </if>
+            LAST_UPD_TIME = #{lastUpdTime}
+        </set>
+        where ID = #{id}
+    </update>
 
 </mapper>
 

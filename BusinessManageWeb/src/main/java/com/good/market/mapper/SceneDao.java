@@ -15,4 +15,6 @@ public interface SceneDao {
         
     public void insertScene(ScenePo scene);
     
+    public void updateScene(ScenePo scene);
+    
 }

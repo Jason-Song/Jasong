@@ -83,7 +83,24 @@ public class HdfsUtil {
 		} 
 		return in;
 	}
-
+	
+	/**
+	 * 文件下载
+	 * @param src
+	 * @param dst
+	 * @param conf
+	 * @return
+	 */
+	public static InputStream getDirectFromHDFS(String dst , Configuration conf){
+		InputStream in = null;
+		try{
+			FileSystem dhfs = FileSystem.get(URI.create(dst),conf);
+			in = dhfs.open(new Path(dst));
+		}catch(IOException ie){
+			ie.printStackTrace();		
+		} 
+		return in;
+	}
 	 
 	/**
 	 * @author dcx by 2015.11.19

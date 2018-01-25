@@ -1,12 +1,19 @@
 package com.good.market.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.fileupload.DiskFileUpload;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,13 +80,20 @@ public class SceneController {
 		return ret;
 	}
     
-	@RequestMapping(value = "/sceneAdd", method = { RequestMethod.POST })
+	@RequestMapping(value = "/sceneEdit", method = { RequestMethod.POST })
 	@ResponseBody
-	public WebPageResult sceneAdd(ScenePo scene,HttpServletRequest request) throws Exception {
+	public WebPageResult sceneEdit(WebRequest wr,HttpServletRequest request) throws Exception {
 		WebPageResult ret = new WebPageResult();
+		ScenePo scene = new ScenePo();
         try {
+        	scene.setId(Integer.parseInt(request.getParameter("e_id")));
+        	scene.setName(request.getParameter("e_name"));
+        	scene.setStrategyName(request.getParameter("e_strategyName"));
+        	scene.setCondName(request.getParameter("e_condName"));
+        	scene.setShortRow(request.getParameter("e_shortRow"));
+        	scene.setSceneDesc(request.getParameter("e_sceneDesc"));
             LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
-            sceneService.addScene(linfo.getOperator(), scene);
+            sceneService.editScene(linfo.getOperator(), scene);
         } catch (Exception e) {
             logger.error(MsgConstants.E0000, e);
             ret.setRetcode(MsgConstants.E0000);
@@ -88,6 +102,63 @@ public class SceneController {
 		return ret;
 	}
     
+    @RequestMapping(value = "/sceneAdd", method = { RequestMethod.POST, RequestMethod.GET })
+    @ResponseBody
+    public WebPageResult trainDataAdd(WebRequest wr, HttpServletRequest request) throws Exception {
+		WebPageResult ret = new WebPageResult();
+		InputStream is1 = null;
+		InputStream is2 = null;
+		DiskFileItemFactory disk = new DiskFileItemFactory();
+		ServletFileUpload up = new ServletFileUpload(disk);
+		try {
+			request.setCharacterEncoding("UTF-8");
+			List<FileItem> list = up.parseRequest(request);
+			FileItem file1 = list.get(0);
+			FileItem file2 = list.get(1);
+			Map<String, String> fieldlist = new HashMap<String, String>();
+			for (FileItem po : list) {
+				if (po.isFormField())
+					fieldlist.put(po.getFieldName(), po.getString("UTF-8"));
+			}
+			ScenePo scene = new ScenePo();
+			if(file1.getSize()>0){
+				is1 = file1.getInputStream();
+				String hdfs1Name = sceneService.uploadToHdfs(is1);
+				scene.setColumnName(hdfs1Name);
+			}
+			if(file2.getSize()>0){
+				is2 = file2.getInputStream();
+				String hdfs2Name = sceneService.uploadToHdfs(is2);
+				scene.setRowName(hdfs2Name);
+			}
+			LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
+
+			scene.setName(fieldlist.get("name"));
+			scene.setSceneDesc(fieldlist.get("sceneDesc"));
+			scene.setStrategyName(fieldlist.get("strategyName"));
+			scene.setCondName(fieldlist.get("condName"));
+			scene.setShortRow(fieldlist.get("shortRow"));
+			
+			sceneService.addScene(linfo.getOperator(), scene);
+			ret.setMsg("操作成功！");
+		} catch(IOException e){
+  	         e.printStackTrace();
+  	         logger.error("操作失败！ ===>" + e.getMessage());  			 
+		} catch (Exception e) {
+			logger.error(MsgConstants.E0000, e);
+			ret.setRetcode(MsgConstants.E0000);
+			ret.setMsg(e.getMessage());
+		} finally{
+			try{
+				if(is1!=null)is1.close();
+				if(is2!=null)is2.close();
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return ret;
+    }
+	
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

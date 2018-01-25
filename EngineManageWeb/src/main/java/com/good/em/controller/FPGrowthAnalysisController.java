@@ -92,6 +92,23 @@ public class FPGrowthAnalysisController {
 		return ret;
 	}
 	
+	@RequestMapping(value = "/getSceneRow", method = { RequestMethod.POST, RequestMethod.GET })
+	@ResponseBody
+	public WebPageResult getSceneRow(@RequestParam("sceneId") String sceneId, HttpServletRequest request){
+		WebPageResult ret =null;
+		LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
+
+		try {
+			Map<String, Object> rowColList = modelAnalysisService.getSceneRowCol(sceneId,linfo.getOperator());
+			ret = new WebPageResult(rowColList.get("rows"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(MsgConstants.E0000, e);
+			ret.setRetcode(MsgConstants.E0000);
+		}
+		return ret;
+	}
+	
 	@RequestMapping(value = "/getSelectData", method = { RequestMethod.POST,
 			RequestMethod.GET })
 	@ResponseBody
