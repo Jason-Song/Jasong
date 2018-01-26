@@ -12,7 +12,7 @@ public interface ModelAnalysisDao {
 
 	public String getLineData(String fileId)throws Exception;
 
-	public List<Map<String, Object>> getSelectData()throws Exception;
+	public List<Map<String, Object>> getSelectData(@Param("model")String model)throws Exception;
 	
 	public Map<String, Object> getSceneById(@Param("sceneId")String sceneId)throws Exception;
             

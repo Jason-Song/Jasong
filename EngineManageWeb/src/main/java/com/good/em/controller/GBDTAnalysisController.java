@@ -104,7 +104,7 @@ public class GBDTAnalysisController {
 		List<Map<String, Object>> dataList;
 		WebPageResult ret =null;
 		try {
-			dataList = modelAnalysisService.getSelectData();
+			dataList = modelAnalysisService.getSelectData("4");
 			ret = new WebPageResult(dataList);
 		} catch (Exception e) {
 			e.printStackTrace();

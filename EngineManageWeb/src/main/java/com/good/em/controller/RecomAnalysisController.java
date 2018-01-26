@@ -104,7 +104,7 @@ public class RecomAnalysisController {
 		List<Map<String, Object>> dataList;
 		WebPageResult ret =null;
 		try {
-			dataList = modelAnalysisService.getSelectData();
+			dataList = modelAnalysisService.getSelectData("1");
 			ret = new WebPageResult(dataList);
 		} catch (Exception e) {
 			e.printStackTrace();

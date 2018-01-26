@@ -42,7 +42,7 @@ public class FPGrowthAnalysisController {
     
     @RequestMapping(value = "/modelAnalysis", method = { RequestMethod.GET})
     public String toPage() throws Exception {
-        return "/kMeans/modelAnalysis";
+        return "/FPGrowth/modelAnalysis";
     }
 	
 	@RequestMapping(value = "/getLineData", method = { RequestMethod.POST,
@@ -116,7 +116,7 @@ public class FPGrowthAnalysisController {
 		List<Map<String, Object>> dataList;
 		WebPageResult ret =null;
 		try {
-			dataList = modelAnalysisService.getSelectData();
+			dataList = modelAnalysisService.getSelectData("9");
 			ret = new WebPageResult(dataList);
 		} catch (Exception e) {
 			e.printStackTrace();

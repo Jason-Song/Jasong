@@ -11,7 +11,7 @@
 	<meta name="description" content="Xenon Boostrap Admin Panel" />
 	<meta name="author" content="" />
 	
-	<title>demo Maintain Page</title>
+	<title>FPGrowth模型分析</title>
 
 	<link rel="stylesheet" href="../../assets/css/fonts/linecons/css/linecons.css">
 	<link rel="stylesheet" href="../../assets/css/fonts/fontawesome/css/font-awesome.min.css">
@@ -38,8 +38,8 @@
 		<div class="main-content">
 			<div class="page-title">
 				<div class="title-env">
-					<h1 class="title">模型分析</h1>
-					<p class="description">根据慧脑引擎反馈的模型指标，对训练模型进行分析</p>
+					<h1 class="title">FPGrowth模型分析</h1>
+					<p class="description">根据FPGrowth引擎反馈的模型指标，对训练模型进行分析</p>
 				</div>
 			</div>
 			<div class="panel panel-default collapse show" id="contentPic">
@@ -95,7 +95,7 @@
 						<div class="btn-group " data-toggle="buttons">
 							<div style="width:50px;height:27px;" ></div>
 							<label class="btn btn-blue" id="freqbutton">
-								<input type="checkbox">下载频次结果</input>
+								<input type="checkbox">下载频繁项集</input>
 							</label>
 						</div>
 						<div class="col-md-12" id="cont" style="width: 1100px;height:700px; margin: 0 auto"></div>
@@ -104,7 +104,7 @@
 						<div class="btn-group " data-toggle="buttons">
 							<div style="width:50px;height:27px;" ></div>
 							<label class="btn btn-blue" id="rulebutton">
-								<input type="checkbox">下载频次规则</input>
+								<input type="checkbox">下载关联规则</input>
 							</label>
 						</div>
 						<div class="col-md-12" id="points" style="width: 1100px;height:1000px; margin: 0 auto"></div>
@@ -223,7 +223,7 @@
 			var preChart = echarts.init(document.getElementById('predict'));
 			
 			predictContent="行唯一标识号 前提条件 预测结果\n";
-			freqContent="组合 频次(次)\n";
+			freqContent="频繁项 频次(次)\n";
 			ruleContent="前提 结论 置信度\n";
 			
    			myChart.showLoading();			
@@ -273,7 +273,7 @@
 					myChart.hideLoading();
 					myChart.setOption(option = {
 						title : {
-							text: '组合出现频次数统计'
+							text: '频繁项统计'
 						},
 						tooltip : {
 							trigger: 'axis'
@@ -356,7 +356,7 @@
 					pChart.hideLoading();
 					pChart.setOption(poption = {
 						title : {
-							text : '频次规则散点示意图',
+							text : '关联规则散点示意图',
 						},
 						tooltip : {
 							padding: 10,
@@ -365,7 +365,7 @@
 							borderWidth: 1,
 							formatter: function (obj) {
 								var value = obj.value;
-								return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'+'频次规则详情：'+ '</div>'
+								return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'+'关联规则详情：'+ '</div>'
 									+ schema[0].text + '：' + value[0] + '<br>'
 									+ schema[1].text + '：' + value[1] + '<br>'
 									+ schema[2].text + '：' + value[2] + '<br><br>'
@@ -487,7 +487,7 @@
 								return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'+(flag?rows[value[0]]:('第'+(value[0]+1)+ '条记录'))+'</div>'
 									+ preschema[2].text + '：' + value[2] + '<br>'
 									+ preschema[1].text + '：' + value[1] + '<br><br>'
-									+ '由 '+value[2] + ' 依据频次规则推出 '+ value[1]+ '<br>';
+									+ '由 '+value[2] + ' 依据关联规则推出 '+ value[1]+ '<br>';
 							}
 						},
 						grid: {
@@ -550,27 +550,31 @@
 		});
 		$("#rulebutton").click(function(){  
 			var modelNo = $("#s_modelNo").val();
-			downloadFile("FPGrowth-"+modelNo+"号模型频次规则文件.txt", ruleContent);
+			downloadFile("FPGrowth-"+modelNo+"号模型关联规则.txt", ruleContent);
 		});
 		$("#freqbutton").click(function(){  
 			var modelNo = $("#s_modelNo").val();
-			downloadFile("FPGrowth-"+modelNo+"号模型频次结果文件.txt", freqContent);
+			downloadFile("FPGrowth-"+modelNo+"号模型频繁项集.txt", freqContent);
 		});
 		$(".predictbutton").click(function(){ 
 			var modelNo = $("#s_modelNo").val();
-			downloadFile("FPGrowth-"+modelNo+"号模型预测结果文件.txt", predictContent);
+			downloadFile("FPGrowth-"+modelNo+"号模型预测结果.txt", predictContent);
 		});
 	}); 
 
-
+	
 	function downloadFile(fileName, content){
-		var aLink = document.createElement('a');
+		var eleLink = document.createElement('a');
+		eleLink.download = fileName;
+		eleLink.style.display = 'none';
+		// 字符内容转变成blob地址
 		var blob = new Blob([content]);
-		var evt = document.createEvent("HTMLEvents");
-		evt.initEvent("click", false, false);//initEvent 不加后两个参数在FF下会报错
-		aLink.download = fileName;
-		aLink.href = URL.createObjectURL(blob);
-		aLink.dispatchEvent(evt);
+		eleLink.href = URL.createObjectURL(blob);
+		// 触发点击
+		document.body.appendChild(eleLink);
+		eleLink.click();
+		// 然后移除
+		document.body.removeChild(eleLink);
 	}
 	</script>
 </body>

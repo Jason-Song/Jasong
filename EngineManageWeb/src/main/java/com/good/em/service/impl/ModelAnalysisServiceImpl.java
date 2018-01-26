@@ -49,8 +49,8 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
     		return modelAnalysisDao.getLineData(fileId);
 	}
 
-	public List<Map<String, Object>> getSelectData() throws Exception {
-    		return modelAnalysisDao.getSelectData();
+	public List<Map<String, Object>> getSelectData(String model) throws Exception {
+    		return modelAnalysisDao.getSelectData(model);
 	}
 	
 	public Map<String,Object> getSceneRowCol(String sceneId,Operator oper)throws Exception{

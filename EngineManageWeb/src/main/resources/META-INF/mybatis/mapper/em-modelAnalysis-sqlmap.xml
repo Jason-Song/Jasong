@@ -53,8 +53,8 @@
 		select ACCURACY from T_PREDICT_INDEX where FILE_ID=#{fileId}
     </select>
     
-    <select id="getSelectData" resultType="java.util.Map">
-		select id,(id||'['||file_name||']') as idAndName from T_TRAIN_DATA
+    <select id="getSelectData" resultType="java.util.Map" parameterType="java.lang.String">
+		select id,(id||'['||file_name||']') as idAndName from T_TRAIN_DATA where MODEL=#{model}
     </select>
     
     <select id="getSceneById" resultType="java.util.Map" parameterType="java.lang.String">

@@ -1,5 +1,6 @@
 package com.good.market.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
@@ -18,6 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -25,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.good.comm.FileUtils;
 import com.good.comm.web.WebPageResult;
 import com.good.comm.web.WebRequest;
 import com.good.db.IPage;
@@ -158,7 +165,18 @@ public class SceneController {
 		}
 		return ret;
     }
-	
+    
+    @RequestMapping(value = "/downTrainFile", method = {RequestMethod.POST, RequestMethod.GET})
+    public ResponseEntity<byte[]> downTrainFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String fileName = request.getServletContext().getRealPath("/template/row_column.txt");
+        File file = new File(fileName);
+        HttpHeaders headers = new HttpHeaders();
+        String fileNameN = new String("row_column.txt".getBytes("UTF-8"), "iso-8859-1");// 为了解决中文名称乱码问题
+        headers.setContentDispositionFormData("attachment", fileNameN);
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return new ResponseEntity<byte[]>(FileUtils.getFileContent(file), headers, HttpStatus.CREATED);
+    }
+    
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -15,7 +15,7 @@ public interface ModelAnalysisService {
 	
 	public String getLineData(String fileId)throws Exception;
 	
-	public List<Map<String, Object>>getSelectData()throws Exception;
+	public List<Map<String, Object>>getSelectData(String model)throws Exception;
     
 	public Map<String,Object> getSceneRowCol(String sceneId,Operator oper)throws Exception;
 	

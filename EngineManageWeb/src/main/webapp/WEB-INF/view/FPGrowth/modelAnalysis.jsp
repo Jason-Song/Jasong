@@ -11,7 +11,7 @@
 	<meta name="description" content="Xenon Boostrap Admin Panel" />
 	<meta name="author" content="" />
 	
-	<title>demo Maintain Page</title>
+	<title>FPGrowth模型分析</title>
 
 	<link rel="stylesheet" href="../../assets/css/fonts/linecons/css/linecons.css">
 	<link rel="stylesheet" href="../../assets/css/fonts/fontawesome/css/font-awesome.min.css">
@@ -38,8 +38,8 @@
 		<div class="main-content">
 			<div class="page-title">
 				<div class="title-env">
-					<h1 class="title">模型分析</h1>
-					<p class="description">根据慧脑引擎反馈的模型指标，对训练模型进行分析</p>
+					<h1 class="title">FPGrowth模型分析</h1>
+					<p class="description">根据FPGrowth引擎反馈的模型指标，对训练模型进行分析</p>
 				</div>
 			</div>
 			<div class="panel panel-default collapse show" id="contentPic">
@@ -57,19 +57,27 @@
 				</div>
 				<div class="panel-body">
 					<div class="row">
-						<div class="col-md-4">
+						<div class="col-md-3">
 							<label class="control-label">文件Id[文件name]</label>
 							<select class="form-control" id="s_fileId" ></select>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-3">
+							<input class="hidden" id="s_sceneId"></input>
+							<label class="control-label">适用场景</label>
+							<input class="form-control" readonly="readonly" id="s_sceneName"></input>
+						</div>
+						<div class="col-md-3">
 							<label class="control-label">模型序列号</label>
 							<select class="form-control" id="s_modelNo" ></select>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-3">
 	  				       <div class="btn-group " data-toggle="buttons">
 	  				       		<div style="width:50px;height:27px;" ></div>
 	                            <label class="btn btn-blue" id="applybutton">
 	                                <input type="checkbox">应用</input>
+	                            </label>
+								<label class="btn btn-blue predictbutton">
+	                                <input type="checkbox">下载预测结果</input>
 	                            </label>
 	                       </div>
 						</div>
@@ -78,23 +86,36 @@
 				<div class="panel-body-">
 					<div class="row">
 						<div class="col-md-4">
-							<input name='predictId' id='predictId' class="hidden"></input>		
-							<label class="control-label">总体均方差(WSSSE)：</label>
-							<div id="wssse" ></div>
-						</div>
-						<div class="col-md-4">
 							<label class="control-label">每条记录训练耗时(ms/条)：</label>
 							<div class="" id="performance"></div>
 						</div>
 					</div>
-				</div>
-				<div class="panel-body-">
 					<div class="row">
-						<div class="col-md-12" id="cont" style="width: 1100px; height: 700px; margin: 0 auto"></div>
+						<div class="btn-group " data-toggle="buttons">
+							<div style="width:50px;height:27px;" ></div>
+							<label class="btn btn-blue" id="freqbutton">
+								<input type="checkbox">下载频繁项集</input>
+							</label>
+						</div>
+						<div class="col-md-12" id="cont" style="width: 1100px;height:700px; margin: 0 auto"></div>
 					</div>
 					<div class="row">
-						<h3 class="control-label">聚类单轴散点图</h3>
-						<div class="col-md-12" id="points" style="width: 1100px; height: 1000px; margin: 0 auto"></div>
+						<div class="btn-group " data-toggle="buttons">
+							<div style="width:50px;height:27px;" ></div>
+							<label class="btn btn-blue" id="rulebutton">
+								<input type="checkbox">下载关联规则</input>
+							</label>
+						</div>
+						<div class="col-md-12" id="points" style="width: 1100px;height:1000px; margin: 0 auto"></div>
+					</div>
+					<div class="row">
+						<div class="btn-group " data-toggle="buttons">
+							<div style="width:50px;height:27px;" ></div>
+							<label class="btn btn-blue predictbutton">
+								<input type="checkbox">下载预测结果</input>
+							</label>
+						</div>
+						<div class="col-md-12" id="predict" style="width: 1100px;height:1000px; margin: 0 auto"></div>
 					</div>
 				</div>
 			</div>
@@ -144,24 +165,15 @@
 	<script type="text/javascript">
  		
 	$(function(){
-		$("#applybutton").click(function(){  
-			$.ajax({    
-				"type":'post',    
-				"url": "modelApply", 
-				"data":	{
-					"predictId":$("#predictId").val(),
-					"modelName":"K均值聚类模型",
-					"modelNo":$("#s_modelNo").val()
-				},	
-				"success" : function(data) { 
-					alert(data.msg);
-				}    
-			});
-		}); 
-		//获取文件ID动态菜单
+		var sceneId;
+		var fileId;
+		var predictContent;
+		var freqContent;
+		var ruleContent;
 		$.ajax({    
 		    "type":'post',    
-		    "url": "getSelectData",  
+		    "url": "getSelectData",
+			"async":false,			
 		    "success" : function(data) {
 			    var cond_list = data.data;
 			    console.log(cond_list);
@@ -179,12 +191,16 @@
             allowClear: true  
         });
 		$("#s_fileId").on("change",function(e){
+							
+			predictContent="行唯一标识号 前提条件 预测结果\n";
+			freqContent="频繁项 频次(次)\n";
+			ruleContent="前提 结论 置信度\n";
 			$("#s_modelNo").html("");
 			$.ajax({    
 				"type":'get',    
 				"url": "modelNoList", 
 				"data":	"fileId="+$("#s_fileId").val(),	
-				"success" : function(data) { 
+				"success" : function(data) { 					
 					var model_list = data.data;  
 					var opts = "";
 					for(var model_index = 0;model_index < model_list.length;model_index++){
@@ -199,163 +215,392 @@
 				placeholder: "选择模型",  
 				allowClear: true 
 			});	
-		});
-		
-		
-		$("#s_modelNo").on("change",function(e){
-			var myChart = echarts.init(document.getElementById('cont'));  
-			var pChart = echarts.init(document.getElementById('points'));  
-   			myChart.showLoading();			
-   			pChart.showLoading();			
-
-			$.ajax({
-				type:"post",
-				url:"getLineData",
-				data:{
-					"fileId":$("#s_fileId").val(),
-					"modelNo":$("#s_modelNo").val()
-				},
-				dataType:"json",
-				success:function(dt){    			
-
-					if(dt.data!=null){
-						var datas = [];
-						var xs = [];
-						var ys = [];
-						var distance=dt.data.distances;
-						var center=dt.data.centers;
-						$("#wssse").html(dt.data.trainRes.WSSSE);
-						$("#performance").html(dt.data.trainRes.PERFORMANCE);
-						$("#predictId").val(dt.data.trainRes.ID);
-						var dlength = distance.length;
-						var categorys=[];
-						var pdatas = [];
-						var centermap=[];
-						for(var i=0;i<center.length;i++)centermap[center[i].CLUSTER_ID]=center[i].CENTER;
-						
-						var inarray="";
-						var j=1;
-						for(var i = dlength;i>0;i--){
-							var index = i-1;
-							var clusters = distance[index].split("|");
-							datas.push(clusters[0]);
-							var cluno = parseInt(clusters[1])+1;
-							ys.push("第"+i+"行记录（"+"属于第"+cluno+"类）");
-							var token = ","+clusters[1]+",";
-							if(inarray.indexOf(token)<0){
-								categorys.push("第"+j+"类\n聚类中心：\n"+centermap[clusters[1]]);
-								j++;
+			$.ajax({    
+				"type":'get',    
+				"url": "sceneFileInfo", 
+				"data":	"fileId="+$("#s_fileId").val(),	
+				"async":false,
+				"success" : function(data) { 
+					sceneId=data.data.SCENEID;
+					$("#s_fileName").val(data.data.FILENAME);
+					$("#s_sceneId").val(data.data.SCENEID);
+					$("#s_sceneName").val(data.data.SCENENAME);
+				}    
+			});	
+			$("#s_modelNo").on("change",function(e){
+				var myChart = echarts.init(document.getElementById('cont'));
+				var pChart = echarts.init(document.getElementById('points'));  
+				var preChart = echarts.init(document.getElementById('predict'));
+				
+				predictContent="行唯一标识号 前提条件 预测结果\n";
+				freqContent="频繁项 频次(次)\n";
+				ruleContent="前提 结论 置信度\n";
+				
+				myChart.showLoading();			
+				pChart.showLoading();	
+				preChart.showLoading();
+				$.ajax({
+					type:"post",
+					url:"getLineData",
+					data:{
+						"fileId":$("#s_fileId").val(),
+						"modelNo":$("#s_modelNo").val()
+					},
+					dataType:"json",
+					success:function(dt){    			
+						if(dt.data!=null){							
+							var datas = [];
+							var xs = [];
+							var ys = [];
+							var freqs=dt.data.freq;
+							var rules=dt.data.rule;
+							var pre=dt.data.pre;
+							$("#performance").html(dt.data.trainRes.PERFORMANCE);
+							$("#predictId").val(dt.data.trainRes.ID);
+							var dlength = freqs.length;
+							var categorys=[];
+							var pdatas = [];
+							var centermap=[];
+							
+							var inarray="";
+							var j=1;
+							for(var i = dlength;i>0;i--){
+								var index = i-1;
+								var freq = JSON.parse(freqs[index]);
+								var combine = freq.items.join("+");
+								var freqval=freq.freq;
+								ys.push(combine);
+								datas.push(freqval);
+								freqContent+="["+combine+"] "+freqval+"\n";
 							}
-							inarray+=token;
-
-							pdatas.push([clusters[1],clusters[0],2]);
+							xs.push({
+								name:'出现频次',
+								type:'bar',
+								data:datas,
+								barGrap:'1%'
+							});
 						}
-						xs.push({
-							name:'差异程度【欧式距离】',
-							type:'bar',
-							data:datas
-						});
-					}
-					myChart.hideLoading();
-					myChart.setOption(option = {
-						title : {
-							text: '训练文件逐行相似度评估'
-						},
-						tooltip : {
-							trigger: 'axis'
-						},
-						legend: {
-							left:'20%',
-							data:['差异程度【欧式距离】']
-						},
-						toolbox: {
-							show : true,
-							feature : {
-								mark : {show: true},
-								dataView : {show: true, readOnly: false},
-								magicType: {show: true, type: ['line', 'bar']},
-								restore : {show: true},
-								saveAsImage : {show: true}
-							}
-						},
-						grid: {
-							top: 50,
-							width: '90%',
-							bottom: '2%',
-							left: 10,
-							containLabel: true
-						},
-						calculable : true,
-						xAxis : [
-							{
-								type : 'value',
-								position:'top'
-							}
-						],
-						yAxis : [
-							{
-								type : 'category',
-								data:ys
-							}
-						],
-						series :xs
-					},true);
-					poption = {
-						tooltip: {
-							position: 'top'
-						},
-						title: [],
-						toolbox: {
-							show : true,
-							feature : {
-								saveAsImage : {show: true}
-							}
-						},
-						singleAxis: [],
-						series: []
-					};
-					echarts.util.each(categorys,function(day, idx) {
-						poption.title.push({
-							textBaseline: 'middle',
-							top: (idx + 0.4) * 100 / j + '%',
-							text: day,
-							textStyle: {
-								color: '#333333',
-								fontWeight: '',
-								fontSize: 12
-							}
-						});
-						poption.singleAxis.push({
-							left: 150,
-							type: 'value',
-							boundaryGap: false,
-							top: (idx * 100 / j + 5) + '%',
-							height: (100 / j - 5) + '%',
-							axisLabel: {
-								interval: 2
-							}
-						});
-						poption.series.push({
-							singleAxisIndex: idx,
-							name:"第"+(parseInt(idx)+1)+"类【欧式距离，行号】",
-							coordinateSystem: 'singleAxis',
-							type: 'scatter',
-							data: [],
-							symbolSize: function (dataItem) {
-								return dataItem[1] * 4;
-							}
-						});
-					});
-					echarts.util.each(pdatas, function (dataItem) {
-						poption.series[dataItem[0]].data.push([dataItem[1], dataItem[2]]);
-					});
-					pChart.hideLoading();
+						myChart.hideLoading();
+						myChart.setOption(option = {
+							title : {
+								text: '频繁项统计'
+							},
+							tooltip : {
+								trigger: 'axis'
+							},
+							legend: {
+								left:'20%',
+								data:['出现频次']
+							},
+							toolbox: {
+								show : true,
+								feature : {
+									mark : {show: true},
+									dataView : {show: true, readOnly: false},
+									magicType: {show: true, type: ['line', 'bar']},
+									restore : {show: true},
+									saveAsImage : {show: true}
+								}
+							},
+							grid: {
+								top: 50,
+								width: '90%',
+								bottom: '2%',
+								left: 60,
+								containLabel: true
+							},
+							calculable : true,
+							xAxis : [
+								{
+									type : 'value',
+									position:'top',
+									axisLabel: {
+										formatter : function(v) {
+											return v + '次'
+										}
+									}
+								}
+							],
+							yAxis : [
+								{
+									type : 'category',
+									data:ys
+								}
+							],
+							series :xs
+						},true);	
+						myChart.resize();				
+						
+						var xp=[];
+						var yp=[];
+						var repeat=[];
+						for(var i = rules.length;i>0;i--){
+							var index = i-1;
+							var rule = JSON.parse(rules[index]);
+							var ant = rule.antecedent.join("+");
+							var cons = rule.consequent.join("+");
+							var confi=rule.confidence;
+							pdatas.push([ant,cons,confi]);
+							xp.push(ant);
+							if(repeat.indexOf(cons)<0)yp.push(cons);
+							repeat.push(cons);
+							ruleContent+="["+ant+"] ["+cons+"] "+confi+"\n";
+						}
+						var schema = [
+							{name: '前提', index: 0, text: '前提'},
+							{name: '结论', index: 1, text: '结论'},
+							{name: '置信度', index: 2, text: '置信度'}						
+						];
 
-					pChart.setOption(poption,true);		
-				}
+
+						var itemStyle = {
+							normal: {
+								opacity: 0.8,
+								shadowBlur: 10,
+								shadowOffsetX: 0,
+								shadowOffsetY: 0,
+								color: '#f4e925',
+								shadowColor: '#333'
+							}
+						};
+						pChart.hideLoading();
+						pChart.setOption(poption = {
+							title : {
+								text : '关联规则散点示意图',
+							},
+							tooltip : {
+								padding: 10,
+								backgroundColor: '#222',
+								borderColor: '#777',
+								borderWidth: 1,
+								formatter: function (obj) {
+									var value = obj.value;
+									return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'+'关联规则详情：'+ '</div>'
+										+ schema[0].text + '：' + value[0] + '<br>'
+										+ schema[1].text + '：' + value[1] + '<br>'
+										+ schema[2].text + '：' + value[2] + '<br><br>'
+										+ '由 '+value[0] + ' 推出 '+ value[1]+ '<br>'							
+										+ schema[2].text + '为：' + value[2] + '<br>';
+								}
+							},
+							grid: {
+								top: 60,
+								width: '90%',
+								bottom: '15%',
+								left: 70,
+								containLabel: true
+							},
+							toolbox: {
+								show : true,
+								feature : {
+									mark : {show: true},
+									dataView : {show: true, readOnly: false},
+									restore : {show: true},
+									saveAsImage : {show: true}
+								}
+							},
+							dataZoom: {
+								show: true,
+								start : 30,
+								end : 70
+							},
+							legend : {
+								data : ['规则点']
+							},					
+							 xAxis : [
+								{
+									name:'前提',
+									type : 'category',
+									data:xp
+								}
+							],
+							yAxis : [
+								{
+									name:'结论',
+									type : 'category',
+									data:yp
+									
+								}
+							],
+							series : [
+								{
+									name: '规则点',
+									type: 'effectScatter',
+									data: pdatas,								
+									hoverAnimation: true,
+									itemStyle: itemStyle,
+									zlevel: 1,
+									tooltip : {
+										trigger: 'item',
+										axisPointer:{
+											show: true
+										}
+									}
+								}								
+							]
+						},true);
+						
+						var xpre=[];
+						var ypre=[];
+						var predatas=[];
+						var prepeat=[];
+						var rows=[];
+						$.ajax({    
+							"type":'post',    
+							"url": "getSceneRow", 
+							"data":	"sceneId="+sceneId,	
+							"async":false,
+							"success" : function(data) { 
+								rows=data.data;
+							}    
+						});
+						var rowno = rows.length;
+						var flag=(rowno>0);
+						for(var i = 0;i< pre.length;i++){
+							//var index = i;
+							var pred = JSON.parse(pre[i]);
+							var product = pred.items.join("+");
+							var res = pred.prediction.join("+");
+						
+							predatas.push([i,res,product]);
+							if(flag){
+								var rowstr=rows[i];
+								xpre.push(rowstr);
+								predictContent+=rowstr;
+							}else{
+								var rowstr = "第"+(i+1)+"条记录";
+								xpre.push(rowstr);
+								predictContent+=rowstr;
+							}
+							if(prepeat.indexOf(res)<0)ypre.push(res);
+							prepeat.push(res);
+							predictContent+=" ["+product+"] ["+res+"]\n";
+						}
+						
+						var preschema = [
+							{name: '唯一标识', index: 0, text: '行号'},
+							{name: '预测', index: 1, text: '预测'},
+							{name: '前提', index: 2, text: '前提'}						
+						];
+						preChart.hideLoading();
+						preChart.setOption(preoption = {
+							title : {
+								text : '规则匹配预测结果散点示意图',
+							},
+							tooltip : {
+								padding: 10,
+								backgroundColor: '#222',
+								borderColor: '#777',
+								borderWidth: 1,
+								formatter: function (obj) {
+									var value = obj.value;
+									return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'+(flag?rows[value[0]]:('第'+(value[0]+1)+ '条记录'))+'</div>'
+										+ preschema[2].text + '：' + value[2] + '<br>'
+										+ preschema[1].text + '：' + value[1] + '<br><br>'
+										+ '由 '+value[2] + ' 依据关联规则推出 '+ value[1]+ '<br>';
+								}
+							},
+							grid: {
+								top: 60,
+								width: '85%',
+								bottom: '15%',
+								left: 60,
+								containLabel: true
+							},
+							toolbox: {
+								show : true,
+								feature : {
+									mark : {show: true},
+									dataView : {show: true, readOnly: false},
+									restore : {show: true},
+									saveAsImage : {show: true}
+								}
+							},
+							dataZoom: {
+								show: true,
+								start : 30,
+								end : 70
+							},
+							legend : {
+								data : ['预测结果点']
+							},					
+							 xAxis : [
+								{
+									name:(flag?'行唯一标识号':'行号'),
+									type : 'category',
+									data:xpre
+								}
+							],
+							yAxis : [
+								{
+									name:'预测结果',
+									type : 'category',
+									data:ypre	
+								}
+							],
+							series : [
+								{
+									name: '预测结果点',
+									type: 'effectScatter',
+									data: predatas,	
+									hoverAnimation: true,
+									itemStyle: itemStyle,
+									zlevel: 1,
+									tooltip : {
+										trigger: 'item',
+										axisPointer:{
+											show: true
+										}
+									}
+								}								
+							]
+						},true);
+					}
+				});
 			});
 		});
+		
+		$("#applybutton").click(function(){  
+			$.ajax({    
+				"type":'post',    
+				"url": "modelApply", 
+				"data":	{
+					"predictId":$("#predictId").val(),
+					"modelName":"FPGrowth模型",
+					"modelNo":$("#s_modelNo").val(),
+					"sceneId":$("#s_sceneId").val()
+				},	
+				"success" : function(data) { 
+					alert(data.msg);
+				}    
+			});
+		});
+		
+
+		$("#rulebutton").click(function(){  
+			var modelNo = $("#s_modelNo").val();
+			downloadFile("FPGrowth-"+modelNo+"号模型关联规则.txt", ruleContent);
+		});
+		$("#freqbutton").click(function(){  
+			var modelNo = $("#s_modelNo").val();
+			downloadFile("FPGrowth-"+modelNo+"号模型频繁项集.txt", freqContent);
+		});
+		$(".predictbutton").click(function(){ 
+			var modelNo = $("#s_modelNo").val();
+			downloadFile("FPGrowth-"+modelNo+"号模型预测结果.txt", predictContent);
+		});
 	}); 
+
+
+	function downloadFile(fileName, content){
+		var aLink = document.createElement('a');
+		var blob = new Blob([content]);
+		var evt = document.createEvent("HTMLEvents");
+		evt.initEvent("click", false, false);//initEvent 不加后两个参数在FF下会报错
+		aLink.download = fileName;
+		aLink.href = URL.createObjectURL(blob);
+		aLink.dispatchEvent(evt);
+	}
 	</script>
 </body>
 </html>

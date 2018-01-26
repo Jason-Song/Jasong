@@ -178,10 +178,10 @@ public class FPGrowthTrainController {
     
     @RequestMapping(value = "/downTrainFile", method = {RequestMethod.POST, RequestMethod.GET})
     public ResponseEntity<byte[]> downTrainFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String fileName = request.getServletContext().getRealPath("/template/kmeans_data.txt");
+        String fileName = request.getServletContext().getRealPath("/template/fpgrowth_data.txt");
         File file = new File(fileName);
         HttpHeaders headers = new HttpHeaders();
-        String fileNameN = new String("kmeans_data.txt".getBytes("UTF-8"), "iso-8859-1");// 为了解决中文名称乱码问题
+        String fileNameN = new String("fpgrowth_data.txt".getBytes("UTF-8"), "iso-8859-1");// 为了解决中文名称乱码问题
         headers.setContentDispositionFormData("attachment", fileNameN);
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return new ResponseEntity<byte[]>(FileUtils.getFileContent(file), headers, HttpStatus.CREATED);

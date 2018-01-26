@@ -297,6 +297,7 @@
 						</form>
 					</div>
 					<div class="modal-footer">
+						<button type="button" class="btn btn-success" id="downbutton">模板下载</button>
 						<button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
 						<button type="submit" class="btn btn-success" id="insert_button">保存</button>
 					</div>
@@ -540,6 +541,10 @@
         $("#inputName input").val('');
         $("#inputName select").val("");
     });
+	
+	$("#downbutton").click(function(){  
+    	window.location.href='downTrainFile';
+   	});
 	</script>
 </body>
 </html>

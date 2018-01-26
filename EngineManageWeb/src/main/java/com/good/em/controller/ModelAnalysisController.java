@@ -108,7 +108,7 @@ public class ModelAnalysisController {
 		List<Map<String, Object>> dataList;
 		WebPageResult ret =null;
 		try {
-			dataList = modelAnalysisService.getSelectData();
+			dataList = modelAnalysisService.getSelectData("0");
 			ret = new WebPageResult(dataList);
 		} catch (Exception e) {
 			e.printStackTrace();

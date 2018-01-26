@@ -11,7 +11,7 @@
 	<meta name="description" content="Xenon Boostrap Admin Panel" />
 	<meta name="author" content="" />
 	
-	<title>demo Maintain Page</title>
+	<title>K均值聚类模型分析</title>
 
 	<link rel="stylesheet" href="../../assets/css/fonts/linecons/css/linecons.css">
 	<link rel="stylesheet" href="../../assets/css/fonts/fontawesome/css/font-awesome.min.css">
@@ -38,8 +38,8 @@
 		<div class="main-content">
 			<div class="page-title">
 				<div class="title-env">
-					<h1 class="title">模型分析</h1>
-					<p class="description">根据慧脑引擎反馈的模型指标，对训练模型进行分析</p>
+					<h1 class="title">K均值聚类模型分析</h1>
+					<p class="description">根据K均值聚类引擎反馈的模型指标，对训练模型进行分析</p>
 				</div>
 			</div>
 			<div class="panel panel-default collapse show" id="contentPic">
@@ -57,15 +57,20 @@
 				</div>
 				<div class="panel-body">
 					<div class="row">
-						<div class="col-md-4">
+						<div class="col-md-3">
 							<label class="control-label">文件Id[文件name]</label>
 							<select class="form-control" id="s_fileId" ></select>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-3">
+							<input class="hidden" id="s_sceneId"></input>
+							<label class="control-label">适用场景</label>
+							<input class="form-control" readonly="readonly" id="s_sceneName"></input>
+						</div>
+						<div class="col-md-3">
 							<label class="control-label">模型序列号</label>
 							<select class="form-control" id="s_modelNo" ></select>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-3">
 	  				       <div class="btn-group " data-toggle="buttons">
 	  				       		<div style="width:50px;height:27px;" ></div>
 	                            <label class="btn btn-blue" id="applybutton">

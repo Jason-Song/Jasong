@@ -11,7 +11,7 @@
 	<meta name="description" content="Xenon Boostrap Admin Panel" />
 	<meta name="author" content="" />
 	
-	<title>demo Maintain Page</title>
+	<title>K均值聚类模型分析</title>
 
 	<link rel="stylesheet" href="../../assets/css/fonts/linecons/css/linecons.css">
 	<link rel="stylesheet" href="../../assets/css/fonts/fontawesome/css/font-awesome.min.css">
@@ -38,8 +38,8 @@
 		<div class="main-content">
 			<div class="page-title">
 				<div class="title-env">
-					<h1 class="title">模型分析</h1>
-					<p class="description">根据慧脑引擎反馈的模型指标，对训练模型进行分析</p>
+					<h1 class="title">K均值聚类模型分析</h1>
+					<p class="description">根据K均值聚类引擎反馈的模型指标，对训练模型进行分析</p>
 				</div>
 			</div>
 			<div class="panel panel-default collapse show" id="contentPic">
