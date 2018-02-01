@@ -273,7 +273,13 @@
 				{ "data" : "createApp" },//创建应用
 	            { "data" : "createUser" },//创建用户名
 	            { "data" : "createTime" }//创建时间
-	        ]
+	        ],
+			"columnDefs" : [{
+                "render" : function (data, type, row) {
+                	return "<a href='kMeansById?resultId="+row.id+"'>"+data+"</a>";
+                },
+                "targets" : [3]
+	        }]
 	    };
 	    var setparams = WebUtils.settings;
 	    setparams.ordering = false;

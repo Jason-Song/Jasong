@@ -148,6 +148,9 @@
 	                            <label class="btn btn-blue" id="trainbutton">
 	                                <input type="checkbox">训练</input>
 	                            </label>
+	                            <label class="btn btn-blue" id="testbutton">
+	                                <input type="checkbox">测试</input>
+	                            </label>
 	                        </div>
 	                        <li class="hiden-columns-title pull-right">
 	                            <a href="#">
@@ -245,6 +248,16 @@
        </div>
    </div>
 </div>
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">  
+	<div class="modal-dialog" role="document">  
+		<div class="modal-content">  
+			<div class="progress progress-striped active"  
+				style="margin-bottom: 0px; height: 25px; border-radius: 5px;">  
+				<div id="progressId" class="progress-bar" style="width: 1%; height: 100%;">0%</div>  
+			</div>  
+		</div>  
+	</div>  
+</div>  
 <div class="modal fade" id="traindetail">
    <div class="modal-dialog" >
        <div class="modal-content">
@@ -572,6 +585,11 @@
     $("#downbutton").click(function(){  
     	window.location.href='downTrainFile';
    	}); 
+    
+    $("#testbutton").click(function(){  
+    	window.location.href='test';
+   	}); 
+    
     function checkFileExt(ext) {
         if (!ext.match(/.txt/i)) {
             return false;
@@ -616,6 +634,32 @@
     	};  
     	oReq.send(oData);
     }
+	
+	/** 
+     * 设置进度条 
+     * @param id 
+     * @param value 
+     */  
+    function setProgress(id,value){  
+        $("#"+id).css("width",value);  
+        $("#"+id).html(value);  
+    }  
+      
+    /** 
+     * 开启模态框 
+     * @param id 
+     */  
+    function openModal(id){  
+        $('#'+id).on('show.bs.modal', function(){  
+            var $this = $(this);  
+            var $modal_dialog = $this.find('.modal-dialog');  
+            // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零  
+            $this.css('display', 'block');  
+            $modal_dialog.css({'margin-top': Math.max(0, ($(window).height() - $modal_dialog.height()) / 2) });  
+       });  
+        $('#'+id).modal({backdrop: 'static', keyboard: false});  
+    }  
+	
 	</script>
 	<s:enums keys="em_fileType"></s:enums>
 	<script type="text/javascript">

@@ -9,7 +9,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>训练数据</title>
+<title>业务数据</title>
 <link rel="stylesheet"
 	href="../../assets/css/fonts/linecons/css/linecons.css">
 <link rel="stylesheet"
@@ -32,13 +32,13 @@
 		<div class="main-content">
 			<div class="page-title">
 				<div class="title-env">
-					<h1 class="title">训练数据</h1>
-					<p class="description">按照模板格式上传训练数据，可进行随机森林模型训练</p>
+					<h1 class="title">业务数据</h1>
+					<p class="description">按照模板格式上传业务数据，可进行模型训练</p>
 				</div>
 			</div>
       		<div class="panel panel-default collapsed">
 				<div class="panel-heading">
-					<h3 class="panel-title">训练数据列表</h3>
+					<h3 class="panel-title">业务数据列表</h3>
 					<div class="panel-options">
 						<a href="#" data-toggle="panel"> <span class="collapse-icon">&ndash;</span>
 							<span class="expand-icon">+</span>

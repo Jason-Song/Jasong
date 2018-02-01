@@ -118,6 +118,28 @@ public class TrainDataController {
 			ret.setData(msglist);
         }
     }
+
+//    @RequestMapping(value = "/test", method = { RequestMethod.POST, RequestMethod.GET })
+//    @ResponseBody
+//    public void test(HttpServletRequest request, HttpServletResponse response) throws Exception {
+//		// TODO Auto-generated method stub
+//		response.setContentType("text/json;charset=utf-8");
+//		request.setCharacterEncoding("utf-8");
+//		response.setCharacterEncoding("utf-8");
+//		PrintWriter out = response.getWriter();
+//		try {
+//			WebSocketHandler.broadcast(new TextMessage(new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create().toJson("����test�ӿ�\\n")));
+//			logger.warn("=========test=========");
+//			System.out.println("syso ================test==============");
+//			out.println("=====================test==========================");
+//			
+//			out.flush();
+//			out.close();
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//		}
+//	}
     
     @RequestMapping(value = "/applyModel", method = { RequestMethod.POST, RequestMethod.GET })
     @ResponseBody

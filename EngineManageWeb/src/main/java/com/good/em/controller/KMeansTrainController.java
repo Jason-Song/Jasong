@@ -139,7 +139,6 @@ public class KMeansTrainController {
     	} catch (Exception e) {
     		logger.error(MsgConstants.E0000, e);
     		ret.setRetcode(MsgConstants.E0000);
-    		//ret.setData("111");
     		ret.setMsg("应用模型失败！");
     		ret.setData(msglist);
     	}

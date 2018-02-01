@@ -14,7 +14,6 @@
 	<http pattern="/images/**" security="none" />
 	<http pattern="/js/**" security="none" />
 	<http pattern="/bljs/**" security="none" />
-	<http pattern="/ws.do" security="none" />
 
 	<http auto-config="false">
 		<intercept-url pattern="/sys/logon" access="permitAll" />

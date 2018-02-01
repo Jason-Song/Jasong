@@ -44,7 +44,7 @@
 			</div>
 			<div class="panel panel-default collapse show" id="contentPic">
 				<div class="panel-heading">
-					<h3 class="panel-title">分析列表</h3>
+					<h3 class="panel-title">结果列表</h3>
 					<div class="panel-options">
 						<a href="#" data-toggle="panel">
 							<span class="collapse-icon">&ndash;</span>
@@ -58,8 +58,13 @@
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-md-3">
+							<label class="control-label">最大可能结果人数</label>
+							<input class="hidden" id="s_resultId" name="s_resultId" value=<c:if test="${not empty resultId}">${requestScope.resultId}</c:if> />
+							<input class="form-control" id="s_queryNo" name="s_queryNo" />
+						</div>
+						<!--<div class="col-md-3">
 							<label class="control-label">文件Id</label>
-							<input class="hidden" id="s_fileId" name="s_fileId" value=<c:if test="${not empty fileId}">${requestScope.fileId}</c:if> />
+							<input class="hidden" id="s_fileId" name="s_fileId" />
 							<input class="form-control" readonly="readonly" id="s_fileName" name="s_fileName" />
 						</div>
 						<div class="col-md-3">
@@ -70,15 +75,7 @@
 						<div class="col-md-3">
 							<label class="control-label">模型序列号</label>
 							<select class="form-control" id="s_modelNo" ></select>
-						</div>
-						<div class="col-md-3">
-							<div class="btn-group " data-toggle="buttons">
-	  				       		<div style="width:50px;height:27px;" ></div>
-	                            <label class="btn btn-blue" id="applybutton">
-	                                <input type="checkbox">应用</input>
-	                            </label>
-	                       </div>
-						</div>
+						</div>-->
 					</div>
 				</div>
 				<div class="panel-body-">

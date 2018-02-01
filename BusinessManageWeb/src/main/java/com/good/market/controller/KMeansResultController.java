@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -38,9 +39,10 @@ public class KMeansResultController {
     }
     
     @RequestMapping(value = "/kMeansById", method = { RequestMethod.GET })
-    public ModelAndView kMeansResult(HttpServletRequest request) throws Exception {
+    public ModelAndView modelById(@RequestParam("resultId") String resultId, HttpServletRequest request) throws Exception {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("/rule/kMeansById");
+        mv.addObject("resultId", resultId);
         return mv;
     }
     

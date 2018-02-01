@@ -104,6 +104,8 @@ VALUES ('PRODUCE_PREDICT_PATH', 'EM', 'hdfs://CDH1:9000/datafiles/ml/predict/pro
 INSERT INTO `wb`.`sys_params` (`PARA_ID`,`PARA_RANK`,`PARA_VALUE`,`REMARK`,`CRT_USER`,`CRT_TIME`,`UPD_USER`,`UPD_TIME`,`EXT`)
 VALUES ('PRODUCE_MODEL_PATH', 'EM', 'hdfs://CDH1:9000/datafiles/ml/model/produce/', '生产模型HDFS路径', 'admin', now(), null, null, null);
 INSERT INTO `wb`.`sys_params` (`PARA_ID`,`PARA_RANK`,`PARA_VALUE`,`REMARK`,`CRT_USER`,`CRT_TIME`,`UPD_USER`,`UPD_TIME`,`EXT`)
+VALUES ('SQL_FILTER_PATH', 'EM', 'hdfs://CDH1:9000/datafiles/sql/filter/', 'sparkSQL数据清洗过滤结果路径', 'admin', now(), null, null, null);
+INSERT INTO `wb`.`sys_params` (`PARA_ID`,`PARA_RANK`,`PARA_VALUE`,`REMARK`,`CRT_USER`,`CRT_TIME`,`UPD_USER`,`UPD_TIME`,`EXT`)
 VALUES ('SPARK_CLIENT_USER', 'EM', 'hadoop', '运行慧脑引擎的登陆用户', 'admin', now(), null, null, null);
 INSERT INTO `wb`.`sys_params` (`PARA_ID`,`PARA_RANK`,`PARA_VALUE`,`REMARK`,`CRT_USER`,`CRT_TIME`,`UPD_USER`,`UPD_TIME`,`EXT`)
 VALUES ('SPARK_CLIENT_HOST', 'EM', 'CDH1', '运行慧脑引擎的主机域名或IP', 'admin', now(), null, null, null);
@@ -113,3 +115,4 @@ INSERT INTO `wb`.`sys_params` (`PARA_ID`,`PARA_RANK`,`PARA_VALUE`,`REMARK`,`CRT_
 VALUES ('WB_ROOT_PATH', 'EM', '/home/hadoop/WisdomBrainEngine/', '慧脑引擎根目录绝对路径', 'admin', now(), null, null, null);
 INSERT INTO `wb`.`sys_params` (`PARA_ID`,`PARA_RANK`,`PARA_VALUE`,`REMARK`,`CRT_USER`,`CRT_TIME`,`UPD_USER`,`UPD_TIME`,`EXT`)
 VALUES ('WB_SPARK_HOME', 'EM', '/usr/spark-2.2.0/', '慧脑引擎spark家目录', 'admin', now(), null, null, null);
+

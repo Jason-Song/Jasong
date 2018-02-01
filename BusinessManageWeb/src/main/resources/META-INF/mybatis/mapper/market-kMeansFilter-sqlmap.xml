@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.good.market.mapper.KMeansFilterDao">
+     
+    <select id="getFilterPath" resultType="java.util.HashMap">
+		select 	T.FILTER_RES AS filterRes,
+				T.CLUSTER_NO AS clusterNo,
+				S.NAME		 AS sceneName
+		from T_KMEANS_FILTER T
+		LEFT JOIN T_SCENE S ON S.ID=T.SCENE
+		<where> 
+			T.RESULT_ID = #{condition.resultId} and T.FILTER_ARGS = #{condition.filterArgs}
+    	</where>
+    </select>
+
+</mapper>
+
