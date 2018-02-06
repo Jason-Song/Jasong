@@ -175,7 +175,7 @@
 							var opts = "";
 							for(var model_index = 0;model_index < model_list.length;model_index++){
 								var model = model_list[model_index]; 
-								opts += "<option value='"+model.MODEL_TYPE+"'>"+model.MODEL_NAME+"</option>";  
+								opts += "<option value='"+model.ID+"'>"+model.MODEL_NAME+"</option>";  
 							}
 							$("#s_produceModel").append("<option value=''></option>"+opts);
 							//$("#s_produceModel").val(model_list[0]).trigger('change');
@@ -192,8 +192,8 @@
 			var fileId = $("#s_productData").val();
 			var hdfsName = $("#hdfsName").val();
 			var scene = $("#sceneId").val();
-			var modelType = $("#s_produceModel").val();
-			if(fileId!=""&&hdfsName!=""&&scene!=""&&modelType!=""){
+			var modelId = $("#s_produceModel").val();
+			if(fileId!=""&&hdfsName!=""&&scene!=""&&modelId!=""){
 				$("#calcubutton").removeClass("active");
 				$("#calcubutton").addClass("disabled");
 				$("#calcuInfo").html("<div style='text-align:center;'><img src='../../images/loading.gif' /></div>");
@@ -205,7 +205,7 @@
 						"fileId":$("#s_productData").val(),
 						"hdfsName":$("#hdfsName").val(),
 						"sceneId":$("#sceneId").val(),
-						"modelType":$("#s_produceModel").val()
+						"modelId":$("#s_produceModel").val()
 					},	
 					"success" : function(data) { 
 						var msglist = data.data;

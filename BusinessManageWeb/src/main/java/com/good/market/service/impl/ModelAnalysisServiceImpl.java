@@ -19,13 +19,20 @@ import com.good.comm.enu.FunctionType;
 import com.good.market.mapper.ModelAnalysisDao;
 import com.good.market.service.ModelAnalysisService;
 import com.good.sys.bean.Operator;
+import com.good.sys.mapper.SystemParamDao;
+import com.good.sys.service.AuditLogService;
 import com.good.utils.HdfsUtil;
 
 
 @Service
 public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 	
-
+    @Autowired
+    private SystemParamDao paramDao;
+    
+    @Autowired
+    private AuditLogService logService;
+    
     @Autowired
     private ModelAnalysisDao modelAnalysisDao;
     
@@ -104,7 +111,7 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
 	        result = ExecuteResult.FAIL;
 			ex.printStackTrace();
 		} finally {
-            logService.addAuditLog(oper, BizType.EM, "getSceneRowCol", "获取场景行列名称", sceneId, FunctionType.QUERY, result);
+            logService.addAuditLog(oper, BizType.MARKET, "getSceneRowCol", "获取场景行列名称", sceneId, FunctionType.QUERY, result);
         }
         return res;
 	}

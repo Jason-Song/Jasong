@@ -9,5 +9,7 @@ public interface ProduceModelDao {
     public List<Map<String,String>> produceModelList(String sceneId);
     
     public Map<String,Object> getProductData(String fileId);
+    
+    public Map<String,String> getModelInfo(String modelId);
 
 }

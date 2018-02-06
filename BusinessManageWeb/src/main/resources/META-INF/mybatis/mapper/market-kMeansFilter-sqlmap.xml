@@ -15,6 +15,12 @@
 			T.RESULT_ID = #{condition.resultId} and T.FILTER_ARGS = #{condition.filterArgs}
     	</where>
     </select>
-
+    
+    <select id="getCenters" resultType="java.util.HashMap">
+		select CLUSTER_ID,CENTER from T_KMEANS_CENTERS T
+		<where> 
+			T.KMEANS_ID = #{kMeansId}
+    	</where>
+    </select>
 </mapper>
 

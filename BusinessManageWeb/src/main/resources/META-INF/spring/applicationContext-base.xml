@@ -24,7 +24,8 @@
     </bean>
 
     <bean id="SpringContextUtil" class="com.good.sys.SpringContextUtil" lazy-init="false"></bean>
-    
+    <bean id="HelloWorld" class="com.good.utils.Comet" />
+	
     <!-- redis 序列化策略 ，通常情况下key值采用String序列化策略， -->
 	<!-- 如果不指定序列化策略，StringRedisTemplate的key和value都将采用String序列化策略； -->
 	<!-- 但是RedisTemplate的key和value都将采用JDK序列化 这样就会出现采用不同template保存的数据不能用同一个template删除的问题 -->

@@ -15,5 +15,7 @@ import com.good.sys.bean.Operator;
 public interface KMeansResultService {
 
     public List<KMeansResultPo> listKMeansResult(Operator oper, Map<String,Object> condition, IPage page) throws ServiceException;
-        
+    
+    public Map<String,Object> getKMeansResult(String resultId) throws ServiceException;
+
 }

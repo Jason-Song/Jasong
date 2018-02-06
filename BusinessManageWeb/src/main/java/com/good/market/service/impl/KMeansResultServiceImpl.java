@@ -41,6 +41,7 @@ public class KMeansResultServiceImpl implements KMeansResultService {
     @Autowired
     private AuditLogService logService;
     
+    @Override
     public List<KMeansResultPo> listKMeansResult(Operator oper, Map<String,Object> condition, IPage page) throws ServiceException {
     	try{
     		return kMeansResultDao.listKMeansResult(condition,page);
@@ -48,6 +49,16 @@ public class KMeansResultServiceImpl implements KMeansResultService {
 	        logger.error(MsgConstants.E0002, e);
 	        throw new ServiceException(MsgConstants.E0002, e.getMessage());
 	    }    
+    }
+    
+    @Override
+    public Map<String,Object> getKMeansResult(String resultId) throws ServiceException {
+    	try{
+    		return kMeansResultDao.getKMeansResult(resultId);
+    	} catch (Exception e) {
+    		logger.error(MsgConstants.E0002, e);
+    		throw new ServiceException(MsgConstants.E0002, e.getMessage());
+    	}    
     }
     
 }

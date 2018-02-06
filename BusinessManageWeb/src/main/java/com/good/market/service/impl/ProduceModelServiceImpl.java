@@ -68,16 +68,16 @@ public class ProduceModelServiceImpl implements ProduceModelService {
     		if(sparkHome!=null) wbSpark = sparkHome.getParaValue()+"bin/";
     		String wbRoot = paramDao.getParams("WB_ROOT_PATH", "EM").getParaValue();
     		
-    		int modelType = Integer.parseInt(request.getParameter("modelType"));
+    		Map<String,String> modelInfo = produceModelDao.getModelInfo(request.getParameter("modelId"));
     		String command = "";
     		String sceneId = request.getParameter("sceneId");
-    		switch(modelType){
-    			case 6:
+    		switch(modelInfo.get("MODEL_TYPE")){
+    			case "6":
     				command = "cd " + wbRoot + "ml/package/produce/KMeans;" + wbSpark 
 	        			+ "spark-submit --class com.testspark.WbKMeans KMeans.jar " + upRoot 
 	        			+ request.getParameter("hdfsName") + " " + preRoot + preName + " " 
 	        			+ request.getParameter("fileId") + " " + userId + " "
-	        			+ sceneId +" " + produceModelRoot + sceneId + "/KMeans";
+	        			+ sceneId +" " + produceModelRoot + sceneId + "/KMeans" + " " + modelInfo.get("PREDICT_ID");
 	    			break;
     			default:
     				break;

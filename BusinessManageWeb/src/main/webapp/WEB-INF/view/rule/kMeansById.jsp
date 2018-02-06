@@ -11,7 +11,7 @@
 	<meta name="description" content="Xenon Boostrap Admin Panel" />
 	<meta name="author" content="" />
 	
-	<title>demo Maintain Page</title>
+	<title>K均值聚类结果详细</title>
 
 	<link rel="stylesheet" href="../../assets/css/fonts/linecons/css/linecons.css">
 	<link rel="stylesheet" href="../../assets/css/fonts/fontawesome/css/font-awesome.min.css">
@@ -38,13 +38,13 @@
 		<div class="main-content">
 			<div class="page-title">
 				<div class="title-env">
-					<h1 class="title">模型分析</h1>
-					<p class="description">根据慧脑引擎反馈的模型指标，对训练模型进行分析</p>
+					<h1 class="title">K均值聚类结果详细</h1>
+					<p class="description">提供K均值聚类结果文件的过滤、展示、筛选、下载等功能</p>
 				</div>
 			</div>
 			<div class="panel panel-default collapse show" id="contentPic">
 				<div class="panel-heading">
-					<h3 class="panel-title">结果列表</h3>
+					<h3 class="panel-title">KMeans结果详细</h3>
 					<div class="panel-options">
 						<a href="#" data-toggle="panel">
 							<span class="collapse-icon">&ndash;</span>
@@ -58,36 +58,28 @@
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-md-3">
-							<label class="control-label">最大可能结果人数</label>
 							<input class="hidden" id="s_resultId" name="s_resultId" value=<c:if test="${not empty resultId}">${requestScope.resultId}</c:if> />
-							<input class="form-control" id="s_queryNo" name="s_queryNo" />
-						</div>
-						<!--<div class="col-md-3">
-							<label class="control-label">文件Id</label>
-							<input class="hidden" id="s_fileId" name="s_fileId" />
-							<input class="form-control" readonly="readonly" id="s_fileName" name="s_fileName" />
-						</div>
-						<div class="col-md-3">
+							<input class="hidden" id="s_kMeansId"></input>
 							<input class="hidden" id="s_sceneId"></input>
+							<input class="hidden" id="s_trainRes" name="s_trainRes" />
 							<label class="control-label">适用场景</label>
 							<input class="form-control" readonly="readonly" id="s_sceneName"></input>
 						</div>
 						<div class="col-md-3">
-							<label class="control-label">模型序列号</label>
-							<select class="form-control" id="s_modelNo" ></select>
-						</div>-->
-					</div>
-				</div>
-				<div class="panel-body-">
-					<div class="row">
-						<div class="col-md-4">
-							<input name='predictId' id='predictId' class="hidden"></input>		
-							<label class="control-label">总体均方差(WSSSE)：</label>
-							<div id="wssse" ></div>
+							<label class="control-label">最大可能结果人数</label>							
+							<input class="form-control" id="s_personNo" name="s_personNo" />
 						</div>
-						<div class="col-md-4">
-							<label class="control-label">训练耗时(ms)：</label>
-							<div class="" id="performance"></div>
+						<div class="col-md-3">
+							<label class="control-label">差异度最大阈值</label>							
+							<input class="form-control" id="s_distanceMax" name="s_distanceMax" />
+						</div>
+						<div class="col-md-3">
+							<div class="btn-group " data-toggle="buttons">
+	  				       		<div style="width:50px;height:27px;" ></div>
+	                            <label class="btn btn-blue" id="filterbutton">
+	                                <input type="checkbox">过滤</input>
+	                            </label>
+	                       </div>
 						</div>
 					</div>
 				</div>
@@ -103,6 +95,16 @@
 			</div>
 		</div>
 	</div>
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">  
+	<div class="modal-dialog" role="document">  
+		<div class="modal-content">  
+			<label class="control-label" id="progressInfo">连接慧脑引擎...</label>
+			<div class="progress progress-striped active" style="margin-bottom: 0px; height: 25px; border-radius: 5px;">  
+				<div id="progressId" class="progress-bar" style="width: 1%; height: 100%;">0%</div>  
+			</div>  
+		</div>  
+	</div>  
+</div>  
 
 <!-- Imported styles on this page -->
 <link rel="stylesheet" href="../../assets/js/datatables/css/jquery.dataTables.min.css">
@@ -144,212 +146,262 @@
 <script src="../../assets/js/echarts/echarts.min.js"></script>
 <script src="../../assets/js/echarts/macarons.js"></script>
 
+
 	<script type="text/javascript">
- 		
+	var filterList=[];
+	var clusterList=[];
+	var centermap=[];
 	$(function(){
+
 		$.ajax({    
 			"type":'get',    
-			"url": "sceneFileInfo", 
-			"data":	"fileId="+$("#s_fileId").val(),	
+			"url": "kMeansInfo", 
+			"data":	"resultId="+$("#s_resultId").val(),	
+			"async":false,
 			"success" : function(data) { 
-				$("#s_fileName").val(data.data.FILENAME);
-				$("#s_sceneId").val(data.data.SCENEID);
-				$("#s_sceneName").val(data.data.SCENENAME);
+				var dataObj = data.data;
+				$("#s_trainRes").val(dataObj.TRAINRES);
+				$("#s_sceneId").val(dataObj.SCENEID);
+				$("#s_sceneName").val(dataObj.SCENENAME);
+				$("#s_kMeansId").val(dataObj.PREDICTID);
 			}    
 		});		
-		$.ajax({    
+		
+		$.ajax({
 			"type":'get',    
-			"url": "modelNoList", 
-			"data":	"fileId="+$("#s_fileId").val(),	
+			"url": "getCenters", 
+			"data":	"kMeansId="+$("#s_kMeansId").val(),	
+			"async":false,
 			"success" : function(data) { 
-				var model_list = data.data;  
-				var opts = "";
-				for(var model_index = 0;model_index < model_list.length;model_index++){
-					var model = model_list[model_index]; 
-					opts += "<option value='"+model+"'>"+model+"</option>";  
+				var dataObj = data.data;
+				for(var i=0;i<dataObj.length;i++){
+					var center = dataObj[i];
+					centermap[center.CLUSTER_ID]=center.CENTER;
 				}
-				$("#s_modelNo").append(opts);
-				$("#s_modelNo").val(model_list[0]).trigger('change');
 			}    
 		});
-		$('#s_modelNo').select2({  
-			placeholder: "选择模型",  
-			//allowClear: true  
-		});	
-		$("#applybutton").click(function(){  
+		// alert(centermap.length);
+		$("#filterbutton").click(function(){ 
+			var trainRes = $("#s_trainRes").val();
 			$.ajax({    
-				"type":'post',    
-				"url": "modelApply", 
-				"data":	{
-					"predictId":$("#predictId").val(),
-					"modelName":"K均值聚类模型",
-					"modelNo":$("#s_modelNo").val(),
+				type:'POST',    
+				url: "kMeansFilter", 
+				data:{
+					"filterArgs":$("#s_personNo").val()+":"+$("#s_distanceMax").val(),
+					"trainRes":trainRes,
+					"resultId":$("#s_resultId").val(),
 					"sceneId":$("#s_sceneId").val()
 				},	
-				"success" : function(data) { 
-					alert(data.msg);
-				}    
-			});
-		});
-		$("#s_modelNo").on("change",function(e){
-			var myChart = echarts.init(document.getElementById('cont'));  
-			var pChart = echarts.init(document.getElementById('points'));  
-   			myChart.showLoading();			
-   			pChart.showLoading();			
-
-			$.ajax({
-				type:"post",
-				url:"getLineData",
-				data:{
-					"fileId":$("#s_fileId").val(),
-					"modelNo":$("#s_modelNo").val()
-				},
-				dataType:"json",
-				success:function(dt){    			
-
-					if(dt.data!=null){
-						var datas = [];
-						var xs = [];
-						var ys = [];
-						var distance=dt.data.distances;
-						var center=dt.data.centers;
-						$("#wssse").html(dt.data.trainRes.WSSSE);
-						$("#performance").html(dt.data.trainRes.PERFORMANCE);
-						$("#predictId").val(dt.data.trainRes.ID);
-						var dlength = distance.length;
-						var categorys=[];
-						var pdatas = [];
-						var centermap=[];
-						for(var i=0;i<center.length;i++)centermap[center[i].CLUSTER_ID]=center[i].CENTER;
-						
-						var inarray="";
-						var j=1;
-						for(var i = dlength;i>0;i--){
-							var index = i-1;
-							var clusters = distance[index].split("|");
-							datas.push(clusters[0]);
-							var cluno = parseInt(clusters[1])+1;
-							ys.push("第"+i+"行记录（"+"属于第"+cluno+"类）");
-							var token = ","+clusters[1]+",";
-							if(inarray.indexOf(token)<0){
-								categorys.push("第"+j+"类\n聚类中心：\n"+centermap[clusters[1]]);
-								j++;
-							}
-							inarray+=token;
-
-							pdatas.push([clusters[1],clusters[0],2]);
-						}
-						xs.push({
-							name:'差异程度【欧式距离】',
-							type:'bar',
-							data:datas,
-							barGrap:'1%'
-						});
-						//$("#points").css("height","'"+j*100+"px'");
-					}
-					myChart.hideLoading();
-					myChart.setOption(option = {
-						title : {
-							text: '训练文件逐行相似度评估'
-						},
-						tooltip : {
-							trigger: 'axis'
-						},
-						legend: {
-							left:'20%',
-							data:['差异程度【欧式距离】']
-						},
-						toolbox: {
-							show : true,
-							feature : {
-								mark : {show: true},
-								dataView : {show: true, readOnly: false},
-								magicType: {show: true, type: ['line', 'bar']},
-								restore : {show: true},
-								saveAsImage : {show: true}
-							}
-						},
-						grid: {
-							top: 50,
-							width: '90%',
-							bottom: '2%',
-							left: 10,
-							containLabel: true
-						},
-						calculable : true,
-						xAxis : [
-							{
-								type : 'value',
-								position:'top'
-							}
-						],
-						yAxis : [
-							{
-								type : 'category',
-								data:ys
-							}
-						],
-						series :xs
-					},true);	
-					myChart.resize();
-					poption = {
-						tooltip: {
-							position: 'top'
-						},
-						title: [],
-						toolbox: {
-							show : true,
-							feature : {
-								saveAsImage : {show: true}
-							}
-						},
-						singleAxis: [],
-						series: []
-					};
-					
-					echarts.util.each(categorys,function(day, idx) {
-						poption.title.push({
-							textBaseline: 'middle',
-							top: (idx + 0.4) * 100 / j + '%',
-							text: day,
-							textStyle: {
-								color: '#333333',
-								fontWeight: '',
-								fontSize: 12
-							}
-						});
-						poption.singleAxis.push({
-							left: 150,
-							type: 'value',
-							boundaryGap: false,
-							top: (idx * 100 / j + 5) + '%',
-							height: (100 / j - 5) + '%',
-							axisLabel: {
-								interval: 2
-							}
-						});
-						poption.series.push({
-							singleAxisIndex: idx,
-							name:"第"+(parseInt(idx)+1)+"类【欧式距离，行号】",
-							coordinateSystem: 'singleAxis',
-							type: 'scatter',
-							data: [],
-							symbolSize: function (dataItem) {
-								return dataItem[1] * 4;
-							}
-						});
-					});
-					echarts.util.each(pdatas, function (dataItem) {
-						poption.series[dataItem[0]].data.push([dataItem[1], dataItem[2]]);
-					});
-					pChart.hideLoading();
-
-					pChart.setOption(poption,true);	
-					pChart.resize();
+				success : function(data) { 					
+					// alert(data.msgData);
+					// alert(data.data.msgData);
 				}
 			});
-		});
+			
+			// 弹出窗提示程序正在运行  
+            setProgress("progressId", "0%");  
+              
+            // 开启进度条模态框  
+            openModal("myModal1");  
+            var resNo=trainRes.substr(trainRes.length-22,22);
+            // 定时请求任务进度  
+			//queryTaskProgress(resNo,1,1);
+            t=setTimeout("queryTaskProgress('"+resNo+"','1','1')",1000); 
+		});	
 	}); 
+	
+	/** 
+     * 设置进度条 
+     * @param id 
+     * @param value 
+     */  
+    function setProgress(id,value){  
+        $("#"+id).css("width",value);  
+        $("#"+id).html(value);  
+    }  
+      
+    /** 
+     * 开启模态框 
+     * @param id 
+     */  
+    function openModal(id){  
+        $('#'+id).on('show.bs.modal', function(){  
+            var $this = $(this);  
+            var $modal_dialog = $this.find('.modal-dialog');  
+            // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零  
+            $this.css('display', 'block');  
+            $modal_dialog.css({'margin-top': Math.max(0, ($(window).height() - $modal_dialog.height()) / 2) });  
+       });  
+        $('#'+id).modal({backdrop: 'static', keyboard: false});  
+    }  
+    /** 
+     * 请求任务进度 
+     */  
+	function queryTaskProgress(resNo,fileType,lineNo){  
+	    // ajax 发送请求获取任务运行状态，如果返回运行失败或成功则关闭弹框  
+	    $.ajax({  
+	        type : "POST",  
+	        url : "monitor",  
+	//          dataType : "json",  
+	        async:false,// 同步执行  
+	        data:{
+				"trainRes":resNo,
+				"fileType":fileType,
+				"lineNo":lineNo
+			},  
+	        success : function(data) {  
+				var data=data.data;
+	//          console.info("success:"+data); 
+				var data0=data.march;
+				var data1=data.msgInfo;
+				var data2=data.fileType;
+				var data3=data.lineNo;
+				
+				var infolength = data1.length
+				// alert(data2);
+				// alert(infolength);
+				for(var i=0;i<infolength;i++){
+					var info=data1[i];
+					if(info!="")$("#progressInfo").html(info);
+					if(data2=="3")filterList.push(info);
+					else if(data2=="4")clusterList.push(info);
+				}
+				
+	            if(data2=="4"){// 不包含 ，任务运行完成（失败或成功）  
+	                clearTimeout(t);// 关闭计时器  
+	                // 关闭弹窗进度条  
+	                $('#myModal1').modal("hide");  
+	                // 开启提示条模态框  
+	              
+	                parent.WebUtils.alert(data0=="100%"?"过滤完成！":(data0=="FAILED"?"调用建模失败!":"模型训练被杀死！"));  
+	                  
+	                // openModal("myModal2");  
+	                console.info("closed!");  
+					
+					//$('#myModal1').modal("hide");  
+					var myChart = echarts.init(document.getElementById('cont'));  
+					// var pChart = echarts.init(document.getElementById('points')); 
+					// alert(clusterList.length);
+					
+					myChart.showLoading();			
+					var rows=[];
+					var columns=[];
+					$.ajax({    
+						"type":'post',    
+						"url": "getSceneRowCol", 
+						"data":	"sceneId="+$("#s_sceneId").val(),	
+						"async":false,
+						"success" : function(data) { 
+							var rowCols=data.data;
+							rows=rowCols.rows;
+							columns=rowCols.columns;
+						}    
+					});
+					var clufeatures=[];
+					for(var i=0;i<clustermap.length;i++){
+						var px = clustermap[i];
+						var px = center.CENTER;
+						var centerfeas = px.slice(1,px.length-1).split(",");
+						var centerstr="";
+						for(var j=0;j<centerfeas.length;j++){
+							centerstr+=columns[j]+":"+centerfeas[j]+"<br />";
+						}
+						clufeatures[i]=centerstr;			
+					}
+					
+					var legendata=[];
+					var seridata=[];
+					var piedata=[];
+					 // alert(clusterList.length);
+					 // alert(filterList.length);
+					for(var i=0;i<clusterList.length;i++){
+						var obj=JSON.parse(clusterList[i]);
+						//alert(obj);
+						var clusterno = parseInt(obj.cluster);
+						var piename="第"+(clusterno+1)+"类<br />"+clufeatures[clusterno];
+						var count = obj.count;
+						legendata.push(piename);
+						piedata.push({
+							name:piename,
+							value:count
+						});
+					}
+					
+					// for(var i=0;i<clustermap.length;i++){
+						// clustermap[i]
+					// }
+					// alert(seridata);
+					myChart.hideLoading();	
+					//alert(piedata);
+					
+					//pChart.showLoading();			
+					myChart.setOption(option = {
+						title : {
+							text: '人群数量统计',
+							x:'center'
+						},
+						tooltip : {
+							trigger: 'item',
+							formatter: "{a} <br/>{b} : {c} ({d}%)"
+						},
+						legend: {
+							type: 'scroll',
+							orient: 'vertical',
+							right: 10,
+							top: 20,
+							bottom: 20,
+							data: legendata,
+						},
+						series : [
+							{
+								name:'各类人数',
+								type:'pie',
+								radius : '40%',
+								center: ['50%', '40%'],
+								data:piedata,
+								label: {
+									normal: {
+										formatter: '  {b|{b}：}{c}  {per|{d}%}  ',
+										backgroundColor: '#eee',
+										borderColor: '#aaa',
+										borderWidth: 1,
+										borderRadius: 4,
+										rich: {
+											b: {
+												fontSize: 16,
+												lineHeight: 33
+											},
+											per: {
+												color: '#eee',
+												backgroundColor: '#334455',
+												padding: [2, 4],
+												borderRadius: 2
+											}
+										}
+									}
+								},
+								itemStyle: {
+									emphasis: {
+										shadowBlur: 10,
+										shadowOffsetX: 0,
+										shadowColor: 'rgba(0, 0, 0, 0.5)'
+									}
+								}
+							}
+						]
+					},true);
+	                return ;  
+	            }  
+
+	            setProgress("progressId", data0);  
+	            // 进度查询每次间隔1500ms  
+	            t=setTimeout("queryTaskProgress('"+resNo+"','"+data2+"','"+data3+"')",1500);  
+	        },  
+	        error: function(data){  
+	            console.info("error"+data);      
+	        }  
+	    });  
+	}  
 	</script>
 </body>
 </html>

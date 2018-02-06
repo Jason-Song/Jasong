@@ -42,6 +42,18 @@
         </where>
         <if test="condition.orders != null " > ORDER BY ${condition.orders}</if>
     </select>
-
+    
+    <select id="getKMeansResult" resultType="java.util.HashMap" parameterType="java.lang.String">
+		select 	T.TRAIN_RES  AS trainRes,
+				T.SCENE 	 AS sceneId,
+				S.NAME	  	 AS sceneName,
+				T.PREDICT_ID AS predictId
+		from T_KMEANS_RESULT T
+		LEFT JOIN T_SCENE S ON T.SCENE=S.ID
+		<where>
+			T.ID=#{resultId}
+		</where>
+    </select>
+    
 </mapper>
 

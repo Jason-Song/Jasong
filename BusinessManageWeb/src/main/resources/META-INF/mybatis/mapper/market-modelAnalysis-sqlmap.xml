@@ -57,5 +57,9 @@
 		select id,(id||'['||file_name||']') as idAndName from T_PRODUCT_DATA
     </select>
     
+    <select id="getSceneById" resultType="java.util.Map" parameterType="java.lang.String">
+		select COND_NAME,COLUMN_NAME,SHORT_ROW,ROW_NAME from T_SCENE where id=#{sceneId}
+    </select>
+    
 </mapper>
 

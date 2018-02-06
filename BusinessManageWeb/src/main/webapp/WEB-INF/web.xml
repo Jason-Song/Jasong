@@ -53,4 +53,7 @@
       <taglib-location>/WEB-INF/auth.tld</taglib-location>
     </taglib>
   </jsp-config>
+  <session-config>
+       <session-timeout>30</session-timeout>
+   </session-config>
 </web-app>

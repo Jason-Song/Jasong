@@ -6,7 +6,11 @@
 <mapper namespace="com.good.market.mapper.ProduceModelDao">
 
 	<select id="produceModelList" resultType="java.util.HashMap">
-		select MODEL_TYPE,MODEL_NAME from T_PRODUCE_MODEL where SCENE=#{sceneId}
+		select ID,MODEL_NAME from T_PRODUCE_MODEL where SCENE=#{sceneId}
+    </select>
+    
+	<select id="getModelInfo" resultType="java.util.HashMap">
+		select MODEL_TYPE,PREDICT_ID from T_PRODUCE_MODEL where ID=#{modelId}
     </select>
     
 	<select id="getProductData" resultType="java.util.HashMap">
