@@ -40,7 +40,7 @@
             <if test="condition.crtStartTime != null and condition.crtStartTime != ''"> and T.CREATE_TIME &gt;= #{condition.crtStartTime} </if>
             <if test="condition.crtEndTime != null and condition.crtEndTime != ''"> and T.CREATE_TIME &lt;= #{condition.crtEndTime} </if>
         </where>
-        <if test="condition.orders != null " > ORDER BY ${condition.orders}</if>
+        ORDER BY T.CREATE_TIME DESC
     </select>
     
     <select id="getKMeansResult" resultType="java.util.HashMap" parameterType="java.lang.String">

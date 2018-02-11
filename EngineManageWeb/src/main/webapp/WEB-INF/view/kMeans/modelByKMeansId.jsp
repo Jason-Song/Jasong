@@ -58,8 +58,10 @@
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-md-3">
-							<label class="control-label">文件Id[文件name]</label>
-							<select class="form-control" id="s_fileId" ></select>
+							<label class="control-label">文件Id</label>
+							<input class="hidden" id="s_kMeansId" name="s_kMeansId" value=<c:if test="${not empty kMeansId}">${requestScope.kMeansId}</c:if> />
+							<input class="hidden" id="s_fileId" name="s_fileId" />
+							<input class="form-control" readonly="readonly" id="s_fileName" name="s_fileName" />
 						</div>
 						<div class="col-md-3">
 							<input class="hidden" id="s_sceneId"></input>
@@ -71,7 +73,7 @@
 							<select class="form-control" id="s_modelNo" ></select>
 						</div>
 						<div class="col-md-3">
-	  				       <div class="btn-group " data-toggle="buttons">
+							<div class="btn-group " data-toggle="buttons">
 	  				       		<div style="width:50px;height:27px;" ></div>
 	                            <label class="btn btn-blue" id="applybutton">
 	                                <input type="checkbox">应用</input>
@@ -95,11 +97,11 @@
 				</div>
 				<div class="panel-body-">
 					<div class="row">
-						<div class="col-md-12" id="cont" style="width: 1100px; height: 700px; margin: 0 auto"></div>
+						<div class="col-md-12" id="cont" style="width: 1100px;height:700px; margin: 0 auto"></div>
 					</div>
 					<div class="row">
 						<h3 class="control-label">聚类单轴散点图</h3>
-						<div class="col-md-12" id="points" style="width: 1100px; height: 1000px; margin: 0 auto"></div>
+						<div class="col-md-12" id="points" style="width: 1100px;height:1000px; margin: 0 auto"></div>
 					</div>
 				</div>
 			</div>
@@ -156,66 +158,52 @@
 <script src="../../assets/js/echarts/macarons.js"></script>
 
 	<script type="text/javascript">
- 		
+	// var msgstr = new Set();
+ 	var modelNumber;
 	$(function(){
-		//获取文件ID动态菜单
 		$.ajax({    
-		    "type":'post',    
-		    "url": "getSelectData",  
-		    "success" : function(data) {
-			    var cond_list = data.data;
-			    console.log(cond_list);
-			    var opts = "";
-			    for(var cond_index = 0;cond_index < cond_list.length;cond_index++){
-			    	var cond = cond_list[cond_index]; 
-			    	opts += "<option value='"+cond.ID+"'>"+cond.IDANDNAME+"</option>";  
-			    }
-			    $("#s_fileId").append("<option value=''></option>"+opts);
-			   // $("#condIds").append(opts);
-		     }    
+			"type":'get',    
+			"url": "resultInfo", 
+			"data":	"kMeansId="+$("#s_kMeansId").val(),	
+			"async":false,
+			"success" : function(data) { 
+				$("#s_fileId").val(data.data.FILEID);
+				modelNumber=data.data.MODELNO;
+			}    
+		});	
+		$.ajax({    
+			"type":'get',    
+			"url": "sceneFileInfo", 
+			"data":	"fileId="+$("#s_fileId").val(),	
+			"success" : function(data) { 
+				$("#s_fileName").val(data.data.FILENAME);
+				$("#s_sceneId").val(data.data.SCENEID);
+				$("#s_sceneName").val(data.data.SCENENAME);
+			}    
+		});		
+		$.ajax({    
+			"type":'get',    
+			"url": "modelNoList", 
+			"data":	"fileId="+$("#s_fileId").val(),	
+			"success" : function(data) { 
+				var model_list = data.data;  
+				var opts = "";
+				for(var model_index = 0;model_index < model_list.length;model_index++){
+					var model = model_list[model_index]; 
+					opts += "<option value='"+model+"'>"+model+"</option>";  
+				}
+				$("#s_modelNo").append(opts);
+				$("#s_modelNo").val(modelNumber).trigger('change');
+			}    
 		});
-	    $('#s_fileId').select2({  
-            placeholder: "文件Id[文件name]",  
-            allowClear: true  
-        });
-		$("#s_fileId").on("change",function(e){
-			$("#s_modelNo").html("");
-			$.ajax({    
-				"type":'get',    
-				"url": "modelNoList", 
-				"data":	"fileId="+$("#s_fileId").val(),	
-				"success" : function(data) { 
-					var model_list = data.data;  
-					var opts = "";
-					for(var model_index = 0;model_index < model_list.length;model_index++){
-						var model = model_list[model_index]; 
-						opts += "<option value='"+model+"'>"+model+"</option>";  
-					}
-					$("#s_modelNo").append(opts);
-					$("#s_modelNo").val(model_list[0]).trigger('change');
-				 }    
-			});
-			$('#s_modelNo').select2({  
-				placeholder: "选择模型",  
-				allowClear: true 
-			});	
-			$.ajax({    
-				"type":'get',    
-				"url": "sceneFileInfo", 
-				"data":	"fileId="+$("#s_fileId").val(),	
-				"async":false,
-				"success" : function(data) { 
-					$("#s_fileName").val(data.data.FILENAME);
-					$("#s_sceneId").val(data.data.SCENEID);
-					$("#s_sceneName").val(data.data.SCENENAME);
-				}    
-			});	
-		});
-		
-		$("#applybutton").click(function(){ 
+		$('#s_modelNo').select2({  
+			placeholder: "选择模型",  
+			//allowClear: true  
+		});	
+		$("#applybutton").click(function(){  
+			var random = Math.random().toString().replace('.','');
 			var modelNo = $("#s_modelNo").val();
 			var predictId = $("#predictId").val();
-			var random = Math.random().toString().replace('.','');	
 			if(modelNo!=""&&predictId!=""&&random!=""){
 				$.ajax({    
 					"type":'post',    
@@ -223,23 +211,22 @@
 					"data":	{
 						"predictId":$("#predictId").val(),
 						"modelName":"K均值聚类模型",
-						"modelNo":modelNo,
+						"modelNo":$("#s_modelNo").val(),
 						"sceneId":$("#s_sceneId").val(),
 						"random":random
 					},	
-					"success" : function(data) { 
+					"success" : function(data) {
 					}    
 				});
 				setProgress("progressId", "0%");  
 				// 开启进度条模态框  
 				openModal("myModal1");  
 				// 定时请求任务进度  
-				t=setTimeout("queryTaskProgress('"+random+"','1','1')",1000); 
+				t=setTimeout("queryTaskProgress('"+random+"','1','1')",1000);
 			}else{
 				parent.WebUtils.alert("请选择一个模型进行应用！");
-			}
-		}); 
-		
+			}			
+		});
 		$("#s_modelNo").on("change",function(e){
 			var myChart = echarts.init(document.getElementById('cont'));  
 			var pChart = echarts.init(document.getElementById('points'));  
@@ -291,8 +278,10 @@
 						xs.push({
 							name:'差异程度【欧式距离】',
 							type:'bar',
-							data:datas
+							data:datas,
+							barGrap:'1%'
 						});
+						//$("#points").css("height","'"+j*100+"px'");
 					}
 					myChart.hideLoading();
 					myChart.setOption(option = {
@@ -337,7 +326,8 @@
 							}
 						],
 						series :xs
-					},true);
+					},true);	
+					myChart.resize();
 					poption = {
 						tooltip: {
 							position: 'top'
@@ -352,6 +342,7 @@
 						singleAxis: [],
 						series: []
 					};
+					
 					echarts.util.each(categorys,function(day, idx) {
 						poption.title.push({
 							textBaseline: 'middle',
@@ -389,12 +380,13 @@
 					});
 					pChart.hideLoading();
 
-					pChart.setOption(poption,true);		
+					pChart.setOption(poption,true);	
+					pChart.resize();
 				}
 			});
 		});
-	}); 
-		/** 
+	});
+	/** 
      * 设置进度条 
      * @param id 
      * @param value 

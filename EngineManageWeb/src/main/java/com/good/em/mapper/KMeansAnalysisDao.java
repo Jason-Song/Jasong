@@ -17,6 +17,8 @@ public interface KMeansAnalysisDao {
     public List<String> modelNoList(@Param("fileId") String fileId);
     
     public Map<String,Object> sceneFileInfo(@Param("fileId") String fileId);
+
+    public Map<String,Object> resultInfo(@Param("kMeansId") String kMeansId);
 	
     public Integer getModelId(@Param("condition") Map<String,Object> condition)throws Exception;
     

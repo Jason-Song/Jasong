@@ -1,10 +1,14 @@
 package com.good.em.service.impl;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -50,12 +54,17 @@ public class KMeansTrainServiceImpl implements KMeansTrainService {
     private AuditLogService logService;
     
     @Override
-    public List<String> runKMeansTrain(HttpServletRequest request,Operator oper) throws ServiceException{
-        List<String> msglist = new ArrayList<String>();
+    public void runKMeansTrain(HttpServletRequest request,Operator oper) throws ServiceException{
         ExecuteResult result = ExecuteResult.UNKNOWN;
 
         LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
         String userId = linfo.getOperator().getUserID();
+
+		String preName = RandomUtil.getRandomFileName();
+		String modelName = RandomUtil.getRandomFileName();
+    	String marchPath = "/progress/"+userId + request.getParameter("random");
+    	ServletContext sc = request.getServletContext();
+    	String file1name = sc.getRealPath(marchPath);
         try {
     		String username = paramDao.getParams("SPARK_CLIENT_USER", "EM").getParaValue();
     		String host = paramDao.getParams("SPARK_CLIENT_HOST", "EM").getParaValue();
@@ -68,11 +77,14 @@ public class KMeansTrainServiceImpl implements KMeansTrainService {
     		if(sparkHome!=null) wbSpark = sparkHome.getParaValue()+"bin/";
     		String wbRoot = paramDao.getParams("WB_ROOT_PATH", "EM").getParaValue();
 
-    		String preName = RandomUtil.getRandomFileName();
-    		String modelName = RandomUtil.getRandomFileName();
-
+    		File file1 = new File(file1name);
+ 	        if(!file1.exists()){
+ 	        	Boolean flag1 = file1.createNewFile();
+ 	        	logger.info("创建进度条数据文件："+flag1.toString());
+ 	        	if(!flag1)return;
+ 	        }
+    		
             JSch jsch = new JSch();
-
 			jsch.addIdentity(pubKeyPath);
 
 	        Session session=jsch.getSession(username, host, 22);//为了连接做准备
@@ -89,14 +101,18 @@ public class KMeansTrainServiceImpl implements KMeansTrainService {
 	        channel.setCommand(command);
 
 	        BufferedReader in = new BufferedReader(new InputStreamReader(channel.getInputStream()));
-	
-	        channel.connect();
-	        String msg;
-	        while((msg = in.readLine()) != null){
-   	        	logger.info(msg);
-   	        	msglist.add(msg);
-   	        }
+	        OutputStream os = new FileOutputStream(file1name);
 
+    		channel.connect();
+    		String msg;
+    		while((msg = in.readLine()) != null){
+   	        	logger.info(msg);
+   	        	os.write((msg+"\n").getBytes());
+   	        }
+	        os.write("OOF".getBytes());
+	        logger.info("os结束OOF");
+	        os.flush();
+	        os.close();
     	    in.close();  
 	        channel.disconnect();
 	        session.disconnect();
@@ -109,9 +125,8 @@ public class KMeansTrainServiceImpl implements KMeansTrainService {
 	        result = ExecuteResult.FAIL;
 			ex.printStackTrace();
 		} finally {
-            logService.addAuditLog(oper, BizType.EM, "runKMeansTrain", "调用KMeans算法", msglist.toString().substring(0,20), FunctionType.NORMAL, result);
+            logService.addAuditLog(oper, BizType.EM, "runKMeansTrain", "调用KMeans算法", preName, FunctionType.NORMAL, result);
         }
-        return msglist;
     }
     
 }

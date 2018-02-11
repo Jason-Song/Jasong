@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -43,6 +44,7 @@ import com.good.em.service.TrainDataService;
 import com.good.sys.MsgConstants;
 import com.good.sys.WebUtils;
 import com.good.sys.bean.LogonInfo;
+import com.good.utils.LineReadUtil;
 
 
 @Controller
@@ -66,6 +68,14 @@ public class KMeansTrainController {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("/kMeans/modelById");
         mv.addObject("fileId", fileId);
+        return mv;
+    }
+    
+    @RequestMapping(value = "/modelByKMeansId", method = { RequestMethod.GET })
+    public ModelAndView modelByKMeansId(@RequestParam("kMeansId") String fileId, HttpServletRequest request) throws Exception {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("/kMeans/modelByKMeansId");
+        mv.addObject("kMeansId", fileId);
         return mv;
     }
     
@@ -107,20 +117,11 @@ public class KMeansTrainController {
     @RequestMapping(value = "/train", method = { RequestMethod.POST, RequestMethod.GET })
     @ResponseBody
     public void train(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        WebPageResult ret = new WebPageResult();
 		LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
-
-        List<String> msglist = new ArrayList<String>();
         try {
-        	msglist = kMeansTrainService.runKMeansTrain(request, linfo.getOperator());
-
-			ret.setMsg("训练数据成功！");
-			ret.setData(msglist);
+        	kMeansTrainService.runKMeansTrain(request, linfo.getOperator());
        	} catch (Exception e) {
             logger.error(MsgConstants.E0000, e);
-            ret.setRetcode(MsgConstants.E0000);
-			ret.setMsg("训练数据失败！");
-			ret.setData(msglist);
         }
     }
     
@@ -217,6 +218,52 @@ public class KMeansTrainController {
     	
     	return ret;
     }
+	
+	@RequestMapping(value = "/trainMonitor", method = { RequestMethod.POST,RequestMethod.GET })
+	@ResponseBody
+	public WebPageResult trainMonitor(WebRequest wr, HttpServletRequest request) throws Exception {
+		WebPageResult ret = new WebPageResult();
+		LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
+		String rootPath = "/progress/"+linfo.getOperator().getUserID()+request.getParameter("trainRes");
+    	ServletContext sc = request.getServletContext();
+    	String filename = sc.getRealPath(rootPath);
+	    File file=new File(filename);    
+	    boolean fileexist = file.exists();
+    	Map<String,Object> progress = new HashMap<String,Object>();
+    	List<String> msgInfo = new ArrayList<String>();
+	    if(!fileexist){ 
+	    	msgInfo.add("正在连接慧脑引擎...");
+	    	progress.put("msgInfo",msgInfo);
+	    	progress.put("fileType", "0");
+	    	progress.put("lineNo", "1");
+	 		ret.setData(progress);
+		 	return ret;     
+	    }
+	    int lineNo = Integer.parseInt(request.getParameter("lineNo"));
+
+    	msgInfo = LineReadUtil.readAppointedLineNumber(file, lineNo);
+    	progress.put("msgInfo",msgInfo);
+    	int index = msgInfo.size();
+		int last = index-1;
+		String lastLine = msgInfo.get(last);
+//			logger.info("msgInfo==="+msgInfo.toString());
+    	if("OOF".equals(lastLine)){
+    		progress.put("fileType", "2");
+			msgInfo.remove(last);
+			if(fileexist)file.delete();
+    	}else if(!"".equals(lastLine)||index!=1){
+    		progress.put("fileType", "1");
+    		progress.put("lineNo", lineNo + index);
+    	}else{
+    		progress.put("fileType", "1");
+    		progress.put("lineNo", lineNo);
+    	}
+    	
+    	logger.info("lineNo======"+progress.get("lineNo"));
+ 		ret.setData(progress);
+	    
+	 	return ret;
+	}
     
     @InitBinder
     public void initBinder(WebDataBinder binder) {

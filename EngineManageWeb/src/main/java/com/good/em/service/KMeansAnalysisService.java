@@ -15,10 +15,12 @@ public interface KMeansAnalysisService {
         			
 	public Map<String,Object> getEuclidDistance(Map<String,Object> condition,Operator oper) throws ServiceException;
     
-	public List<String> runApplyModel(ProduceModelPo produceModel,Operator oper) throws ServiceException;
+	public void runApplyModel(ProduceModelPo produceModel,Operator oper) throws ServiceException;
 
 	public List<String> modelNoList(String fileId) throws ServiceException;
 	
 	public Map<String,Object> sceneFileInfo(String fileId) throws ServiceException;
+	
+	public Map<String,Object> resultInfo(String kMeansId) throws ServiceException;
 	
 }

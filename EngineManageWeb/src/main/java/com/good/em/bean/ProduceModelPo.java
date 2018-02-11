@@ -31,6 +31,10 @@ public class ProduceModelPo implements Serializable {
 	 */
 	private Integer scene;
 	/**
+	 * 进度文件随机值
+	 */
+	private String random;
+	/**
 	 * 创建用户
 	 */
 	private String createUser;
@@ -107,6 +111,12 @@ public class ProduceModelPo implements Serializable {
 	}
 	public void setScene(Integer scene) {
 		this.scene = scene;
+	}
+	public String getRandom() {
+		return random;
+	}
+	public void setRandom(String random) {
+		this.random = random;
 	}
 
 }

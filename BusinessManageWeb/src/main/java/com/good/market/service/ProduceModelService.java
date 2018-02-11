@@ -15,7 +15,7 @@ import com.good.sys.bean.Operator;
  */
 public interface ProduceModelService {
     
-    public List<String> modelPredict(HttpServletRequest request,Operator oper) throws ServiceException;
+    public void modelPredict(HttpServletRequest request,Operator oper) throws ServiceException;
     	
     public List<Map<String,String>> produceModelList(String sceneId);
     

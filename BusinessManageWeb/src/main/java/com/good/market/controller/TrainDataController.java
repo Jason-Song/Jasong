@@ -102,14 +102,8 @@ public class TrainDataController {
             session.setConfig("StrictHostKeyChecking", "no");
             session.connect();
             String command = "ls";
-//          Channel channel=session.openChannel("shell");
             ChannelExec channel=(ChannelExec)session.openChannel("exec");
             channel.setCommand(command);
-
-
-//          channel.setInputStream(System.in);
-//          channel.setOutputStream(System.out);
-//          InputStream in=channel.getInputStream();
 
             BufferedReader in = new BufferedReader(new InputStreamReader(channel.getInputStream()));
 

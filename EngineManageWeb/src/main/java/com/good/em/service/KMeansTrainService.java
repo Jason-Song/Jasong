@@ -12,6 +12,6 @@ import com.good.sys.bean.Operator;
  */
 public interface KMeansTrainService {
         			
-	public List<String> runKMeansTrain(HttpServletRequest request,Operator oper) throws ServiceException;
+	public void runKMeansTrain(HttpServletRequest request,Operator oper) throws ServiceException;
     	
 }

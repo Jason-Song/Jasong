@@ -80,16 +80,21 @@
 	                                <input type="checkbox">过滤</input>
 	                            </label>
 	                       </div>
+						   <div class="btn-group " data-toggle="buttons">
+						   		<label class="btn btn-blue" id="predictbutton">
+	                                <input type="checkbox">下载结果</input>
+	                            </label>
+							</div>
 						</div>
 					</div>
 				</div>
 				<div class="panel-body-">
 					<div class="row">
-						<div class="col-md-12" id="cont" style="width: 1100px;height:700px; margin: 0 auto"></div>
+						<label class="control-label">结果总数：</label>
+						<div id="totalno"></div>
 					</div>
 					<div class="row">
-						<h3 class="control-label">聚类单轴散点图</h3>
-						<div class="col-md-12" id="points" style="width: 1100px;height:1000px; margin: 0 auto"></div>
+						<div class="col-md-12" id="cont" style="width: 1100px;height:1400px; margin: 0 auto"></div>
 					</div>
 				</div>
 			</div>
@@ -151,6 +156,7 @@
 	var filterList=[];
 	var clusterList=[];
 	var centermap=[];
+	var filterContent="编号 类别 差异度\n";
 	$(function(){
 
 		$.ajax({    
@@ -181,7 +187,10 @@
 			}    
 		});
 		// alert(centermap.length);
-		$("#filterbutton").click(function(){ 
+		$("#filterbutton").click(function(){
+			filterList=[];
+			clusterList=[];
+			filterContent="编号 类别 差异度\n";
 			var trainRes = $("#s_trainRes").val();
 			$.ajax({    
 				type:'POST',    
@@ -241,8 +250,7 @@
 	    // ajax 发送请求获取任务运行状态，如果返回运行失败或成功则关闭弹框  
 	    $.ajax({  
 	        type : "POST",  
-	        url : "monitor",  
-	//          dataType : "json",  
+	        url : "monitor",   
 	        async:false,// 同步执行  
 	        data:{
 				"trainRes":resNo,
@@ -251,22 +259,19 @@
 			},  
 	        success : function(data) {  
 				var data=data.data;
-	//          console.info("success:"+data); 
 				var data0=data.march;
 				var data1=data.msgInfo;
 				var data2=data.fileType;
 				var data3=data.lineNo;
 				
 				var infolength = data1.length
-				// alert(data2);
-				// alert(infolength);
 				for(var i=0;i<infolength;i++){
 					var info=data1[i];
 					if(info!="")$("#progressInfo").html(info);
 					if(data2=="3")filterList.push(info);
 					else if(data2=="4")clusterList.push(info);
 				}
-				
+				//alert(data2);
 	            if(data2=="4"){// 不包含 ，任务运行完成（失败或成功）  
 	                clearTimeout(t);// 关闭计时器  
 	                // 关闭弹窗进度条  
@@ -281,8 +286,6 @@
 					//$('#myModal1').modal("hide");  
 					var myChart = echarts.init(document.getElementById('cont'));  
 					// var pChart = echarts.init(document.getElementById('points')); 
-					// alert(clusterList.length);
-					
 					myChart.showLoading();			
 					var rows=[];
 					var columns=[];
@@ -297,14 +300,14 @@
 							columns=rowCols.columns;
 						}    
 					});
+
 					var clufeatures=[];
-					for(var i=0;i<clustermap.length;i++){
-						var px = clustermap[i];
-						var px = center.CENTER;
+					for(var i=0;i<centermap.length;i++){
+						var px = centermap[i];
 						var centerfeas = px.slice(1,px.length-1).split(",");
 						var centerstr="";
 						for(var j=0;j<centerfeas.length;j++){
-							centerstr+=columns[j]+":"+centerfeas[j]+"<br />";
+							centerstr+=columns[j]+":"+centerfeas[j]+"\n";
 						}
 						clufeatures[i]=centerstr;			
 					}
@@ -312,54 +315,62 @@
 					var legendata=[];
 					var seridata=[];
 					var piedata=[];
-					 // alert(clusterList.length);
-					 // alert(filterList.length);
+					var totalno=0;
 					for(var i=0;i<clusterList.length;i++){
 						var obj=JSON.parse(clusterList[i]);
-						//alert(obj);
 						var clusterno = parseInt(obj.cluster);
-						var piename="第"+(clusterno+1)+"类<br />"+clufeatures[clusterno];
+						var piename="第"+(clusterno+1)+"类数量\n该类特征\n【\n"+clufeatures[clusterno]+"】";
 						var count = obj.count;
 						legendata.push(piename);
 						piedata.push({
 							name:piename,
 							value:count
 						});
+						totalno+=count;
+					}
+
+					for(var i=0;i<filterList.length;i++){
+						// var filteres = filterList[i];
+						var obj=JSON.parse(filterList[i]);
+						filterContent+=rows[obj.rowno]+" 第"+(parseInt(obj.cluster)+1)+"类 "+obj.distance+"\n";
 					}
 					
-					// for(var i=0;i<clustermap.length;i++){
-						// clustermap[i]
-					// }
-					// alert(seridata);
-					myChart.hideLoading();	
-					//alert(piedata);
+					$("#totalno").html(totalno);
 					
-					//pChart.showLoading();			
+					myChart.hideLoading();			
 					myChart.setOption(option = {
 						title : {
-							text: '人群数量统计',
+							text: '各类数量统计',
 							x:'center'
 						},
 						tooltip : {
 							trigger: 'item',
 							formatter: "{a} <br/>{b} : {c} ({d}%)"
 						},
+						toolbox: {
+							show : true,
+							feature : {
+								mark : {show: true},
+								dataView : {show: true, readOnly: false},
+								restore : {show: true},
+								saveAsImage : {show: true}
+							}
+						},
 						legend: {
 							type: 'scroll',
-							orient: 'vertical',
-							right: 10,
-							top: 20,
-							bottom: 20,
+							//orient: 'vertical',
+							bottom: 10,
+							left: 'center',
 							data: legendata,
 						},
 						series : [
 							{
-								name:'各类人数',
+								name:'各类数量',
 								type:'pie',
-								radius : '40%',
+								radius : '20%',
 								center: ['50%', '40%'],
 								data:piedata,
-								label: {
+								label: {									
 									normal: {
 										formatter: '  {b|{b}：}{c}  {per|{d}%}  ',
 										backgroundColor: '#eee',
@@ -368,10 +379,12 @@
 										borderRadius: 4,
 										rich: {
 											b: {
-												fontSize: 16,
-												lineHeight: 33
+												align:'left',
+												fontSize: 10,
+												lineHeight: 12
 											},
 											per: {
+												align:'left',
 												color: '#eee',
 												backgroundColor: '#334455',
 												padding: [2, 4],
@@ -390,6 +403,7 @@
 							}
 						]
 					},true);
+					$("#progressInfo").html("");
 	                return ;  
 	            }  
 
@@ -402,6 +416,22 @@
 	        }  
 	    });  
 	}  
+	$("#predictbutton").click(function(){ 
+		downloadFile("KMeans预测结果.txt", filterContent);
+	});
+	function downloadFile(fileName, content){
+		var eleLink = document.createElement('a');
+		eleLink.download = fileName;
+		eleLink.style.display = 'none';
+		// 字符内容转变成blob地址
+		var blob = new Blob([content]);
+		eleLink.href = URL.createObjectURL(blob);
+		// 触发点击
+		document.body.appendChild(eleLink);
+		eleLink.click();
+		// 然后移除
+		document.body.removeChild(eleLink);
+	}
 	</script>
 </body>
 </html>

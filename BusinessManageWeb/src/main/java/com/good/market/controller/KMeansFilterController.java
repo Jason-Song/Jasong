@@ -8,10 +8,7 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-import org.comet4j.core.CometContext;
-import org.comet4j.core.CometEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +20,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.good.comm.web.WebPageResult;
 import com.good.comm.web.WebRequest;
-import com.good.market.bean.CometPo;
-import com.good.market.bean.Constant;
 import com.good.market.service.KMeansFilterService;
 import com.good.market.service.KMeansResultService;
 import com.good.market.service.ModelAnalysisService;
 import com.good.sys.MsgConstants;
 import com.good.sys.WebUtils;
 import com.good.sys.bean.LogonInfo;
-import com.good.sys.bean.Operator;
-import com.good.utils.Comet;
-import com.good.utils.CometUtil;
 import com.good.utils.LineReadUtil;
 //import com.good.utils.Comet.SendToClientThread;
 
@@ -75,7 +67,6 @@ public class KMeansFilterController {
 	@RequestMapping(value = "/monitor", method = { RequestMethod.POST,RequestMethod.GET })
 	@ResponseBody
 	public WebPageResult monitor(WebRequest wr, HttpServletRequest request) throws Exception {
-//		Map<String,Object> list = kMeansResultService.getKMeansResult(resultId);
 		WebPageResult ret = new WebPageResult();
 		LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
 		String rootPath = "/progress/"+linfo.getOperator().getUserID()+request.getParameter("trainRes");

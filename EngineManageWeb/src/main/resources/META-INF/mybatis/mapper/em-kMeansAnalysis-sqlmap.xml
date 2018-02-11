@@ -31,6 +31,15 @@
     	</where>
     </select>
     
+    <select id="resultInfo" resultType="java.util.HashMap">
+		select 	T.FILE_ID AS FILEID,
+				SUBSTR(TRAIN_MODEL,-22) AS MODELNO
+		from T_KMEANS_INDEX T
+		<where> 
+			T.ID = #{kMeansId}
+    	</where>
+    </select>
+    
     <select id="modelNoList" resultType="java.lang.String">
     	select SUBSTR(TRAIN_MODEL,-22) AS MODELNO from T_KMEANS_INDEX T
     	<where> 

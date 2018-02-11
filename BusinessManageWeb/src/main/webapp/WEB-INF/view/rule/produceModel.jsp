@@ -84,17 +84,20 @@
 					<div class="row">		
 						<div class="col-md-12" id="calcuInfo"></div>
 					</div>
-					<div class="row">
-						<div class="col-md-12" id="cont" style="width: 1100px; height: 400px; margin: 0 auto"></div>
-					</div>
-					<div class="row">
-						<div class="col-md-12" id="treeModel" style="width: 1100px; height: 400px; margin: 0 auto"></div>
-					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">  
+	<div class="modal-dialog" role="document">  
+		<div class="modal-content">  
+			<label class="control-label" id="progressInfo">连接慧脑引擎...</label>
+			<div class="progress progress-striped active" style="margin-bottom: 0px; height: 25px; border-radius: 5px;">  
+				<div id="progressId" class="progress-bar" style="width: 1%; height: 100%;">0%</div>  
+			</div>  
+		</div>  
+	</div>  
+</div> 
 <!-- Imported styles on this page -->
 <link rel="stylesheet" href="../../assets/js/datatables/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="../../assets/js/select2/select2.css">
@@ -136,6 +139,8 @@
 <script src="../../assets/js/echarts/macarons.js"></script>
 
 	<script type="text/javascript">
+	var msgstr = new Set();
+	var resultId;
 	$(function(){
 		//获取文件ID动态菜单
 		$.ajax({    
@@ -158,6 +163,8 @@
             allowClear: true  
         });
 		$("#s_productData").on("change",function(e){
+			$("#s_produceModel").val("").trigger("change");
+			$("#s_produceModel").html("");
 			$.ajax({    
 				"type":'get',    
 				"url": "getProductData", 
@@ -188,15 +195,15 @@
 			placeholder: "选择模型",  
 			allowClear: true  
 		});	
+
 		$("#calcubutton").click(function(){  
 			var fileId = $("#s_productData").val();
 			var hdfsName = $("#hdfsName").val();
 			var scene = $("#sceneId").val();
 			var modelId = $("#s_produceModel").val();
+			var random = Math.random().toString().replace('.','');
+
 			if(fileId!=""&&hdfsName!=""&&scene!=""&&modelId!=""){
-				$("#calcubutton").removeClass("active");
-				$("#calcubutton").addClass("disabled");
-				$("#calcuInfo").html("<div style='text-align:center;'><img src='../../images/loading.gif' /></div>");
 				$.ajax({    
 					"type":'post',    
 					"url": "modelPredict", 
@@ -205,31 +212,121 @@
 						"fileId":$("#s_productData").val(),
 						"hdfsName":$("#hdfsName").val(),
 						"sceneId":$("#sceneId").val(),
-						"modelId":$("#s_produceModel").val()
+						"modelId":$("#s_produceModel").val(),
+						"random":random
 					},	
 					"success" : function(data) { 
-						var msglist = data.data;
-						var msg="";
-						for(var i=0;i<msglist.length;i++){
-							msg+=msglist[i];
-						}
-						
-						$("#calcubutton").removeClass("disabled");
-						$("#calcubutton").addClass("active");
-						$("#calcuInfo").html("计算详情：<br />计算成功！<br />"+msg);
-					}, 
-					"error":function(e){
-	        			$("#calcubutton").removeClass("disabled");
-						$("#calcubutton").addClass("active");
-						$("#calcuInfo").html("计算详情：<br />计算超时！<br />"+e.data);
-	        		}					
+					}				
 				});
+				setProgress("progressId", "0%");  
+				// 开启进度条模态框  
+				openModal("myModal1");  
+				// 定时请求任务进度  
+				//queryTaskProgress(resNo,1,1);
+				t=setTimeout("queryTaskProgress('"+random+"','1','1')",1000); 
 			}else{
 				parent.WebUtils.alert("请选择数据源和模型信息！");
 			}
 		}); 
+		
 	});
 	
+	$("#resbutton").click(function(){
+		if(resultId==""){
+			parent.WebUtils.alert("没有可查看的结果，请在计算后查看！");
+			return;
+		}
+		window.location.href="kMeansById?resultId="+resultId;
+	});
+	
+	/** 
+     * 设置进度条 
+     * @param id 
+     * @param value 
+     */  
+    function setProgress(id,value){  
+        $("#"+id).css("width",value);  
+        $("#"+id).html(value);  
+    }  
+      
+    /** 
+     * 开启模态框 
+     * @param id 
+     */  
+    function openModal(id){  
+        $('#'+id).on('show.bs.modal', function(){  
+            var $this = $(this);  
+            var $modal_dialog = $this.find('.modal-dialog');  
+            // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零  
+            $this.css('display', 'block');  
+            $modal_dialog.css({'margin-top': Math.max(0, ($(window).height() - $modal_dialog.height()) / 2) });  
+       });  
+        $('#'+id).modal({backdrop: 'static', keyboard: false});  
+    }  
+	
+	/** 
+     * 请求任务进度 
+     */  
+	function queryTaskProgress(resNo,fileType,lineNo){  
+	    // ajax 发送请求获取任务运行状态，如果返回运行失败或成功则关闭弹框  
+	    $.ajax({  
+	        type : "POST",  
+	        url : "calcuMonitor",  
+	        async:false,// 同步执行  
+	        data:{
+				"trainRes":resNo,
+				"fileType":fileType,
+				"lineNo":lineNo
+			},  
+	        success : function(data) {  
+				var data=data.data;
+				var data1=data.msgInfo;
+				var data2=data.fileType;
+				var data3=data.lineNo;
+				
+				var infolength = data1.length;
+				for(var i=0;i<infolength;i++){
+					var info=data1[i];
+					if(info!=""){
+						if(info.indexOf("结果ID:")==0){
+							var resultInfos = info.split(":");
+							resultId=resultInfos[1];
+						}
+						$("#progressInfo").html(info);
+						msgstr.add(info);
+						
+						var no = parseInt(data3);
+						var percent = Math.floor((no/(no+2))*100).toString()+"%";
+						setProgress("progressId", percent);  
+					}
+				}
+				//alert(data2);
+	            if(data2=="2"){// 不包含 ，任务运行完成（失败或成功）  
+	                clearTimeout(t);// 关闭计时器  
+	                // 关闭弹窗进度条  
+	                $('#myModal1').modal("hide");  
+	                // 开启提示条模态框  
+	              
+	                parent.WebUtils.alert("计算完成！");  
+	                  
+	               // console.info("closed!"); 
+				   var msg="";
+				    msgstr.forEach(function (item) {
+						msg+=item.toString() + "<br />";
+					});
+					$("#calcuInfo").html(msg);
+					
+	                return ;  
+	            }  
+
+	            // 进度查询每次间隔1500ms  
+	            t=setTimeout("queryTaskProgress('"+resNo+"','"+data2+"','"+data3+"')",1500);  
+	        },  
+	        error: function(data){  
+	            console.info("error"+data);      
+	        }  
+	    });  
+	}  
 	</script>
 </body>
 </html>

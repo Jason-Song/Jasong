@@ -1,14 +1,19 @@
 package com.good.em.service.impl;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletContext;
 
 import org.apache.hadoop.conf.Configuration;
 import org.slf4j.Logger;
@@ -84,14 +89,14 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
     }
     
     @Override    
-    public List<String> runApplyModel(ProduceModelPo produceModel,Operator oper) throws ServiceException{
-    	List<String> msglist = new ArrayList<String>();
+    public void runApplyModel(ProduceModelPo produceModel,Operator oper) throws ServiceException{
     	ExecuteResult result = ExecuteResult.UNKNOWN;
         Date nowDate = new Date();
         String now = TimeTool.paserString(nowDate, "yyyy-MM-dd HH:mm:ss");
         Map<String,Object> condition=new HashMap<String,Object>();
         
     	String userId = oper.getUserID();
+    	String file1name = produceModel.getRandom();
     	try {
     		String pubKeyPath = paramDao.getParams("SPARK_SSH_PUBKEY", "EM").getParaValue();
     		String username = paramDao.getParams("SPARK_CLIENT_USER", "EM").getParaValue();
@@ -99,16 +104,22 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
     		String wbRoot = paramDao.getParams("WB_ROOT_PATH", "EM").getParaValue();
     		String produceModelRoot = paramDao.getParams("PRODUCE_MODEL_PATH", "EM").getParaValue();
     		String trainModelRoot = paramDao.getParams("TRAIN_MODEL_PATH", "EM").getParaValue();
-
-    		JSch jsch = new JSch();
     		
+    		File file1 = new File(file1name);
+ 	        if(!file1.exists()){
+ 	        	Boolean flag1 = file1.createNewFile();
+ 	        	logger.info("创建进度条数据文件："+flag1.toString());
+ 	        	if(!flag1)return;
+ 	        }
+ 	        
+    		JSch jsch = new JSch();
     		jsch.addIdentity(pubKeyPath);
     		synchronized(this){
 	    		Session session=jsch.getSession(username, host, 22);//为了连接做准备
 	    		session.setConfig("StrictHostKeyChecking", "no");
 	    		session.connect();
 	    		int sceneId = produceModel.getScene();
-	    		String command = "cd " + wbRoot + "ml/script;./applyModel.sh KMeans " 
+	    		String command = "cd " + wbRoot + "ml/script;./applyHdfsModel.sh KMeans " 
 	    					+ produceModel.getModelNo() + " " + sceneId + " " + trainModelRoot + " "
 	    					+ produceModelRoot;
 	    		
@@ -117,14 +128,18 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
 	    		channel.setCommand(command);
 	    		
 	    		BufferedReader in = new BufferedReader(new InputStreamReader(channel.getInputStream()));
-	    		
+		        OutputStream os = new FileOutputStream(file1name);
+
 	    		channel.connect();
 	    		String msg;
 	    		while((msg = in.readLine()) != null){
-	    			logger.info(msg);
-	    			msglist.add(msg);
-	    		}
-	    		
+	   	        	logger.info(msg);
+	   	        	os.write((msg+"\n").getBytes());
+	   	        }
+		        os.write("OOF".getBytes());
+		        logger.info("os结束OOF");
+		        os.flush();
+		        os.close();
 	    		in.close();  
 	    		channel.disconnect();
 	    		session.disconnect();
@@ -153,7 +168,6 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
     	} finally {
     		logService.addAuditLog(oper, BizType.EM, "runApplyModel", "应用KMeans模型", produceModel.getModelNo(), FunctionType.NORMAL, result);
     	}
-    	return msglist;
     }
     
 	public List<String> modelNoList(String fileId) throws ServiceException{
@@ -162,6 +176,10 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
 	
 	public Map<String,Object> sceneFileInfo(String fileId) throws ServiceException{
 		return kMeansAnalysisDao.sceneFileInfo(fileId);
+	}
+	
+	public Map<String,Object> resultInfo(String kMeansId) throws ServiceException{
+		return kMeansAnalysisDao.resultInfo(kMeansId);
 	}
 	
 }

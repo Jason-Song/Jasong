@@ -15,9 +15,7 @@ import com.good.sys.bean.Operator;
 public interface KMeansFilterService {
 
     public void runSQLFilter(HttpServletRequest request,Operator oper) throws ServiceException;
-    
-    public Map<String,Object> runKMeansFilter(HttpServletRequest request,Operator oper) throws ServiceException;
-	
+    	
     public List<Map<String, String>> getCenters(String kMeansId) throws Exception;
 
 }

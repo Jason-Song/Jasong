@@ -10,6 +10,6 @@ public interface ProduceModelDao {
     
     public Map<String,Object> getProductData(String fileId);
     
-    public Map<String,String> getModelInfo(String modelId);
+    public Map<String,Object> getModelInfo(String modelId);
 
 }

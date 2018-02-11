@@ -251,6 +251,7 @@
 							<input name='id' class="hidden"></input>	
 							<input name='hdfsName' class="hidden"></input>		
 							<input name='t_scene' class="hidden"></input>	
+							<input name='random' class="hidden"></input>	
 							<div class="col-md-6">
 								<div class="form-group">
 									<label class="control-label">聚类数</label>
@@ -272,16 +273,30 @@
 		                        </div>
 							</div>
 						</div>
-						<div class="row">		
-							<div class="col-md-12" id="trainInfo" style='text-center'>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group" id="trainInfo"></div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</form>
+			<div class="modal-footer">				
+				<button class="btn btn-success pull-left hidden" id="resbutton">查看训练结果</button>
+			</div>
        </div>
    </div>
 </div>
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">  
+	<div class="modal-dialog" role="document">  
+		<div class="modal-content">  
+			<label class="control-label" id="progressInfo"></label>
+			<div class="progress progress-striped active" style="margin-bottom: 0px; height: 25px; border-radius: 5px;">  
+				<div id="progressId" class="progress-bar" style="width: 1%; height: 100%;">0%</div>  
+			</div>  
+		</div>  
+	</div>  
+</div> 
 	<!-- Imported styles on this page -->
 	<link rel="stylesheet" href="../../assets/js/datatables/css/jquery.dataTables.min.css">
 	<link rel="stylesheet" href="../../assets/js/select2/select2.css">
@@ -313,6 +328,8 @@
 	<script src="../../js/WebUtils.js"></script>
 
 	<script type="text/javascript">
+	var msgstr = new Set();
+	var resultId;
 	$(function(){
 		//获取scene动态菜单
 		$.ajax({    
@@ -408,11 +425,9 @@
 		});
 		
 		$('#trainbutton').click( function () {
-			//$("#traindetail").on("shown.bs.modal",function(){
-				//$("#dataform").attr("action","trainDataAdd");
-			//});
 			var data = table.row('.selected').data();
-
+			var random = Math.random().toString().replace('.','');
+			$("input[name='random']").val(random);
 			if(data){
 				$("#traindetail").on("shown.bs.modal",function(){
 					$("#trainForm").attr("action","train");
@@ -428,7 +443,25 @@
 				parent.WebUtils.alert("请选择一条记录");
 			}
 		});
+		$('#train_button').click(function(){
+			$("#trainInfo").html("");
+			$("#resbutton").addClass("hidden");
+			var numClusters = $("input[name='numClusters']").val();
+			var numIterations= $("input[name='numIterations']").val();
+			var random = $("#random").val();
+			if(numClusters!=""&&numIterations!=""&&random!=""){
+				setProgress("progressId", "0%");  
+				// 开启进度条模态框  
+				openModal("myModal1");  
+				// 定时请求任务进度  
+				t=setTimeout("queryTaskProgress('"+random+"','1','1')",1000); 
+			}
+		});
 	});
+	
+	$("#resbutton").click(function(){  
+    	window.location.href='modelByKMeansId?kMeansId='+resultId;
+   	}); 
 	
 	function submitDetail() {
 		var form = $('#traindetail form');
@@ -441,18 +474,23 @@
         		url:"train",
         		dataType:"json",
         		success:function(dt){
-    			    $("#traindetail").modal('hide');
-    			    table.draw();
-        		},
-        		error:function(e){
-    			    $("#traindetail").modal('hide');
-    			    table.draw();
         		}
         	});
-		    $("#traindetail").modal('hide');
-		    table.draw();
-		}
-		return false;	
+			
+		    var numClusters = $("input[name='numClusters']").val();
+			var numIterations= $("input[name='numIterations']").val();
+			var random = $("input[name='random']").val();
+			if(numClusters!=""&&numIterations!=""&&random!=""){
+				setProgress("progressId", "0%");  
+				// 开启进度条模态框  
+				openModal("myModal1");  
+				// 定时请求任务进度  
+				queryTaskProgress(random,'1','1'); 
+			}
+			
+			table.draw();
+			return false;
+		}	
 	}
 
 	$('#insert_button').click(function() {
@@ -539,6 +577,97 @@
     	};  
     	oReq.send(oData);
     }
+	
+	/** 
+     * 设置进度条 
+     * @param id 
+     * @param value 
+     */  
+    function setProgress(id,value){  
+        $("#"+id).css("width",value);  
+        $("#"+id).html(value);  
+    }  
+      
+    /** 
+     * 开启模态框 
+     * @param id 
+     */  
+    function openModal(id){  
+        $('#'+id).on('show.bs.modal', function(){  
+            var $this = $(this);  
+            var $modal_dialog = $this.find('.modal-dialog');  
+            // 关键代码，如没将modal设置为 block，则$modala_dialog.height() 为零  
+            $this.css('display', 'block');  
+            $modal_dialog.css({'margin-top': Math.max(0, ($(window).height() - $modal_dialog.height()) / 2) });  
+       });  
+        $('#'+id).modal({backdrop: 'static', keyboard: false});  
+    }  
+	
+	/** 
+     * 请求任务进度 
+     */  
+	function queryTaskProgress(resNo,fileType,lineNo){  
+	    // ajax 发送请求获取任务运行状态，如果返回运行失败或成功则关闭弹框  
+		if(resNo!="undefined"){
+	    $.ajax({  
+	        type : "POST",  
+	        url : "trainMonitor",  
+	        async:false,// 同步执行  
+	        data:{
+				"trainRes":resNo,
+				"fileType":fileType,
+				"lineNo":lineNo
+			},  
+	        success : function(data) {  
+				var data=data.data;
+				var data1=data.msgInfo;
+				var data2=data.fileType;
+				var data3=data.lineNo;
+				
+				var infolength = data1.length;
+				for(var i=0;i<infolength;i++){
+					var info=data1[i];
+					if(info!=""){
+						if(info.indexOf("结果ID:")==0){
+							var resultInfos = info.split(":");
+							resultId=resultInfos[1];
+						}
+						$("#progressInfo").html(info);
+						msgstr.add(info); 
+					}
+				}
+				
+				var no = parseInt(data3);
+				var percent = Math.floor((no/(no+2))*100).toString()+"%";
+				setProgress("progressId", percent); 
+				//alert(data2);
+	            if(data2=="2"){// 不包含 ，任务运行完成（失败或成功）  
+	                clearTimeout(t);// 关闭计时器  
+	                // 关闭弹窗进度条  
+	                $('#myModal1').modal("hide");  
+	                // 开启提示条模态框  
+	              
+	                parent.WebUtils.alert("计算完成！");  
+	                  
+	               // console.info("closed!"); 
+				    var msg="";
+				    msgstr.forEach(function (item) {
+						msg+=item.toString() + "\n";
+					});
+					$("#trainInfo").html("<label class='control-label'>训练信息：</label><textarea class='col-md-12' rows='4'>"+msg+"</textarea>");
+					$("#resbutton").removeClass('hidden');
+	                return ;  
+	            }  
+
+	            // 进度查询每次间隔1500ms  
+	            t=setTimeout("queryTaskProgress('"+resNo+"','"+data2+"','"+data3+"')",1500);  
+	        },  
+	        error: function(data){  
+	            console.info("error"+data);      
+	        }  
+	    });  
+		}
+	}  
 	</script>
 	<s:enums keys="em_fileType,em_status"></s:enums>
 	<script type="text/javascript">

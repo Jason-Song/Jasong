@@ -81,7 +81,7 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
         		}           	
         	}else{
         		String[] columns = condName.split(",");
-        		for(int i=1;i<columns.length-1;i++){
+        		for(int i=1;i<columns.length;i++){
             		collist.add(columns[i]);
         		}
         	}
@@ -99,7 +99,7 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
         		}            	
         	}else{
         		String[] rows = shortRow.split(",");
-        		for(int i=1;i<rows.length-1;i++){
+        		for(int i=1;i<rows.length;i++){
             		rowlist.add(rows[i]);
         		}
         	}
