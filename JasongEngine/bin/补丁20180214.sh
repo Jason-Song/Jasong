@@ -1,4 +1,5 @@
 #!/bin/bash
+mkdir /home/hadoop/WisdomBrain-tomcat_7.0/webapps3/wb-market/progress
 hadoop fs -mkdir /datafiles
 hadoop fs -mkdir /datafiles/graphx
 hadoop fs -mkdir /datafiles/ml

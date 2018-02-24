@@ -95,12 +95,18 @@ public class TrainDataServiceImpl implements TrainDataService {
 
     @Override	
     public String uploadToHdfs(InputStream is) throws ServiceException{
-    	Configuration conf = new Configuration();
-    	conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
-		String root = paramDao.getParams("TRAIN_UPLOAD_PATH", "EM").getParaValue();
-		String hdfsName = RandomUtil.getRandomFileName();
-		//上传文件到HDFS
-		HdfsUtil.putToHDFS(is, root + hdfsName, conf);
+    	String hdfsName="";
+    	try{
+	    	Configuration conf = new Configuration();
+	    	conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+			String root = paramDao.getParams("TRAIN_UPLOAD_PATH", "EM").getParaValue();
+			hdfsName = RandomUtil.getRandomFileName();
+			//上传文件到HDFS
+			HdfsUtil.putToHDFS(is, root + hdfsName, conf);
+	    	return hdfsName;
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
     	return hdfsName;
     }
     

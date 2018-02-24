@@ -94,7 +94,7 @@
 						<div id="totalno"></div>
 					</div>
 					<div class="row">
-						<div class="col-md-12" id="cont" style="width: 1100px;height:1400px; margin: 0 auto"></div>
+						<div class="col-md-12" id="cont" style="width: 1100px;height:1500px; margin: 0 auto"></div>
 					</div>
 				</div>
 			</div>
@@ -188,6 +188,7 @@
 		});
 		// alert(centermap.length);
 		$("#filterbutton").click(function(){
+			$('#progressInfo').html("连接慧脑引擎...")
 			filterList=[];
 			clusterList=[];
 			filterContent="编号 类别 差异度\n";
@@ -332,7 +333,8 @@
 					for(var i=0;i<filterList.length;i++){
 						// var filteres = filterList[i];
 						var obj=JSON.parse(filterList[i]);
-						filterContent+=rows[obj.rowno]+" 第"+(parseInt(obj.cluster)+1)+"类 "+obj.distance+"\n";
+						//filterContent+=(rows.indexOf(obj.rowno)?rows[obj.rowno])+" 第"+(parseInt(obj.cluster)+1)+"类 "+obj.distance+"\n";
+						filterContent+=(obj.rowno==""?"第"+(i+1)+"行":obj.rowno)+" 第"+(parseInt(obj.cluster)+1)+"类 "+obj.distance+"\n";
 					}
 					
 					$("#totalno").html(totalno);

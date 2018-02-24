@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import com.good.comm.enu.BizType;
 import com.good.comm.enu.ExecuteResult;
 import com.good.comm.enu.FunctionType;
-import com.good.market.bean.CometPo;
 import com.good.market.bean.SysParamPo;
 import com.good.market.mapper.KMeansFilterDao;
 import com.good.market.mapper.UserBlDao;
@@ -34,7 +33,6 @@ import com.good.sys.bean.LogonInfo;
 import com.good.sys.bean.Operator;
 import com.good.sys.mapper.SystemParamDao;
 import com.good.sys.service.AuditLogService;
-import com.good.utils.CometUtil;
 import com.good.utils.HdfsUtil;
 import com.good.utils.RandomUtil;
 import com.jcraft.jsch.ChannelExec;
@@ -152,7 +150,7 @@ public class KMeansFilterServiceImpl implements KMeansFilterService {
 	        	if(!flag2)return;
 	        }
         	Configuration conf = new Configuration();
-        	conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+//        	conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
         	InputStream filterIn = HdfsUtil.getFromHDFS(filterRes , conf);
 
         	BufferedReader filterBuf = new BufferedReader(new InputStreamReader(filterIn));

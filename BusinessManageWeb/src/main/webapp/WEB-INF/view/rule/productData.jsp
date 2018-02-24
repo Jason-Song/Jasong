@@ -338,9 +338,9 @@
 	        },{
                 "render" : function (data, type, row) {
                 	if(data=="0")return "未处理";
-                	else if(data=="1")return "正在训练";
-                	else if(data=="2")return "训练成功";
-                	else if(data=="3")return "训练失败";
+                	else if(data=="1")return "正在计算";
+                	else if(data=="2")return "计算成功";
+                	else if(data=="3")return "计算失败";
                 },
                 "targets" : [1]
 	        }]

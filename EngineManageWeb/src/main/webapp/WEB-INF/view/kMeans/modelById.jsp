@@ -85,7 +85,7 @@
 					<div class="row">
 						<div class="col-md-4">
 							<input name='predictId' id='predictId' class="hidden"></input>		
-							<label class="control-label">总体均方差(WSSSE)：</label>
+							<label class="control-label">集合内误差平方和(WSSSE)：</label>
 							<div id="wssse" ></div>
 						</div>
 						<div class="col-md-4">
@@ -248,20 +248,36 @@
 						
 						var inarray="";
 						var j=1;
+						// for(var i = dlength;i>0;i--){
+							// var index = i-1;
+							// var clusters = distance[index].split("|");
+							// datas.push(clusters[0]);
+							// var cluno = parseInt(clusters[1])+1;
+							// ys.push("第"+i+"行记录（"+"属于第"+cluno+"类）");
+							// var token = ","+clusters[1]+",";
+							// if(inarray.indexOf(token)<0){
+								// categorys.push("第"+j+"类\n聚类中心：\n"+centermap[clusters[1]]);
+								// j++;
+							// }
+							// inarray+=token;
+
+							// pdatas.push([clusters[1],clusters[0],2]);
+						// }
 						for(var i = dlength;i>0;i--){
 							var index = i-1;
 							var clusters = distance[index].split("|");
-							datas.push(clusters[0]);
-							var cluno = parseInt(clusters[1])+1;
-							ys.push("第"+i+"行记录（"+"属于第"+cluno+"类）");
-							var token = ","+clusters[1]+",";
+							datas.push(clusters[1]);
+							var cluno = parseInt(clusters[2])+1;
+							var rowflag = (clusters[0]==""?"第"+i+"行记录":clusters[0]);
+							ys.push(rowflag+"（"+"属于第"+cluno+"类）");
+							var token = ","+clusters[2]+",";
 							if(inarray.indexOf(token)<0){
-								categorys.push("第"+j+"类\n聚类中心：\n"+centermap[clusters[1]]);
+								categorys.push("第"+j+"类\n聚类中心：\n"+centermap[clusters[2]]);
 								j++;
 							}
 							inarray+=token;
 
-							pdatas.push([clusters[1],clusters[0],2]);
+							pdatas.push([clusters[2],clusters[1],rowflag]);
 						}
 						xs.push({
 							name:'差异程度【欧式距离】',
@@ -295,9 +311,9 @@
 						},
 						grid: {
 							top: 50,
-							width: '90%',
+							width: '80%',
 							bottom: '2%',
-							left: 10,
+							left: 40,
 							containLabel: true
 						},
 						calculable : true,
@@ -354,13 +370,11 @@
 						});
 						poption.series.push({
 							singleAxisIndex: idx,
-							name:"第"+(parseInt(idx)+1)+"类【欧式距离，行号】",
+							name:"第"+(parseInt(idx)+1)+"类【欧式距离，唯一标识】",
 							coordinateSystem: 'singleAxis',
 							type: 'scatter',
 							data: [],
-							symbolSize: function (dataItem) {
-								return dataItem[1] * 4;
-							}
+							symbolSize: 8
 						});
 					});
 					echarts.util.each(pdatas, function (dataItem) {

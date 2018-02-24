@@ -66,7 +66,7 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
         	String condName = (String)sceneRes.get("COND_NAME");
         	String shortRow = (String)sceneRes.get("SHORT_ROW");
         	Configuration conf = new Configuration();
-        	conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+//        	conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
         	if(condName==""||condName==null){
         		String columnName = (String)sceneRes.get("COLUMN_NAME");
         		if(columnName!=""&&columnName!=null){

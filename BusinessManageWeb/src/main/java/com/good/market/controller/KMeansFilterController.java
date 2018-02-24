@@ -27,7 +27,6 @@ import com.good.sys.MsgConstants;
 import com.good.sys.WebUtils;
 import com.good.sys.bean.LogonInfo;
 import com.good.utils.LineReadUtil;
-//import com.good.utils.Comet.SendToClientThread;
 
 
 @Controller

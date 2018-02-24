@@ -647,7 +647,7 @@
 	                $('#myModal1').modal("hide");  
 	                // 开启提示条模态框  
 	              
-	                parent.WebUtils.alert("计算完成！");  
+	                parent.WebUtils.alert("训练完成！");  
 	                  
 	               // console.info("closed!"); 
 				    var msg="";

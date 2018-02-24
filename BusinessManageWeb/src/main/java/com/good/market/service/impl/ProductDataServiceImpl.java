@@ -1,6 +1,5 @@
 package com.good.market.service.impl;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
@@ -89,7 +88,7 @@ public class ProductDataServiceImpl implements ProductDataService {
 		String root = paramDao.getParams("PRODUCE_UPLOAD_PATH", "EM").getParaValue();
 		String hdfsName = RandomUtil.getRandomFileName();
 		//上传文件到HDFS
-		HdfsUtil.putToHDFS((FileInputStream)is, root + hdfsName, conf);
+		HdfsUtil.putToHDFS(is, root + hdfsName, conf);
     	return hdfsName;
 	}
      

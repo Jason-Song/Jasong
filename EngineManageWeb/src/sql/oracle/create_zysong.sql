@@ -1,3 +1,6 @@
+create tablespace lyodsvw datafile 'C:\oracle\oradata\lyodsvw\lyodsvw_data.dbf' size 500M;
+create user lyodsvw identified by lyods default tablespace lyodsvw;
+grant connect,resource,dba to lyodsvw;
 --*************************************************
 --场景配置表
 --*************************************************

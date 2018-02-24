@@ -43,11 +43,11 @@ VALUES ('MARKET', 'market_status', '', '未知', '0', 'admin', now(), 'admin', n
 INSERT INTO `wb`.`sys_enums` (`sys_code`,`enum_type`,`enum_id`,`enum_value`,`seq_id`,`crt_user`,`crt_time`,`upd_user`,`UPD_TIME`,`enum_desc`)
 VALUES ('MARKET', 'market_status', '0', '未处理', '1', 'admin', now(), 'admin', now(), '');
 INSERT INTO `wb`.`sys_enums` (`sys_code`,`enum_type`,`enum_id`,`enum_value`,`seq_id`,`crt_user`,`crt_time`,`upd_user`,`UPD_TIME`,`enum_desc`)
-VALUES ('MARKET', 'market_status', '1', '正在训练', '2', 'admin', now(), 'admin', now(), '');
+VALUES ('MARKET', 'market_status', '1', '正在计算', '2', 'admin', now(), 'admin', now(), '');
 INSERT INTO `wb`.`sys_enums` (`sys_code`,`enum_type`,`enum_id`,`enum_value`,`seq_id`,`crt_user`,`crt_time`,`upd_user`,`UPD_TIME`,`enum_desc`)
-VALUES ('MARKET', 'market_status', '2', '训练成功', '3', 'admin', now(), 'admin', now(), '');
+VALUES ('MARKET', 'market_status', '2', '计算成功', '3', 'admin', now(), 'admin', now(), '');
 INSERT INTO `wb`.`sys_enums` (`sys_code`,`enum_type`,`enum_id`,`enum_value`,`seq_id`,`crt_user`,`crt_time`,`upd_user`,`UPD_TIME`,`enum_desc`)
-VALUES ('MARKET', 'market_status', '3', '训练失败', '4', 'admin', now(), 'admin', now(), '');
+VALUES ('MARKET', 'market_status', '3', '计算失败', '4', 'admin', now(), 'admin', now(), '');
 INSERT INTO `wb`.`sys_enums` (`sys_code`,`enum_type`,`enum_id`,`enum_value`,`seq_id`,`crt_user`,`crt_time`,`upd_user`,`UPD_TIME`,`enum_desc`)
 VALUES ('MARKET', 'market_fileType', '', '未知', '0', 'admin', now(), 'admin', now(), '文件类型');
 INSERT INTO `wb`.`sys_enums` (`sys_code`,`enum_type`,`enum_id`,`enum_value`,`seq_id`,`crt_user`,`crt_time`,`upd_user`,`UPD_TIME`,`enum_desc`)
