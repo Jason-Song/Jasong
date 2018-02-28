@@ -16,21 +16,21 @@
 	<http pattern="/bljs/**" security="none" />
 
 	<http auto-config="false">
-		<intercept-url pattern="/sys/logon" access="permitAll" />
-		<intercept-url pattern="/sys/autologon" access="permitAll" />
-		<intercept-url pattern="/sys/logoncheck" access="permitAll" />
+		<intercept-url pattern="/market/sys/logon" access="permitAll" />
+		<intercept-url pattern="/autologon" access="permitAll" />
+		<intercept-url pattern="/logoncheck" access="permitAll" />
         <intercept-url pattern="/**" access="authenticated" />
         
 		<!-- 登录界面 -->
-		<form-login authentication-failure-forward-url="/sys/logoncheck" 
-			authentication-success-handler-ref="customSuccessHandler" login-page="/sys/logon" 
+		<form-login authentication-failure-forward-url="/logoncheck" 
+			authentication-success-handler-ref="customSuccessHandler" login-page="/market/logon" 
 			password-parameter="password" username-parameter="ssoId" />
-		<logout invalidate-session="true" logout-url="/sys/logout" success-handler-ref="customLogoutHandler"/>
+		<logout invalidate-session="true" logout-url="/logout" success-handler-ref="customLogoutHandler"/>
 		<csrf disabled="true" />
 		<!-- 增加一个filter，这点与Acegi是不一样的，不能修改默认的filter了，这个filter位于FILTER_SECURITY_INTERCEPTOR之后 -->
 		<custom-filter after="FILTER_SECURITY_INTERCEPTOR" ref="myFilter" />
-		<session-management invalid-session-url="/sys/logon" />
-		<access-denied-handler error-page="/sys/denied"/>
+		<session-management invalid-session-url="/market/logon" />
+		<access-denied-handler error-page="/market/denied"/>
 		<headers>
 			<!-- 框架中显示页面允许 -->
 	    	<frame-options policy="SAMEORIGIN"/>
@@ -40,11 +40,11 @@
 	<!-- 自定义user-service -->
 	<beans:bean id="userDetailService" class="com.good.sys.security.MyUserDetailsService"></beans:bean>
 	<beans:bean class="com.good.sys.security.CustomSuccessHandler" id="customSuccessHandler">
-		<beans:property name="defaultTargetUrl" value="/sys/logoncheck"></beans:property>
+		<beans:property name="defaultTargetUrl" value="/logoncheck"></beans:property>
 	</beans:bean>
 	
 	<beans:bean class="com.good.sys.security.CustomLogoutHandler" id="customLogoutHandler">
-		<beans:property name="defaultTargetUrl" value="/sys/logon"></beans:property>
+		<beans:property name="defaultTargetUrl" value="/market/logon"></beans:property>
 	</beans:bean>
 
 
@@ -68,7 +68,7 @@
 	<!-- 访问决策器，决定某个用户具有的角色，是否有足够的权限去访问某个资源 -->
 	<beans:bean id="myAccessDecisionManagerBean"
 		class="com.good.sys.security.MyAccessDecisionManager">
-		<beans:property name="uncheckUrls" value="/sys/logon;/sys/autologon;/sys/logoncheck;/sys/denied;" />
+		<beans:property name="uncheckUrls" value="/market/logon;/autologon;/logoncheck;/market/denied;" />
 	</beans:bean>
 
 	<!-- 资源源数据定义，即定义某一资源可以被哪些角色访问 id 不允许改 -->

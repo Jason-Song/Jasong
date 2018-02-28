@@ -10,6 +10,7 @@
         <result property="fileId" column="FILE_ID"/>
         <result property="trainRes" column="TRAIN_RES"/>
         <result property="wssse" column="WSSSE"/>
+        <result property="distanceMean" column="DISTANCE_MEAN"/>
         <result property="performance" column="PERFORMANCE"/>
         <result property="modelArgs" column="MODEL_ARGS"/>
         <result property="scene" column="SCENE"/>
@@ -23,6 +24,7 @@
         		T.FILE_ID   	as fileId,
         		T.TRAIN_RES 	as trainRes,
         		T.WSSSE			as wssse,
+        		T.DISTANCE_MEAN	as distanceMean,
         		T.PERFORMANCE	as performance,
         		T.MODEL_ARGS	as modelArgs,
         		T.SCENE			as scene,
@@ -34,13 +36,14 @@
             <if test="condition.fileId != null and condition.fileId != ''"> and T.FILE_ID = #{condition.fileId} </if>
             <if test="condition.trainRes != null and condition.trainRes != ''"> and T.TRAIN_RES like '%${condition.trainRes}%' </if>
             <if test="condition.wssse != null and condition.wssse != ''"> and T.WSSSE = #{condition.wssse} </if>
+            <if test="condition.distanceMean != null and condition.distanceMean != ''"> and T.DISTANCE_MEAN = #{condition.distanceMean} </if>
             <if test="condition.performMin != null and condition.performMin != ''"> and T.PERFORMANCE &gt;= #{condition.performMin} </if>
             <if test="condition.performMax != null and condition.performMax != ''"> and T.PERFORMANCE &lt;= #{condition.performMax} </if>
             <if test="condition.createUser != null and condition.createUser != ''"> and T.CREATE_USER = #{condition.createUser} </if>
             <if test="condition.crtStartTime != null and condition.crtStartTime != ''"> and T.CREATE_TIME &gt;= #{condition.crtStartTime} </if>
             <if test="condition.crtEndTime != null and condition.crtEndTime != ''"> and T.CREATE_TIME &lt;= #{condition.crtEndTime} </if>
         </where>
-        ORDER BY T.CREATE_TIME DESC
+        ORDER BY T.CREATE_TIME DESC,T.DISTANCE_MEAN
     </select>
     
     <select id="getKMeansResult" resultType="java.util.HashMap" parameterType="java.lang.String">

@@ -90,6 +90,10 @@
 							<div id="wssse" ></div>
 						</div>
 						<div class="col-md-4">
+							<label class="control-label">平均中心距离：</label>
+							<div id="distanceMean" ></div>
+						</div>
+						<div class="col-md-4">
 							<label class="control-label">每条记录训练耗时(ms/条)：</label>
 							<div class="" id="performance"></div>
 						</div>
@@ -250,6 +254,7 @@
 						var distance=dt.data.distances;
 						var center=dt.data.centers;
 						$("#wssse").html(dt.data.trainRes.WSSSE);
+						$("#distanceMean").html(dt.data.trainRes.DISTANCE_MEAN);
 						$("#performance").html(dt.data.trainRes.PERFORMANCE);
 						$("#predictId").val(dt.data.trainRes.ID);
 						var dlength = distance.length;

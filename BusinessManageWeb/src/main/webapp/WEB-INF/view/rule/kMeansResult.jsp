@@ -75,15 +75,15 @@
 					</div>
 					<div class="row">
 						<div class="col-md-3">
-							<h5 class="text-muted">总体均方差</h5>
+							<h5 class="text-muted">集合内误差平方和</h5>
 							<div class="form-group">
-								<input class="form-control" id="s_wssse" placeholder="总体均方差"></input>
+								<input class="form-control" id="s_wssse" placeholder="集合内误差平方和"></input>
 							</div>
 						</div>
 						<div class="col-md-3">
-							<h5 class="text-muted">创建用户</h5>
+							<h5 class="text-muted">平均中心距离</h5>
 							<div class="form-group">
-								<select class="form-control" id="s_createUser"></select>
+								<input class="form-control" id="s_distanceMean" placeholder="平均中心距离"></input>
 							</div>
 						</div>
 						<div class="col-md-3">
@@ -108,7 +108,14 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-12">
+						<div class="col-md-3">
+							<h5 class="text-muted">创建用户</h5>
+							<div class="form-group">
+								<select class="form-control" id="s_createUser"></select>
+							</div>
+						</div>
+						<div class="col-md-9">
+							<div style="height:25px"></div>
 							<div class="form-group pull-right">
 								<button type="button" class="btn btn-success" id="reset_button">重置</button>
 							</div>
@@ -143,7 +150,8 @@
                                 <th>文件名</th>
 								<th>适用场景</th>
                                 <th>训练结果</th>
-                                <th>总体均方差</th>
+                                <th>集合内误差平方和</th>
+                                <th>平均中心距离</th>
                                 <th>处理性能（ms/条）</th>
 								<th>输入参数</th>
 								<th>创建应用</th>
@@ -255,6 +263,7 @@
 	                d.scene = $('#s_scene').val();
 	                d.trainRes = $('#s_trainRes').val();
 	                d.wssse = $('#s_wssse').val();
+					d.distanceMean = $('#s_distanceMean').val();
 					d.performMin = $('#s_performMin').val();
 	                d.performMax = $('#s_performMax').val();
 	                d.createUser = $('#s_createUser').val();
@@ -268,6 +277,7 @@
 	            { "data" : "scene" },//适用场景
 	            { "data" : "trainRes" },//预测结果
 	            { "data" : "wssse" },//总体均方差
+				{ "data" : "distanceMean" },//总体均方差
 				{ "data" : "performance" },//处理性能
 	            { "data" : "modelArgs" },//模型参数
 				{ "data" : "createApp" },//创建应用

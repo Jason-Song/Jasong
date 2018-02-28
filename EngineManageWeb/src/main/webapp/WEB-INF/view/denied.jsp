@@ -37,16 +37,10 @@
 		<div class="error-symbol">
 			<i class="fa-warning"></i><h2>无此操作权限!</h2>
 		</div>
-		<p>请联系:xxx@99bill.com</p>
+		<p>请联系管理员</p>
 		<div class="panel panel-default collapsed">
 			<div class="panel-heading">
 				<h3 class="panel-title"><c:out value="${Exception.message}"></c:out></h3>
-				<div class="panel-options">
-					<a href="#" data-toggle="panel">
-						<span class="collapse-icon">&ndash;</span>
-						<span class="expand-icon">+</span>
-					</a>
-				</div>
 			</div>
 			<div class="panel-body">
 				<p style="overflow:scroll;height:400px; width:100%;">

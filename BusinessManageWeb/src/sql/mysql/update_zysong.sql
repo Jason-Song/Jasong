@@ -52,3 +52,47 @@ INSERT INTO `wb`.`sys_enums` (`sys_code`,`enum_type`,`enum_id`,`enum_value`,`seq
 VALUES ('MARKET', 'market_fileType', '', '未知', '0', 'admin', now(), 'admin', now(), '文件类型');
 INSERT INTO `wb`.`sys_enums` (`sys_code`,`enum_type`,`enum_id`,`enum_value`,`seq_id`,`crt_user`,`crt_time`,`upd_user`,`UPD_TIME`,`enum_desc`)
 VALUES ('MARKET', 'market_fileType', 'txt', 'txt', '1', 'admin', now(), 'admin', now(), '');
+--resource
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_kMeansFilter','URL','KMeans结果过滤','/market/rule/kMeansFilter','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_kMeansInfo','URL','获取KMeans结果信息','/market/rule/kMeansInfo','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_filterMonitor','URL','监控KMeans过滤过程','/market/rule/monitor','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_getCentors','URL','获取kMeans中心点','/market/rule/getCenters','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_getSceneRowCol','URL','场景行列信息','/market/rule/getSceneRowCol','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_kMeansResult','URL','kMeans结果列表','/market/rule/kMeansResult','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_kMeansById','URL','kMeans结果详细','/market/rule/kMeansById','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_kMeansList','URL','获取kMeans结果列表','/market/rule/kMeansList','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_kMeansResultDel','URL','删除kMeans计算结果','/market/rule/kMeansResultDel','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_produceModel','URL','业务模型页面','/market/rule/produceModel','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_modelPredict','URL','模型计算','/market/rule/modelPredict','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_produceModelList','URL','获取业务模型菜单列表','/market/rule/produceModelList','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_fileList','URL','获取文件菜单列表','/market/rule/fileList','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_getProductData','URL','获取业务数据信息','/market/rule/getProductData','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_calcuMonitor','URL','监控计算进度信息','/market/rule/calcuMonitor','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_productData','URL','业务数据页面','/market/rule/productData','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_productDataList','URL','获取业务数据列表','/market/rule/productDataList','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_productDataAdd','URL','新增业务数据','/market/rule/productDataAdd','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_sceneList','URL','获取场景菜单列表','/market/rule/sceneList','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_resultList','URL','预测结果页面','/market/rule/resultList','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('market_rule_kMeansResultList','URL','kMeans结果列表详细','/market/rule/kMeansResultList','admin',now(),'admin',now(),'',NULL);
+

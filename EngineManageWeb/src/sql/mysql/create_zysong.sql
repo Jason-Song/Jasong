@@ -124,3 +124,49 @@ VALUES ('WB_ROOT_PATH', 'EM', '/home/hadoop/WisdomBrainEngine/', '慧脑引擎�
 INSERT INTO `wb`.`sys_params` (`PARA_ID`,`PARA_RANK`,`PARA_VALUE`,`REMARK`,`CRT_USER`,`CRT_TIME`,`UPD_USER`,`UPD_TIME`,`EXT`)
 VALUES ('WB_SPARK_HOME', 'EM', '/usr/spark-2.2.0/', '慧脑引擎spark家目录', 'admin', now(), null, null, null);
 
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_sys_denied','URL','权限不足','/em/sys/denied','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_modelAnalysis','URL','kMeans模型分析页面','/em/kMeans/modelAnalysis','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_getLineData','URL','获取欧式距离数据','/em/kMeans/getLineData','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_modelApply','URL','模型应用','/em/kMeans/modelApply','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_getSelectData','URL','获取选中模型相关指标数据','/em/kMeans/getSelectData','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_sceneFileInfo','URL','获取文件、场景相关信息','/em/kMeans/sceneFileInfo','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_resultInfo','URL','获取训练结果相关信息','/em/kMeans/resultInfo','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_applyMonitor','URL','监控模型应用进度信息','/em/kMeans/applyMonitor','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_modelNoList','URL','获取模型编号菜单列表','/em/kMeans/modelNoList','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_trainData','URL','kMeans训练数据页面','/em/kMeans/trainData','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_modelById','URL','根据训练数据ID跳转到指定训练结果指标页面','/em/kMeans/modelById','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_modelByKMeansId','URL','根据训练结果ID跳转到指定训练结果指标页面','/em/kMeans/modelByKMeansId','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_trainDataList','URL','获取KMeans训练数据列表','/em/kMeans/trainDataList','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_train','URL','训练KMeans模型','/em/kMeans/train','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_trainDataAdd','URL','新增KMeans训练数据','/em/kMeans/trainDataAdd','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_downTrainFile','URL','下载KMeans模板数据文件','/em/kMeans/downTrainFile','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_sceneList','URL','获取场景列表','/em/kMeans/sceneList','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_kMeans_trainMonitor','URL','监控KMeans训练进度','/em/kMeans/trainMonitor','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_wbWarehouse_scene','URL','场景配置页面','/em/kMeans/trainDataAdd','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_wbWarehouse_sceneList','URL','获取场景列表','/em/kMeans/sceneList','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_wbWarehouse_sceneEdit','URL','编辑场景','/em/kMeans/sceneEdit','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_wbWarehouse_sceneAdd','URL','新增场景','/em/kMeans/sceneAdd','admin',now(),'admin',now(),'',NULL);
+insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
+values('em_wbWarehouse_downTrainFile','URL','下载行列模板文件','/em/kMeans/downTrainFile','admin',now(),'admin',now(),'',NULL);

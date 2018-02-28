@@ -73,7 +73,7 @@
 								<label class="btn btn-blue" id="calcubutton">
 									<input type="checkbox">计算</input>
 								</label>
-								<label class="btn btn-blue" id="resbutton">
+								<label class="btn btn-blue hidden" id="resbutton">
 									<input type="checkbox">查看结果</input>
 								</label>
 						   </div>
@@ -141,6 +141,7 @@
 	<script type="text/javascript">
 	var msgstr = new Set();
 	var resultId;
+	var trainFlag=0;
 	$(function(){
 		//获取文件ID动态菜单
 		$.ajax({    
@@ -196,7 +197,10 @@
 			allowClear: true  
 		});	
 
-		$("#calcubutton").click(function(){  
+		$("#calcubutton").click(function(){ 
+			$('#progressInfo').html("连接慧脑引擎...");
+			msgstr.clear();
+			trainFlag=0;
 			var fileId = $("#s_productData").val();
 			var hdfsName = $("#hdfsName").val();
 			var scene = $("#sceneId").val();
@@ -291,6 +295,8 @@
 						if(info.indexOf("结果ID:")==0){
 							var resultInfos = info.split(":");
 							resultId=resultInfos[1];
+						}else if(info.indexOf("计算成功")>0){
+							trainFlag=1;
 						}
 						$("#progressInfo").html(info);
 						msgstr.add(info);
@@ -306,8 +312,16 @@
 	                // 关闭弹窗进度条  
 	                $('#myModal1').modal("hide");  
 	                // 开启提示条模态框  
-	              
-	                parent.WebUtils.alert("计算完成！");  
+					var trainTip;
+					var hashidden = $("#resbutton").hasClass('hidden');
+					if(trainFlag){
+						trainTip = "计算成功！";
+						if(hashidden)$("#resbutton").removeClass('hidden');
+					}else{
+						trainTip = "计算失败！";
+						if(!hashidden)$("#resbutton").addClass('hidden');
+					}
+	                parent.WebUtils.alert(trainTip);  
 	                  
 	               // console.info("closed!"); 
 				   var msg="";

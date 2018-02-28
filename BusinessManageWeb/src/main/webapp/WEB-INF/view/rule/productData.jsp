@@ -229,7 +229,7 @@
 				</div>
 				
 				<div class="modal-footer">
-					<button type="button" class="btn btn-success" id="downbutton">模板下载</button>
+					<!--<button type="button" class="btn btn-success" id="downbutton">模板下载</button>-->
 					<button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
 					<button type="submit" class="btn btn-success" id="insert_button">保存</button>
 				</div>
@@ -393,6 +393,7 @@
             return false;
         }
         uploadFile();
+		table.draw();
 	});
     //过滤条件设置按钮
     $('#filter_button').click(function() {
@@ -450,17 +451,16 @@
     	oData.append("fileDesc", fileDescObj.value);  
     	oData.append("scene", sceneObj.value);  
     	var oReq = new XMLHttpRequest();  
-    	oReq.open( "POST", "productDataAdd" , true );  
+    	oReq.open( "POST", "productDataAdd" ,false);  
     	oReq.onload = function(oEvent) {  
     	     if (oReq.status == 200) {  
-		        $('#detail').modal('hide');
 		    	parent.WebUtils.alert("上传训练数据文件成功！");
     	     } else {  
-		        $('#detail').modal('hide');
 	    		parent.WebUtils.alert("上传训练数据文件失败！");
 	         }  
     	};  
     	oReq.send(oData);
+		$('#detail').modal('hide');
     }
 	</script>
 	<s:enums keys="market_fileType,market_status"></s:enums>

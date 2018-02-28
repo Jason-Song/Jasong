@@ -125,27 +125,6 @@ public class KMeansTrainController {
         }
     }
     
-    @RequestMapping(value = "/applyModel", method = { RequestMethod.POST, RequestMethod.GET })
-    @ResponseBody
-    public WebPageResult applyModel(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    	WebPageResult ret = new WebPageResult();
-    	LogonInfo linfo = (LogonInfo) WebUtils.getLogInfo(request);
-    	
-    	List<String> msglist = new ArrayList<String>();
-    	try {
-    		msglist = trainDataService.runApplyModel(request, linfo.getOperator());
-    		
-    		ret.setMsg("应用模型成功！");
-    		ret.setData(msglist);
-    	} catch (Exception e) {
-    		logger.error(MsgConstants.E0000, e);
-    		ret.setRetcode(MsgConstants.E0000);
-    		ret.setMsg("应用模型失败！");
-    		ret.setData(msglist);
-    	}
-    	return ret;
-    }
-    
     @RequestMapping(value = "/trainDataAdd", method = { RequestMethod.POST, RequestMethod.GET })
     @ResponseBody
     public WebPageResult trainDataAdd(WebRequest wr, HttpServletRequest request) throws Exception {

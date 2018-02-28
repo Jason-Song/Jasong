@@ -58,6 +58,7 @@ public class KMeansResultController {
 		condition.put("fileId", request.getParameter("fileId"));
 		condition.put("trainRes", request.getParameter("trainRes"));
 		condition.put("wssse", request.getParameter("wssse"));
+		condition.put("distanceMean", request.getParameter("distanceMean"));
 		condition.put("performMin", request.getParameter("performMin"));
 		condition.put("performMax", request.getParameter("performMax"));
 		condition.put("createUser", request.getParameter("createUser"));

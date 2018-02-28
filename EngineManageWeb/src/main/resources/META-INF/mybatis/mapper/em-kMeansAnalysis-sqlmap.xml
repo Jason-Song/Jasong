@@ -6,7 +6,7 @@
 <mapper namespace="com.good.em.mapper.KMeansAnalysisDao">
     
     <select id="getTrainRes" resultType="java.util.Map">
-		select ID,TRAIN_RES,WSSSE,PERFORMANCE from T_KMEANS_INDEX T
+		select ID,TRAIN_RES,WSSSE,DISTANCE_MEAN,PERFORMANCE from T_KMEANS_INDEX T
 		<where>1=1
             <if test="condition.fileId != null and condition.fileId != ''"> and T.FILE_ID = #{condition.fileId} </if>
             <if test="condition.modelNo != null and condition.modelNo != ''"> and T.TRAIN_MODEL like '%/${condition.modelNo}' </if>
@@ -45,6 +45,7 @@
     	<where> 
 			T.FILE_ID = #{fileId}
     	</where>
+        ORDER BY T.DISTANCE_MEAN
     </select>
     
     <select id="getModelId" resultType="java.lang.Integer" parameterType="java.lang.Integer">

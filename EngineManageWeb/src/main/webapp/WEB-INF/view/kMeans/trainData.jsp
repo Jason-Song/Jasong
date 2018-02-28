@@ -330,6 +330,7 @@
 	<script type="text/javascript">
 	var msgstr = new Set();
 	var resultId;
+	var trainFlag;
 	$(function(){
 		//获取scene动态菜单
 		$.ajax({    
@@ -425,6 +426,9 @@
 		});
 		
 		$('#trainbutton').click( function () {
+			msgstr.clear();// msgstr={};
+			$("#trainInfo").html("");
+			if(!$("#resbutton").hasClass('hidden'))$("#resbutton").addClass("hidden");
 			var data = table.row('.selected').data();
 			var random = Math.random().toString().replace('.','');
 			$("input[name='random']").val(random);
@@ -444,8 +448,10 @@
 			}
 		});
 		$('#train_button').click(function(){
+			msgstr.clear();// msgstr={};
 			$("#trainInfo").html("");
-			$("#resbutton").addClass("hidden");
+			if(!$("#resbutton").hasClass('hidden'))$("#resbutton").addClass("hidden");
+			trainFlag=0;
 			var numClusters = $("input[name='numClusters']").val();
 			var numIterations= $("input[name='numIterations']").val();
 			var random = $("#random").val();
@@ -508,6 +514,7 @@
             return false;
         }
         uploadFile();
+		table.draw();
 	});
     //过滤条件设置按钮
     $('#filter_button').click(function() {
@@ -565,17 +572,16 @@
     	oData.append("fileDesc", fileDescObj.value);  
     	oData.append("scene", sceneObj.value);  
     	var oReq = new XMLHttpRequest();  
-    	oReq.open( "POST", "trainDataAdd" , true );  
+    	oReq.open( "POST", "trainDataAdd" ,false);  
     	oReq.onload = function(oEvent) {  
     	     if (oReq.status == 200) {  
-		        $('#detail').modal('hide');
 		    	parent.WebUtils.alert("上传训练数据文件成功！");
     	     } else {  
-		        $('#detail').modal('hide');
 	    		parent.WebUtils.alert("上传训练数据文件失败！");
 	         }  
     	};  
     	oReq.send(oData);
+		$('#detail').modal('hide');
     }
 	
 	/** 
@@ -631,6 +637,8 @@
 						if(info.indexOf("结果ID:")==0){
 							var resultInfos = info.split(":");
 							resultId=resultInfos[1];
+						}else if(info.indexOf("训练成功")>0){
+							trainFlag=1;
 						}
 						$("#progressInfo").html(info);
 						msgstr.add(info); 
@@ -640,22 +648,28 @@
 				var no = parseInt(data3);
 				var percent = Math.floor((no/(no+2))*100).toString()+"%";
 				setProgress("progressId", percent); 
-				//alert(data2);
 	            if(data2=="2"){// 不包含 ，任务运行完成（失败或成功）  
 	                clearTimeout(t);// 关闭计时器  
 	                // 关闭弹窗进度条  
 	                $('#myModal1').modal("hide");  
-	                // 开启提示条模态框  
-	              
-	                parent.WebUtils.alert("训练完成！");  
+	                // 开启提示条模态框 
+					var trainTip;
+					var hashidden = $("#resbutton").hasClass('hidden');
+					if(trainFlag){
+						trainTip = "训练成功！";
+						if(hashidden)$("#resbutton").removeClass('hidden');
+					}else{
+						trainTip = "训练失败！";
+						if(!hashidden)$("#resbutton").addClass('hidden');
+					}
+	                parent.WebUtils.alert(trainTip);  
 	                  
-	               // console.info("closed!"); 
 				    var msg="";
 				    msgstr.forEach(function (item) {
 						msg+=item.toString() + "\n";
 					});
 					$("#trainInfo").html("<label class='control-label'>训练信息：</label><textarea class='col-md-12' rows='4'>"+msg+"</textarea>");
-					$("#resbutton").removeClass('hidden');
+					// $("#resbutton").removeClass('hidden');
 	                return ;  
 	            }  
 

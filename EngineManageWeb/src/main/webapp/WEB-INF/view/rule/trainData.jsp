@@ -148,9 +148,6 @@
 	                            <label class="btn btn-blue" id="trainbutton">
 	                                <input type="checkbox">训练</input>
 	                            </label>
-	                            <label class="btn btn-blue" id="testbutton">
-	                                <input type="checkbox">测试</input>
-	                            </label>
 	                        </div>
 	                        <li class="hiden-columns-title pull-right">
 	                            <a href="#">
@@ -506,6 +503,40 @@
 				parent.WebUtils.alert("请选择一条记录");
 			}
 		});
+		
+		$('#trainbutton').click( function () {
+			$.ajax({  
+				type : "POST",  
+				url : "Monitor",  
+		//          dataType : "json",  
+				async:false,// 同步执行  
+				data:{APPID:appId},  
+				success : function(data) {  
+		//          console.info("success:"+data);  
+					if(data.indexOf("%")==-1){// 不包含 ，任务运行完成（失败或成功）  
+						clearTimeout(t);// 关闭计时器  
+						// 关闭弹窗进度条  
+						$('#myModal1').modal("hide");  
+						// 开启提示条模态框  
+					  
+						$('#tipId').html(data=="FINISHED"?"模型训练完成！":   
+							(data=="FAILED"?"调用建模失败!":"模型训练被杀死！"));  
+						  
+						openModal("myModal2");  
+						console.info("closed!");  
+						return ;  
+					}  
+					  
+					setProgress("progressId", data);  
+					// 进度查询每次间隔1500ms  
+					t=setTimeout("queryTaskProgress('"+appId+"')",1500);  
+				},  
+				error: function(data){  
+					console.info("error"+data);  
+					  
+				}  
+			});  
+		});
 	});
 	
 	function submitDetail() {
@@ -585,11 +616,6 @@
     $("#downbutton").click(function(){  
     	window.location.href='downTrainFile';
    	}); 
-    
-    $("#testbutton").click(function(){  
-    	window.location.href='test';
-   	}); 
-    
     function checkFileExt(ext) {
         if (!ext.match(/.txt/i)) {
             return false;
@@ -634,6 +660,41 @@
     	};  
     	oReq.send(oData);
     }
+	
+	/** 
+     * 请求任务进度 
+     */  
+	function queryTaskProgress(appId){  
+		// ajax 发送请求获取任务运行状态，如果返回运行失败或成功则关闭弹框  
+		$.ajax({  
+			type : "POST",  
+			url : "Monitor",  
+			async:false,// 同步执行  
+			data:{APPID:appId},  
+			success : function(data) {  
+				if(data.indexOf("%")==-1){// 不包含 ，任务运行完成（失败或成功）  
+					clearTimeout(t);// 关闭计时器  
+					// 关闭弹窗进度条  
+					$('#myModal1').modal("hide");  
+					// 开启提示条模态框  
+				  
+					$('#tipId').html(data=="FINISHED"?"模型训练完成！":   
+						(data=="FAILED"?"调用建模失败!":"模型训练被杀死！"));  
+					  
+					openModal("myModal2");  
+					console.info("closed!");  
+					return ;  
+				}  
+				  
+				setProgress("progressId", data);  
+				// 进度查询每次间隔1500ms  
+				t=setTimeout("queryTaskProgress('"+appId+"')",1500);  
+			},  
+			error: function(data){  
+				console.info("error"+data);  
+			}  
+		});  
+	} 
 	
 	/** 
      * 设置进度条 

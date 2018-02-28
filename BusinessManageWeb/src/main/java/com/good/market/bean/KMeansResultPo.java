@@ -7,21 +7,25 @@ public class KMeansResultPo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 条件ID
+	 * 结果ID
 	 */
 	private Integer id;
 	/**
-	 * 场景名
+	 * 文件ID
 	 */
 	private Integer fileId;
 	/**
-	 * 场景描述
+	 * 计算结果位置
 	 */
 	private String trainRes;
 	/**
-	 * 条件名
+	 * 集合内误差平方和
 	 */
 	private String wssse;
+	/**
+	 * 平均中心距离
+	 */
+	private String distanceMean;
 	/**
 	 * 模型性能
 	 */
@@ -106,6 +110,12 @@ public class KMeansResultPo implements Serializable {
 	}
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
+	}
+	public String getDistanceMean() {
+		return distanceMean;
+	}
+	public void setDistanceMean(String distanceMean) {
+		this.distanceMean = distanceMean;
 	}
 
 }
