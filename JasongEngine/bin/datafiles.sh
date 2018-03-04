@@ -11,7 +11,5 @@ hadoop fs -mkdir /datafiles/ml/predict/produce
 hadoop fs -mkdir /datafiles/ml/model
 hadoop fs -mkdir /datafiles/ml/model/train
 hadoop fs -mkdir /datafiles/ml/model/produce
-hadoop fs -mkdir /datafiles/ml/rowCol
 hadoop fs -mkdir /datafiles/streaming
 hadoop fs -mkdir /datafiles/sql
-hadoop fs -mkdir /datafiles/sql/filter
