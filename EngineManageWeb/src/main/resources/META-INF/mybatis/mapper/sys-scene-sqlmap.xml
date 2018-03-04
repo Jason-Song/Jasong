@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.good.sys.mapper.SceneDao">
+
+    <resultMap id="sceneMap" type="com.good.em.bean.ScenePo">
+        <result property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+        <result property="sceneDesc" column="SCENE_DESC"/>
+        <result property="condName" column="COND_NAME"/>
+        <result property="columnName" column="COLUMN_NAME"/>
+        <result property="shortRow" column="SHORT_ROW"/>
+        <result property="rowName" column="ROW_NAME"/>
+        <result property="strategyName" column="STRATEGY_NAME"/>
+        <result property="createUser" column="CREATE_USER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="lastUpdUser" column="LAST_UPD_USER"/>
+        <result property="lastUpdTime" column="LAST_UPD_TIME"/>
+    </resultMap>
+        
+    <select id="listScene" resultMap="sceneMap">
+        select  T.ID			as id,
+        		T.NAME   		as name,
+        		T.SCENE_DESC 	as sceneDesc,
+        		T.COND_NAME		as condName,
+        		T.COLUMN_NAME	as columnName,
+        		T.SHORT_ROW		as shortRow,
+        		T.ROW_NAME		as rowName,
+        		T.STRATEGY_NAME	as strategyName,
+        		T.CREATE_USER  	as createUser,
+        		T.CREATE_TIME   as createTime,
+        		T.LAST_UPD_USER as lastUpdUser,
+        		T.LAST_UPD_TIME as lastUpdTime
+        from T_SCENE T
+        <where>1=1
+            <if test="condition.name != null and condition.name != ''"> and T.NAME = #{condition.name} </if>
+            <if test="condition.sceneDesc != null and condition.sceneDesc != ''"> and T.SCENE_DESC like '%${condition.sceneDesc}%' </if>
+            <if test="condition.condName != null and condition.condName != ''"> and T.COND_NAME  like ',%${condition.condName}%,' </if>
+            <if test="condition.strategyName != null and condition.strategyName != ''"> and T.STRATEGY_NAME  like ',%${condition.strategyName}%,' </if>
+            <if test="condition.createUser != null and condition.createUser != ''"> and T.CREATE_USER = #{condition.createUser} </if>
+            <if test="condition.crtStartTime != null and condition.crtStartTime != ''"> and T.CREATE_TIME &gt;= #{condition.crtStartTime} </if>
+            <if test="condition.crtEndTime != null and condition.crtEndTime != ''"> and T.CREATE_TIME &lt;= #{condition.crtEndTime} </if>
+            <if test="condition.lastUpdUser != null and condition.lastUpdUser != ''"> and T.LAST_UPD_USER = #{condition.lastUpdUser} </if>            
+            <if test="condition.updStartTime != null and condition.updStartTime != ''"> and T.LAST_UPD_TIME &gt;= #{condition.updStartTime} </if>
+            <if test="condition.updEndTime != null and condition.updEndTime != ''"> and T.LAST_UPD_TIME &lt;= #{condition.updEndTime} </if>
+        </where>
+        ORDER BY T.CREATE_TIME DESC
+    </select>
+    
+	<insert id="insertScene" useGeneratedKeys="false" keyProperty="id" parameterType="com.good.em.bean.ScenePo" > 
+        insert into T_SCENE (NAME,SCENE_DESC,SHORT_ROW,COND_NAME,ROW_NAME,COLUMN_NAME,STRATEGY_NAME,CREATE_USER,CREATE_TIME,LAST_UPD_USER,LAST_UPD_TIME)
+        values(#{name,jdbcType=VARCHAR},#{sceneDesc,jdbcType=VARCHAR},#{shortRow,jdbcType=VARCHAR},#{condName,jdbcType=VARCHAR},#{rowName,jdbcType=VARCHAR},#{columnName,jdbcType=VARCHAR},#{strategyName,jdbcType=VARCHAR},#{createUser,jdbcType=CHAR},#{createTime,jdbcType=CHAR},#{lastUpdUser,jdbcType=CHAR},#{lastUpdTime,jdbcType=CHAR})
+    </insert>
+    
+    <update id="updateScene" parameterType="com.good.em.bean.ScenePo">
+        update T_SCENE
+        <set>
+            <if test="name != null"> NAME = #{name}, </if>
+            <if test="sceneDesc != null"> SCENE_DESC = #{sceneDesc}, </if>
+            <if test="shortRow != null"> SHORT_ROW = #{shortRow}, </if>
+            <if test="condName != null"> COND_NAME = #{condName}, </if>
+            <if test="strategyName != null"> STRATEGY_NAME = #{strategyName}, </if>
+            <if test="lastUpdUser != null"> LAST_UPD_USER = #{lastUpdUser}, </if>
+            LAST_UPD_TIME = #{lastUpdTime}
+        </set>
+        where ID = #{id}
+    </update>
+
+</mapper>
+

@@ -161,12 +161,12 @@ values('em_kMeans_sceneList','URL','获取场景列表','/em/kMeans/sceneList','
 insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
 values('em_kMeans_trainMonitor','URL','监控KMeans训练进度','/em/kMeans/trainMonitor','admin',now(),'admin',now(),'',NULL);
 insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
-values('em_wbWarehouse_scene','URL','场景配置页面','/em/kMeans/trainDataAdd','admin',now(),'admin',now(),'',NULL);
+values('em_wbWarehouse_scene','URL','场景配置页面','/em/wbWarehouse/scene','admin',now(),'admin',now(),'',NULL);
 insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
-values('em_wbWarehouse_sceneList','URL','获取场景列表','/em/kMeans/sceneList','admin',now(),'admin',now(),'',NULL);
+values('em_wbWarehouse_sceneList','URL','获取场景列表','/em/wbWarehouse/sceneList','admin',now(),'admin',now(),'',NULL);
 insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
-values('em_wbWarehouse_sceneEdit','URL','编辑场景','/em/kMeans/sceneEdit','admin',now(),'admin',now(),'',NULL);
+values('em_wbWarehouse_sceneEdit','URL','编辑场景','/em/wbWarehouse/sceneEdit','admin',now(),'admin',now(),'',NULL);
 insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
-values('em_wbWarehouse_sceneAdd','URL','新增场景','/em/kMeans/sceneAdd','admin',now(),'admin',now(),'',NULL);
+values('em_wbWarehouse_sceneAdd','URL','新增场景','/em/wbWarehouse/sceneAdd','admin',now(),'admin',now(),'',NULL);
 insert into `wb`.`sys_resource` (`res_code`, `res_type`, `res_name`, `res_value`, `crt_user`, `CRT_TIME`, `upd_user`, `UPD_TIME`, `res_desc`, `res_tnode`)
-values('em_wbWarehouse_downTrainFile','URL','下载行列模板文件','/em/kMeans/downTrainFile','admin',now(),'admin',now(),'',NULL);
+values('em_wbWarehouse_downTrainFile','URL','下载行列模板文件','/em/wbWarehouse/downTrainFile','admin',now(),'admin',now(),'',NULL);

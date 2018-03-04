@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.good.sys.mapper.FPGrowthAnalysisDao">
+    
+    <select id="getTrainRes" resultType="java.util.Map">
+		select ID,TRAIN_RES,RULE_RES,PERFORMANCE from T_FPGROWTH_RESULT T
+		<where>1=1
+            <if test="condition.fileId != null and condition.fileId != ''"> and T.FILE_ID = #{condition.fileId} </if>
+            <if test="condition.modelNo != null and condition.modelNo != ''"> and T.RULE_RES like '%/${condition.modelNo}' </if>
+    	</where>
+    </select>
+    
+    <select id="modelNoList" resultType="java.lang.String">
+    	select SUBSTR(RULE_RES,-22) AS MODELNO from T_FPGROWTH_RESULT T
+    	<where> 
+			T.FILE_ID = #{fileId}
+    	</where>
+    </select>
+</mapper>
+

@@ -10,13 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.good.comm.enu.BizType;
 import com.good.comm.enu.ExecuteResult;
 import com.good.comm.enu.FunctionType;
-import com.good.market.mapper.ModelAnalysisDao;
+import com.good.sys.mapper.ModelAnalysisDao;
 import com.good.market.service.ModelAnalysisService;
 import com.good.sys.bean.Operator;
 import com.good.sys.mapper.SystemParamDao;
@@ -26,7 +28,8 @@ import com.good.utils.HdfsUtil;
 
 @Service
 public class ModelAnalysisServiceImpl implements ModelAnalysisService {
-	
+    private static Logger logger = LoggerFactory.getLogger(ModelAnalysisServiceImpl.class);
+
     @Autowired
     private SystemParamDao paramDao;
     
@@ -66,8 +69,9 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
         	String condName = (String)sceneRes.get("COND_NAME");
         	String shortRow = (String)sceneRes.get("SHORT_ROW");
         	Configuration conf = new Configuration();
-//        	conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
-        	if(condName==""||condName==null){
+        	conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+
+        	if("".equals(condName)||condName==null){
         		String columnName = (String)sceneRes.get("COLUMN_NAME");
         		if(columnName!=""&&columnName!=null){
         			InputStream colIn = HdfsUtil.getDirectFromHDFS(scenePath+columnName , conf);
@@ -85,7 +89,7 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
             		collist.add(columns[i]);
         		}
         	}
-        	if(shortRow==""||shortRow==null){
+        	if("".equals(shortRow)||shortRow==null){
         		String rowName = (String)sceneRes.get("ROW_NAME");
         		if(rowName!=""&&rowName!=null){
         			InputStream rowIn = HdfsUtil.getDirectFromHDFS(scenePath+rowName , conf);

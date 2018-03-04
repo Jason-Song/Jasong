@@ -23,7 +23,7 @@ import com.good.comm.enu.BizType;
 import com.good.comm.enu.ExecuteResult;
 import com.good.comm.enu.FunctionType;
 import com.good.em.bean.ProduceModelPo;
-import com.good.em.mapper.KMeansAnalysisDao;
+import com.good.sys.mapper.KMeansAnalysisDao;
 import com.good.em.service.KMeansAnalysisService;
 import com.good.sys.ServiceException;
 import com.good.sys.bean.Operator;
@@ -58,7 +58,7 @@ public class KMeansAnalysisServiceImpl implements KMeansAnalysisService {
         Map<String,Object> res = new HashMap<String,Object>();
         try {
         	Map<String,Object> trainRes = kMeansAnalysisDao.getTrainRes(condition);
-        	BigDecimal kmeansId = (BigDecimal)trainRes.get("ID");
+        	String kmeansId = trainRes.get("ID").toString();
         	String path = (String)trainRes.get("TRAIN_RES");
         	List<Map<String,String>> centers = kMeansAnalysisDao.getCenters(kmeansId);
         	Configuration conf = new Configuration();

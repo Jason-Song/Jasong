@@ -16,7 +16,7 @@
 	<http pattern="/bljs/**" security="none" />
 
 	<http auto-config="false">
-		<intercept-url pattern="/market/sys/logon" access="permitAll" />
+		<intercept-url pattern="/market/logon" access="permitAll" />
 		<intercept-url pattern="/autologon" access="permitAll" />
 		<intercept-url pattern="/logoncheck" access="permitAll" />
         <intercept-url pattern="/**" access="authenticated" />

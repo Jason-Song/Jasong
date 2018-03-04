@@ -24,8 +24,8 @@ import com.good.comm.enu.BizType;
 import com.good.comm.enu.ExecuteResult;
 import com.good.comm.enu.FunctionType;
 import com.good.market.bean.SysParamPo;
-import com.good.market.mapper.KMeansFilterDao;
-import com.good.market.mapper.UserBlDao;
+import com.good.sys.mapper.KMeansFilterDao;
+import com.good.sys.mapper.UserBlDao;
 import com.good.market.service.KMeansFilterService;
 import com.good.sys.ServiceException;
 import com.good.sys.WebUtils;
@@ -142,7 +142,7 @@ public class KMeansFilterServiceImpl implements KMeansFilterService {
         		}
         	}
 
-        	if(filterRes==null||filterRes==""||clusterNo==null||clusterNo=="")return;
+        	if(filterRes==null||"".equals(filterRes)||clusterNo==null||"".equals(clusterNo))return;
 	        File file2 = new File(file2name);
 	        if(!file2.exists()){
 	        	Boolean flag2 = file2.createNewFile();
@@ -150,7 +150,7 @@ public class KMeansFilterServiceImpl implements KMeansFilterService {
 	        	if(!flag2)return;
 	        }
         	Configuration conf = new Configuration();
-//        	conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
+        	conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
         	InputStream filterIn = HdfsUtil.getFromHDFS(filterRes , conf);
 
         	BufferedReader filterBuf = new BufferedReader(new InputStreamReader(filterIn));

@@ -145,9 +145,7 @@
 	                            <label class="btn btn-blue" id="addbutton">
 	                                <input type="checkbox">新增</input>
 	                            </label>
-	                            <label class="btn btn-blue" id="downbutton">
-	                                <input type="checkbox">下载</input>
-	                            </label>
+
 	                        </div>
 	                        <li class="hiden-columns-title pull-right">
 	                            <a href="#">
@@ -393,7 +391,6 @@
             return false;
         }
         uploadFile();
-		table.draw();
 	});
     //过滤条件设置按钮
     $('#filter_button').click(function() {

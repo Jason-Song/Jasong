@@ -128,11 +128,7 @@
 				<div class="panel-body-">
 					<div class="row">
 	  				    <div class="col-md-12 ">
-	  				       <div class="btn-group " data-toggle="buttons">
-	                            <label class="btn btn-blue" id="viewbutton">
-	                                <input type="checkbox">查看</input>
-	                            </label>
-	                        </div>
+
 	                        <li class="hiden-columns-title pull-right">
 	                            <a href="#">
 	                                <span>隐藏列<i class="fa-angle-down"></i>

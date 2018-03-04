@@ -31,6 +31,11 @@
 	
 </head>
 <body class="page-body page-error-env" onload="out()">
+<%
+response.setHeader("Pragma","No-cache");
+response.setHeader("Cache-Control","no-cache");
+response.setDateHeader("Expires", 0);
+%>
 </body>
 <!-- Bottom Scripts -->
 	<script src="../../assets/js/bootstrap.min.js"></script>

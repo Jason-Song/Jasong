@@ -514,7 +514,7 @@
             return false;
         }
         uploadFile();
-		table.draw();
+		//table.draw();
 	});
     //过滤条件设置按钮
     $('#filter_button').click(function() {

@@ -4,12 +4,16 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.good.monitor.bean.OnlineUserPo;
+import com.good.sys.MsgConstants;
 
 
 @Controller
@@ -35,7 +39,11 @@ public class SysController {
             out.close();
             return null;
         } else {
-           return "/logon";
+//        	response.setHeader("Pragma","No-Cache");
+//        	response.setHeader("Cache-Control","No-Cache");
+//        	response.setDateHeader("Expires",0); 
+
+        	return "/logon";
         }
     }
     

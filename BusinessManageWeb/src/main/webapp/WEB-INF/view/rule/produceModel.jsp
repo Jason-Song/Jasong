@@ -146,7 +146,7 @@
 		//获取文件ID动态菜单
 		$.ajax({    
 		    "type":'post',    
-		    "url": "getSelectData",  
+		    "url": "fileList",  
 		    "success" : function(data) {
 			    var cond_list = data.data;
 			    console.log(cond_list);

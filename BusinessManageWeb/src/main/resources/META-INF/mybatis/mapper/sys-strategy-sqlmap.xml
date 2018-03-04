@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.good.sys.mapper.StrategyDao">
+
+    <resultMap id="strategyMap" type="com.good.market.bean.StrategyPo">
+        <result property="id" column="ID"/>
+        <result property="conds" column="CONDS"/>
+        <result property="exeCode" column="EXE_CODE"/>
+        <result property="exeDesc" column="EXE_DESC"/>
+        <result property="createUser" column="CREATE_USER"/>
+        <result property="createTime" column="CREATE_TIME"/>
+        <result property="lastUpdUser" column="LAST_UPD_USER"/>
+        <result property="lastUpdTime" column="LAST_UPD_TIME"/>
+    </resultMap>
+        
+    <select id="listStrategy" resultMap="strategyMap">
+        select  T.ID			as id,
+        		T.CONDS   		as conds,
+        		T.EXE_CODE 		as exeCode,
+        		T.EXE_DESC	 	as exeDesc,
+        		T.CREATE_USER  	as createUser,
+        		T.CREATE_TIME   as createTime,
+        		T.LAST_UPD_USER as lastUpdUser,
+        		T.LAST_UPD_TIME as lastUpdTime
+        from T_STRATEGY T
+        <where>1=1
+            <if test="condition.conds != null and condition.conds != ''"> and T.COND_IDS like '%,${condition.condIds},%' </if>
+            <if test="condition.exeCode != null and condition.exeCode != ''"> and T.EXE_CODE = #{condition.exeCode} </if>
+            <if test="condition.exeDesc != null and condition.exeDesc != ''"> and T.EXE_DESC like '%${condition.exeDesc}%' </if>
+            <if test="condition.createUser != null and condition.createUser != ''"> and T.CREATE_USER = #{condition.createUser} </if>
+            <if test="condition.crtStartTime != null and condition.crtStartTime != ''"> and T.CREATE_TIME &gt;= #{condition.crtStartTime} </if>
+            <if test="condition.crtEndTime != null and condition.crtEndTime != ''"> and T.CREATE_TIME &lt;= #{condition.crtEndTime} </if>
+            <if test="condition.lastUpdUser != null and condition.lastUpdUser != ''"> and T.LAST_UPD_USER = #{condition.lastUpdUser} </if>            
+            <if test="condition.updStartTime != null and condition.updStartTime != ''"> and T.LAST_UPD_TIME &gt;= #{condition.updStartTime} </if>
+            <if test="condition.updEndTime != null and condition.updEndTime != ''"> and T.LAST_UPD_TIME &lt;= #{condition.updEndTime} </if>
+        </where>
+        <if test="condition.orders != null " > ORDER BY ${condition.orders}</if>
+    </select>
+    
+	<insert id="insertStrategy" useGeneratedKeys="false" keyProperty="id" parameterType="com.good.market.bean.StrategyPo" > 
+        insert into T_STRATEGY (CODE_IDS,EXE_CODE,EXE_DESC,CREATE_USER,CREATE_TIME,LAST_UPD_USER,LAST_UPD_TIME)
+        values(#{condIds,jdbcType=VARCHAR},#{exeCode,jdbcType=VARCHAR},#{exeDesc,jdbcType=VARCHAR},#{createUser,jdbcType=CHAR},#{createTime,jdbcType=CHAR},#{lastUpdUser,jdbcType=CHAR},#{lastUpdTime,jdbcType=CHAR})
+    </insert>
+
+</mapper>
+

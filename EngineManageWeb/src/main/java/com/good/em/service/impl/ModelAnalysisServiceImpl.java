@@ -4,7 +4,6 @@ package com.good.em.service.impl;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List; 
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Service;
 import com.good.comm.enu.BizType;
 import com.good.comm.enu.ExecuteResult;
 import com.good.comm.enu.FunctionType;
-import com.good.em.mapper.ModelAnalysisDao;
+import com.good.sys.mapper.ModelAnalysisDao;
 import com.good.em.service.ModelAnalysisService;
 import com.good.sys.bean.Operator;
 import com.good.sys.mapper.SystemParamDao;
@@ -71,7 +70,7 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
         	String shortRow = (String)sceneRes.get("SHORT_ROW");
         	Configuration conf = new Configuration();
         	conf.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
-        	if(condName==""||condName==null){
+        	if("".equals(condName)||condName==null){
         		String columnName = (String)sceneRes.get("COLUMN_NAME");
         		if(columnName!=""&&columnName!=null){
         			InputStream colIn = HdfsUtil.getDirectFromHDFS(scenePath+columnName , conf);
@@ -89,7 +88,7 @@ public class ModelAnalysisServiceImpl implements ModelAnalysisService {
             		collist.add(columns[i]);
         		}
         	}
-        	if(shortRow==""||shortRow==null){
+        	if("".equals(shortRow)||shortRow==null){
         		String rowName = (String)sceneRes.get("ROW_NAME");
         		if(rowName!=""&&rowName!=null){
         			InputStream rowIn = HdfsUtil.getDirectFromHDFS(scenePath+rowName , conf);

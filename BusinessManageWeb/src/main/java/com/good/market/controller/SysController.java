@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 
 @Controller
-@RequestMapping("/em")
+@RequestMapping("/market")
 public class SysController {
     private static Logger logger = LoggerFactory.getLogger(SysController.class);
     

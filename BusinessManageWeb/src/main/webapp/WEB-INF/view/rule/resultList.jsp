@@ -54,7 +54,7 @@
                 
 					<ul class="item-col3 y-clear" style="list-style:none;">
 					
-					<li><a href="randomForestResult">
+					<li class='hidden'><a href="randomForestResult">
 						<p class="title" >随机森林模型</p>
 						<p class="desc" >高维稀疏数据分析</p>
 						<p class="more">查看预测结果列表&gt;</p>

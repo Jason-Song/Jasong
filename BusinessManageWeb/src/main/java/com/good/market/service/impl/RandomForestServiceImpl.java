@@ -9,7 +9,6 @@ import com.good.sys.ServiceException;
 import com.good.sys.bean.Operator;
 
 
-
 @Service
 public class RandomForestServiceImpl implements RandomForestService {
 

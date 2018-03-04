@@ -150,9 +150,6 @@
 	                            <label class="btn btn-blue" id="editbutton">
 	                                <input type="checkbox">编辑</input>
 	                            </label>
-	                            <label class="btn btn-blue" id="delbutton">
-	                                <input type="checkbox">删除</input>
-	                            </label>
 	                        </div>
 	                        <li class="hiden-columns-title pull-right">
 	                            <a href="#">
@@ -204,7 +201,7 @@
 									<input class="form-control" name="e_name" id="e_name" placeholder="场景名称" data-validate="required" data-message-required="此项必须输入." rssequired="required"></input>
 								</div>
 							</div>
-							<div class="col-md-6">
+							<div class="col-md-6 hidden">
 								<div class="form-group">
 									<label for="name" class="control-label">策略名称定义</label>
 									<input class="form-control" name="e_strategyName" id="e_strategyName" placeholder="策略名称定义" ></input>
@@ -252,7 +249,7 @@
 									<input class="form-control" name="name" id="name" placeholder="场景名称" data-validate="required" data-message-required="此项必须输入." rssequired="required"></input>
 								</div>
 							</div>
-							<div class="col-md-6">
+							<div class="col-md-6 hidden">
 								<div class="form-group">
 									<label for="name" class="control-label">策略名称定义</label>
 									<input class="form-control" name="strategyName" id="strategyName" placeholder="策略名称定义" ></input>
@@ -276,7 +273,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="row">		
+						<div class="row hidden">		
 							<div class="col-md-12">
 								<div class="form-group">
 									<label class="control-label">数据行唯一识别编号</label>
